@@ -1,0 +1,23 @@
+{
+  "name": "ai-prototypes",
+  "private": true,
+  "packageManager": "npm@10.9.2",
+  "workspaces": [
+    "apps/*",
+    "shared/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "typecheck": "turbo run typecheck",
+    "verify": "turbo run verify:config",
+    "dev:caretaking": "npm run dev --workspace=caretaking",
+    "build:caretaking": "npm run build --workspace=caretaking",
+    "typecheck:caretaking": "npm run typecheck --workspace=caretaking",
+    "verify:caretaking": "npm run verify:config --workspace=caretaking",
+    "create:prototype": "node scripts/create-prototype.mjs"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.0"
+  }
+}
