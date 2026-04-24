@@ -12,11 +12,14 @@ export async function GET(request: NextRequest) {
   const type = requestUrl.searchParams.get("type") as EmailOtpType | null;
   const requestedNext = requestUrl.searchParams.get("next") ?? "/";
   const next = requestedNext.startsWith("/") ? requestedNext : "/";
-  const { url, anonKey } = getSupabaseEnv();
+  const { url, anonKey, schema } = getSupabaseEnv();
 
   const response = NextResponse.redirect(new URL(next, request.url));
 
   const supabase = createServerClient(url, anonKey, {
+    db: {
+      schema
+    },
     cookies: {
       getAll() {
         return request.cookies.getAll();

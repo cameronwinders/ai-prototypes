@@ -7,7 +7,7 @@ import type { Json } from "@/types/database";
 // The app keeps SQL as the source of truth for RPC/RLS behavior. The handwritten
 // Database type is intentionally partial, so we keep the runtime client flexible
 // until generated Supabase types are wired into the deployment workflow.
-export type AppSupabaseClient = SupabaseClient<any>;
+export type AppSupabaseClient = SupabaseClient<any, string, any, any, any>;
 
 export function normalizeEmail(email: string) {
   return email.trim().toLowerCase();

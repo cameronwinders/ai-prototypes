@@ -9,12 +9,15 @@ export function createAdminClient() {
     throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY.");
   }
 
-  const { url } = getSupabaseEnv();
+  const { url, schema } = getSupabaseEnv();
 
   return createClient(url, serviceRoleKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false
+    },
+    db: {
+      schema
     }
   });
 }

@@ -51,6 +51,7 @@ if (fs.existsSync(targetDir)) {
 fs.mkdirSync(path.join(targetDir, "src", "app"), { recursive: true });
 fs.mkdirSync(path.join(targetDir, "scripts"), { recursive: true });
 fs.mkdirSync(path.join(targetDir, "supabase", "migrations"), { recursive: true });
+fs.mkdirSync(path.join(targetDir, "src", "lib", "supabase"), { recursive: true });
 
 const schemaName = `app_${appSlug.replace(/-/g, "_")}`;
 
@@ -99,6 +100,38 @@ fs.writeFileSync(
 fs.writeFileSync(
   path.join(targetDir, "scripts", "verify-config.mjs"),
   'console.log("Add prototype-specific config verification here.");\n'
+);
+
+fs.writeFileSync(
+  path.join(targetDir, "supabase", "migrations", "0001_app_schema.sql"),
+  [
+    `create schema if not exists ${schemaName};`,
+    "",
+    `grant usage on schema ${schemaName} to anon, authenticated, service_role;`,
+    `grant all on all tables in schema ${schemaName} to service_role;`,
+    `grant all on all routines in schema ${schemaName} to service_role;`,
+    "",
+    "-- Add app-specific tables, functions, and policies in this schema.",
+    ""
+  ].join("\n")
+);
+
+fs.writeFileSync(
+  path.join(targetDir, "src", "lib", "supabase", "env.ts"),
+  [
+    "export function getSupabaseEnv() {",
+    "  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;",
+    "  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;",
+    `  const schema = process.env.APP_DB_SCHEMA ?? \"${schemaName}\";`,
+    "",
+    "  if (!url || !anonKey) {",
+    "    throw new Error(\"Missing Supabase environment variables.\");",
+    "  }",
+    "",
+    "  return { url, anonKey, schema };",
+    "}",
+    ""
+  ].join("\n")
 );
 
 fs.writeFileSync(

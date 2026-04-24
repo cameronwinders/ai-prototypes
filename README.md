@@ -34,6 +34,11 @@ Each prototype gets:
 - schema name: `app_caretaking`
 - optional env variable: `APP_DB_SCHEMA=app_caretaking`
 
+Runtime rule:
+
+- each child app must point its Supabase clients at `APP_DB_SCHEMA`
+- each child app migration set should create its own schema from day one, or include a compatibility migration that moves legacy `public` objects into the app schema
+
 Suggested future schema naming:
 
 - `apps/caretaking` -> `app_caretaking`

@@ -11,6 +11,8 @@ const requiredFiles = [
   "supabase/migrations/0002_seed_roles.sql",
   "supabase/migrations/0003_hardening_rpc_and_delivery.sql",
   "supabase/migrations/0004_final_rls_and_safety.sql",
+  "supabase/migrations/0010_app_schema_isolation.sql",
+  "supabase/migrations/0011_app_schema_grants.sql",
   "src/lib/supabase/server.ts",
   "src/lib/supabase/client.ts",
   "src/lib/supabase/middleware.ts"
@@ -21,6 +23,8 @@ const requiredEnv = [
   "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
   "NEXT_PUBLIC_SITE_URL",
   "SUPABASE_SERVICE_ROLE_KEY",
+  "APP_SLUG",
+  "APP_DB_SCHEMA",
   "CRON_SECRET",
   "RESEND_API_KEY",
   "RESEND_FROM_EMAIL"
@@ -33,13 +37,17 @@ const requiredSqlSnippets = [
   "create or replace function public.create_event_mvp",
   "create or replace function public.create_reminder_mvp",
   "create or replace function public.process_due_reminders_mvp",
+  "create schema if not exists app_caretaking",
+  "create or replace function app_caretaking.create_space_mvp",
   "create policy \"events_select_member\"",
   "notifications_one_reminder_due_per_recipient_idx"
 ];
 
 const requiredAppSnippets = [
   ["src/lib/supabase/env.ts", "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"],
+  ["src/lib/supabase/env.ts", "APP_DB_SCHEMA"],
   ["src/lib/supabase/server.ts", "createServerClient"],
+  ["src/lib/supabase/server.ts", "schema"],
   ["src/lib/supabase/middleware.ts", "supabase.auth.getClaims()"],
   ["src/app/api/jobs/process-reminders/route.ts", "export async function GET"],
   ["src/app/api/jobs/process-reminders/route.ts", "process.env.CRON_SECRET"]
@@ -66,7 +74,9 @@ const combinedSql = [
   "supabase/migrations/0001_core_schema.sql",
   "supabase/migrations/0002_seed_roles.sql",
   "supabase/migrations/0003_hardening_rpc_and_delivery.sql",
-  "supabase/migrations/0004_final_rls_and_safety.sql"
+  "supabase/migrations/0004_final_rls_and_safety.sql",
+  "supabase/migrations/0010_app_schema_isolation.sql",
+  "supabase/migrations/0011_app_schema_grants.sql"
 ]
   .map((file) => readFileSync(join(root, file), "utf8"))
   .join("\n");

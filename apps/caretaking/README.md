@@ -6,6 +6,12 @@ A generic shared caretaking web app built with Next.js App Router, TypeScript, S
 
 The product model stays domain-agnostic: spaces, members, subjects, event types, events, reminders, notifications, and audit logs.
 
+This child app now targets the shared-platform schema model:
+
+- runtime schema: `app_caretaking`
+- shared Supabase project: `ai-prototypes-platform`
+- compatibility layer: legacy `public` objects remain available as wrappers/views during the transition
+
 ## Monorepo Notes
 
 - App slug: `caretaking`
@@ -50,6 +56,8 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<local anon key from supabase start>
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<optional fallback local anon key>
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 SUPABASE_SERVICE_ROLE_KEY=<local service_role key from supabase start>
+APP_SLUG=caretaking
+APP_DB_SCHEMA=app_caretaking
 CRON_SECRET=<random local secret>
 APP_CRON_SECRET=<optional fallback secret>
 RESEND_API_KEY=<resend api key>
@@ -93,6 +101,8 @@ supabase/migrations/0006_invite_digest_extension.sql
 supabase/migrations/0007_profiles_and_reminder_completion.sql
 supabase/migrations/0008_repeat_reminders_and_auth_callback.sql
 supabase/migrations/0009_transactional_email_preferences.sql
+supabase/migrations/0010_app_schema_isolation.sql
+supabase/migrations/0011_app_schema_grants.sql
 ```
 
 `supabase/policies` is retained as policy history/reference only. The final deployable RLS state is in `supabase/migrations/0004_final_rls_and_safety.sql`.
@@ -173,6 +183,8 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<production Supabase publishable key>
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<optional fallback production anon key>
 NEXT_PUBLIC_SITE_URL=https://your-app.vercel.app
 SUPABASE_SERVICE_ROLE_KEY=<production Supabase service_role key>
+APP_SLUG=caretaking
+APP_DB_SCHEMA=app_caretaking
 CRON_SECRET=<random production secret, at least 16 characters>
 APP_CRON_SECRET=<optional fallback; can match CRON_SECRET>
 RESEND_API_KEY=<production Resend API key>
