@@ -10,7 +10,7 @@ export function QualitySection() {
             <SectionIntro
               eyebrow="Why creators trust this model"
               title="Premium enough for your audience. Simple enough to actually operate."
-              body="Creator trust is fragile. The design, product structure, and launch mechanics all need to feel considered. This is why we stay focused on brand quality, operational simplicity, and a product architecture that can keep learning after launch."
+              body="Creator trust is fragile. The design, product structure, and launch mechanics all need to feel considered."
             />
 
             <div className="grid gap-4 sm:grid-cols-2">

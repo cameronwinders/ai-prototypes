@@ -16,17 +16,12 @@ export function OpportunitySection() {
 
         <div className="grid gap-4">
           {opportunityPoints.map((point, index) => (
-            <div
-              key={point}
-              className="surface-card rounded-[1.75rem] p-6 sm:p-7"
-            >
+            <div key={point} className="surface-card rounded-[1.75rem] p-6 sm:p-7">
               <div className="flex items-start gap-4">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[rgba(91,77,255,0.1)] text-sm font-semibold text-[var(--accent-dark)]">
                   0{index + 1}
                 </div>
-                <p className="text-base leading-7 text-[var(--text-secondary)] sm:text-lg">
-                  {point}
-                </p>
+                <p className="text-base leading-7 text-[var(--text-secondary)]">{point}</p>
               </div>
             </div>
           ))}
@@ -36,8 +31,8 @@ export function OpportunitySection() {
               The missing layer
             </p>
             <p className="mt-4 max-w-2xl text-lg leading-8 text-[var(--text-primary)]">
-              Creators already know how to earn trust. The product layer is what turns that
-              trust into a paid experience with depth, repeat use, and room to grow.
+              Creators already know how to earn trust. The missing layer is a product
+              people can use, buy, and come back to.
             </p>
           </div>
         </div>

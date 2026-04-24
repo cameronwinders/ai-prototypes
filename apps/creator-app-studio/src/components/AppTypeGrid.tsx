@@ -7,11 +7,11 @@ export function AppTypeGrid() {
       <div className="mx-auto max-w-7xl">
         <SectionIntro
           eyebrow="What we build"
-          title="A creator’s next revenue stream does not have to look like another course page."
-          body="We build premium web experiences around a creator’s existing frameworks, communities, and niche expertise. The result should feel like a product their audience wants to return to, not another static asset."
+          title="A creator's next revenue stream does not need to look like another course page."
+          body="We build premium web experiences around a creator's existing frameworks, communities, and expertise."
         />
 
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
           {appTypes.map((item) => (
             <article
               key={item.title}
@@ -24,7 +24,7 @@ export function AppTypeGrid() {
                   .map((part) => part[0])
                   .join("")}
               </div>
-              <h3 className="brand-display mt-5 text-2xl font-semibold tracking-[-0.04em] text-[var(--text-primary)]">
+              <h3 className="brand-display mt-5 text-[1.35rem] font-semibold tracking-[-0.04em] text-[var(--text-primary)]">
                 {item.title}
               </h3>
               <p className="mt-3 text-base leading-7 text-[var(--text-secondary)]">

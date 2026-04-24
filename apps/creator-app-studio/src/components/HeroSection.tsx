@@ -5,7 +5,7 @@ export function HeroSection() {
     <section id="top" className="section-anchor px-4 pb-20 pt-6 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="surface-card editorial-grid overflow-hidden rounded-[2rem] p-6 sm:p-8 lg:p-10 xl:p-12">
-          <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_29rem]">
+          <div className="grid items-center gap-10 xl:grid-cols-[minmax(0,1fr)_27rem] xl:gap-12">
             <div className="max-w-2xl">
               <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-[var(--accent-dark)]">
                 Premium digital products for creators
@@ -13,10 +13,10 @@ export function HeroSection() {
               <h1 className="brand-display mt-5 max-w-3xl text-5xl font-semibold leading-[0.92] tracking-[-0.065em] text-[var(--text-primary)] sm:text-6xl xl:text-[5.4rem]">
                 Launch a premium app your audience will pay for.
               </h1>
-              <p className="mt-6 max-w-xl text-lg leading-8 text-[var(--text-secondary)] sm:text-xl">
+              <p className="mt-5 max-w-xl text-lg leading-8 text-[var(--text-secondary)] sm:text-xl">
                 We help creators turn their frameworks, routines, and communities into
-                branded web app experiences built beautifully, launched quickly, and
-                structured to grow with their audience.
+                branded web app experiences built beautifully and launched with a clear path
+                to growth.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -48,11 +48,11 @@ export function HeroSection() {
 
             <div
               aria-hidden="true"
-              className="relative min-h-[27rem] overflow-hidden rounded-[2rem] border border-[rgba(23,20,17,0.08)] bg-[linear-gradient(160deg,rgba(255,255,255,0.98),rgba(245,239,231,0.96))] p-5 shadow-[0_34px_80px_rgba(23,20,17,0.12)]"
+              className="relative min-h-[25rem] overflow-hidden rounded-[2rem] border border-[rgba(23,20,17,0.08)] bg-[linear-gradient(160deg,rgba(255,255,255,0.98),rgba(245,239,231,0.96))] p-5 shadow-[0_34px_80px_rgba(23,20,17,0.12)]"
             >
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_15%,rgba(91,77,255,0.16),transparent_32%),radial-gradient(circle_at_82%_18%,rgba(46,36,110,0.12),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.45),transparent)]" />
               <div className="relative flex h-full flex-col justify-between rounded-[1.6rem] border border-white/60 bg-[linear-gradient(180deg,rgba(255,255,255,0.85),rgba(255,250,244,0.82))] p-5">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--accent-dark)]">
                       Creator App Studio
@@ -72,8 +72,7 @@ export function HeroSection() {
                       Challenge app
                     </p>
                     <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">
-                      Guided milestones, streak logic, and premium momentum that fits a
-                      creator launch.
+                      Guided milestones and momentum built for a creator launch.
                     </p>
                   </div>
                   <div className="drift-delayed rounded-[1.4rem] border border-[rgba(23,20,17,0.08)] bg-white/88 p-4">
@@ -114,17 +113,16 @@ export function HeroSection() {
                 </div>
 
                 <div className="rounded-[1.5rem] border border-[rgba(23,20,17,0.08)] bg-white/84 p-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0">
                       <p className="text-sm font-semibold text-[var(--text-primary)]">
                         Built like a product
                       </p>
                       <p className="mt-1 text-sm leading-6 text-[var(--text-secondary)]">
-                        Structured around launch readiness, audience trust, and monetization
-                        from day one.
+                        Structured around launch readiness, audience trust, and monetization.
                       </p>
                     </div>
-                    <div className="rounded-[1rem] bg-[rgba(91,77,255,0.12)] px-3 py-2 text-right">
+                    <div className="rounded-[1rem] bg-[rgba(91,77,255,0.12)] px-3 py-2 text-left sm:text-right">
                       <p className="text-xs font-medium uppercase tracking-[0.18em] text-[var(--accent-dark)]">
                         Model
                       </p>

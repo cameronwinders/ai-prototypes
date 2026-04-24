@@ -5,7 +5,7 @@ export function LeadCaptureSection() {
     <section id="contact" className="section-anchor px-4 py-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="surface-card overflow-hidden rounded-[2rem] p-7 sm:p-9 lg:p-10">
-          <div className="grid gap-10 lg:grid-cols-[0.88fr_1.12fr]">
+          <div className="grid gap-10 xl:grid-cols-[0.84fr_1.16fr]">
             <div className="max-w-xl">
               <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[var(--accent-dark)]">
                 Submit your idea
@@ -13,16 +13,14 @@ export function LeadCaptureSection() {
               <h2 className="brand-display mt-4 text-3xl font-semibold tracking-[-0.05em] text-[var(--text-primary)] sm:text-4xl lg:text-[3.2rem]">
                 Tell us what your audience already wants more of.
               </h2>
-              <p className="mt-6 text-lg leading-8 text-[var(--text-secondary)]">
-                Share the rough shape of your brand, audience, and app concept. A short note is
-                enough. We’ll review fit, think through the product angle, and come back with a
-                clear next step.
+              <p className="mt-5 max-w-xl text-lg leading-8 text-[var(--text-secondary)]">
+                Share the rough shape of your brand, audience, and app idea. A short note is
+                enough. We'll review fit and come back with a clear next step.
               </p>
 
               <div className="mt-8 space-y-3">
                 {[
                   "Short form. No booking embed required.",
-                  "Designed for creators who care about brand quality and audience trust.",
                   "A good fit if you already have demand around a method, routine, or community."
                 ].map((item) => (
                   <div

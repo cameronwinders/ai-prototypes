@@ -11,7 +11,7 @@ export function SectionIntro({
   body,
   align = "left"
 }: SectionIntroProps) {
-  const alignment = align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-3xl";
+  const alignment = align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-2xl";
 
   return (
     <div className={alignment}>
@@ -21,7 +21,7 @@ export function SectionIntro({
       <h2 className="brand-display mt-4 text-3xl font-semibold tracking-[-0.04em] text-[var(--text-primary)] sm:text-4xl lg:text-[3.25rem]">
         {title}
       </h2>
-      <p className="mt-5 max-w-2xl text-base leading-7 text-[var(--text-secondary)] sm:text-lg">
+      <p className="mt-4 max-w-xl text-base leading-7 text-[var(--text-secondary)] sm:text-lg">
         {body}
       </p>
     </div>

@@ -18,7 +18,7 @@ export function Header() {
               Creator App Studio
             </a>
 
-            <nav className="hidden items-center gap-7 md:flex">
+            <nav className="hidden items-center gap-6 xl:flex">
               {navLinks.map((link) => (
                 <a key={link.href} href={link.href} className={linkClasses}>
                   {link.label}
@@ -29,7 +29,7 @@ export function Header() {
               </a>
             </nav>
 
-            <details className="relative md:hidden">
+            <details className="relative xl:hidden">
               <summary className="rounded-full border border-[rgba(23,20,17,0.08)] bg-white/80 px-4 py-2 text-sm font-semibold text-[var(--text-primary)]">
                 Menu
               </summary>
