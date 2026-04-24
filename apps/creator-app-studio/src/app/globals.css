@@ -1,81 +1,136 @@
+@import "tailwindcss";
+
 :root {
-  color-scheme: light;
-  --bg: #f7f4ea;
-  --surface: #fffdf7;
-  --ink: #1f1a17;
-  --muted: #655e59;
-  --line: rgba(31, 26, 23, 0.1);
-  --accent: #196c5d;
-  --shadow: 0 18px 48px rgba(31, 26, 23, 0.08);
+  --page-bg: #f7f3ec;
+  --page-bg-strong: #efe7da;
+  --surface: #fffdf8;
+  --surface-muted: rgba(255, 253, 248, 0.76);
+  --surface-deep: #f2ece3;
+  --text-primary: #171411;
+  --text-secondary: #5f5851;
+  --border: #ded6cb;
+  --accent: #5b4dff;
+  --accent-dark: #2e246e;
+  --accent-soft: rgba(91, 77, 255, 0.12);
+  --shadow-soft: 0 24px 60px rgba(23, 20, 17, 0.08);
+  --shadow-card: 0 14px 40px rgba(31, 24, 20, 0.08);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-body), sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(91, 77, 255, 0.12), transparent 34%),
+    radial-gradient(circle at top right, rgba(46, 36, 110, 0.08), transparent 28%),
+    linear-gradient(180deg, #fbf8f2 0%, var(--page-bg) 38%, #f3ede3 100%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    transparent 45%,
+    rgba(255, 255, 255, 0.16) 100%
+  );
+  opacity: 0.55;
 }
 
 * {
   box-sizing: border-box;
 }
 
-html,
-body {
-  margin: 0;
-  min-height: 100%;
-  background: radial-gradient(circle at top, #fffaf0 0%, var(--bg) 45%, #efe7d5 100%);
-  color: var(--ink);
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+*::selection {
+  background: rgba(91, 77, 255, 0.18);
+  color: var(--text-primary);
 }
 
-code {
-  background: rgba(25, 108, 93, 0.08);
-  border-radius: 0.4rem;
-  padding: 0.12rem 0.35rem;
+a,
+button,
+input,
+select,
+textarea,
+summary {
+  -webkit-tap-highlight-color: transparent;
 }
 
-.app-shell {
-  width: min(960px, calc(100vw - 2rem));
-  margin: 0 auto;
-  padding: 3rem 0 4rem;
-  display: grid;
-  gap: 1rem;
+a,
+button {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    opacity 180ms ease;
 }
 
-.hero-card,
-.checklist-card {
-  background: color-mix(in srgb, var(--surface) 92%, white 8%);
-  border: 1px solid var(--line);
-  border-radius: 1.5rem;
-  padding: 1.5rem;
-  box-shadow: var(--shadow);
+button:focus-visible,
+a:focus-visible,
+summary:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(91, 77, 255, 0.35);
+  outline-offset: 2px;
 }
 
-.eyebrow {
-  margin: 0 0 0.65rem;
-  color: var(--accent);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.72rem;
-  font-weight: 700;
+summary {
+  list-style: none;
 }
 
-.hero-card h1,
-.checklist-card h2 {
-  margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
-  line-height: 0.95;
+summary::-webkit-details-marker {
+  display: none;
 }
 
-.hero-card h1 {
-  font-size: clamp(2.8rem, 10vw, 4.8rem);
+.section-anchor {
+  scroll-margin-top: 7rem;
 }
 
-.checklist-card h2 {
-  font-size: clamp(1.6rem, 4vw, 2.2rem);
+.brand-display {
+  font-family: var(--font-display), var(--font-body), sans-serif;
 }
 
-.lede,
-.checklist-card li {
-  color: var(--muted);
-  line-height: 1.6;
+.surface-card {
+  border: 1px solid rgba(222, 214, 203, 0.82);
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.96), rgba(255, 253, 248, 0.84));
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(14px);
 }
 
-.checklist-card ol {
-  margin: 1rem 0 0;
-  padding-left: 1.25rem;
+.editorial-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.36) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.drift-slow {
+  animation: drift 8s ease-in-out infinite;
+}
+
+.drift-medium {
+  animation: drift 10s ease-in-out infinite;
+}
+
+.drift-delayed {
+  animation: drift 9s ease-in-out infinite 1.1s;
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
 }

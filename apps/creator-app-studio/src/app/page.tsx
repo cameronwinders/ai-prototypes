@@ -1,22 +1,29 @@
+import { AppTypeGrid } from "@/components/AppTypeGrid";
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { HeroSection } from "@/components/HeroSection";
+import { LeadCaptureSection } from "@/components/LeadCaptureSection";
+import { OpportunitySection } from "@/components/OpportunitySection";
+import { PartnershipSection } from "@/components/PartnershipSection";
+import { ProcessSection } from "@/components/ProcessSection";
+import { QualitySection } from "@/components/QualitySection";
+import { VerticalExampleCards } from "@/components/VerticalExampleCards";
+
 export default function Home() {
   return (
-    <main className="app-shell">
-      <section className="hero-card">
-        <p className="eyebrow">AI prototype child</p>
-        <h1>Creator App Studio</h1>
-        <p className="lede">
-          This deployable scaffold was created at <code>apps/creator-app-studio</code> and is wired for the shared Supabase schema <code>app_creator_app_studio</code>.
-        </p>
-      </section>
-
-      <section className="checklist-card">
-        <h2>Next steps</h2>
-        <ol>
-          <li>Paste the Notion PM, Design, Testing, and Orchestrator handoffs into <code>spec/</code>.</li>
-          <li>Implement the feature set for this prototype in <code>src/</code>.</li>
-          <li>Run <code>npm run verify:config --workspace=creator-app-studio</code> and <code>npm run build --workspace=creator-app-studio</code>.</li>
-        </ol>
-      </section>
-    </main>
+    <>
+      <Header />
+      <main className="relative overflow-x-clip pb-10">
+        <HeroSection />
+        <OpportunitySection />
+        <AppTypeGrid />
+        <VerticalExampleCards />
+        <ProcessSection />
+        <PartnershipSection />
+        <QualitySection />
+        <LeadCaptureSection />
+      </main>
+      <Footer />
+    </>
   );
 }
