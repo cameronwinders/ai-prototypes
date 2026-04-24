@@ -9,11 +9,12 @@ import { getSiteUrl } from "@/lib/supabase/env";
 export function SignInForm({ signedOut = false }: { signedOut?: boolean }) {
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "/spaces";
+  const queryError = searchParams.get("error");
   const isInviteSignIn = next.startsWith("/accept-invite");
   const [authMode, setAuthMode] = useState<"sign-in" | "sign-up">(isInviteSignIn ? "sign-up" : "sign-in");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(queryError);
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
   const isSignUp = authMode === "sign-up" || isInviteSignIn;
@@ -36,6 +37,11 @@ export function SignInForm({ signedOut = false }: { signedOut?: boolean }) {
     return "Something went wrong sending your secure link. Please try again.";
   }
 
+  function shouldRetryAsAccountLink(message: string) {
+    const normalized = message.toLowerCase();
+    return normalized.includes("signups not allowed") || normalized.includes("signup");
+  }
+
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitting(true);
@@ -44,20 +50,31 @@ export function SignInForm({ signedOut = false }: { signedOut?: boolean }) {
     setMessage(null);
 
     const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${getSiteUrl()}/api/auth/callback?next=${encodeURIComponent(next)}`,
-        shouldCreateUser: isSignUp
-      }
-    });
+    const emailRedirectTo = `${getSiteUrl()}/api/auth/callback?next=${encodeURIComponent(next)}`;
+    const requestEmailLink = (shouldCreateUser: boolean) =>
+      supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo,
+          shouldCreateUser
+        }
+      });
+
+    let effectiveSignUp = isSignUp;
+    let { error: signInError } = await requestEmailLink(isSignUp);
+
+    if (signInError && !isSignUp && shouldRetryAsAccountLink(signInError.message)) {
+      effectiveSignUp = true;
+      ({ error: signInError } = await requestEmailLink(true));
+    }
 
     if (signInError) {
       setError(getFriendlyAuthError(signInError.message));
       setSubmitting(false);
     } else {
-      setMessage(isSignUp ? "Check your email for your account link." : "Check your email for the sign-in link.");
+      setMessage(effectiveSignUp ? "Check your email for your account link." : "Check your email for the sign-in link.");
       setSent(true);
+      setSubmitting(false);
     }
   }
 

@@ -12,7 +12,12 @@ export async function GET(request: NextRequest) {
   const type = requestUrl.searchParams.get("type") as EmailOtpType | null;
   const requestedNext = requestUrl.searchParams.get("next") ?? "/";
   const next = requestedNext.startsWith("/") ? requestedNext : "/";
+  const authError = requestUrl.searchParams.get("error_description");
   const { url, anonKey, schema } = getSupabaseEnv();
+
+  if (authError) {
+    return redirectToSignIn(requestUrl, next, authError);
+  }
 
   const response = NextResponse.redirect(new URL(next, request.url));
 
@@ -32,14 +37,41 @@ export async function GET(request: NextRequest) {
     }
   });
 
-  if (code) {
-    await supabase.auth.exchangeCodeForSession(code);
-  } else if (tokenHash && type) {
-    await supabase.auth.verifyOtp({
-      token_hash: tokenHash,
-      type
-    });
+  try {
+    if (code) {
+      await supabase.auth.exchangeCodeForSession(code);
+    } else if (tokenHash && type) {
+      await supabase.auth.verifyOtp({
+        token_hash: tokenHash,
+        type
+      });
+    }
+  } catch (error) {
+    return redirectToSignIn(requestUrl, next, getFriendlyCallbackError(error));
   }
 
   return response;
+}
+
+function redirectToSignIn(requestUrl: URL, next: string, error: string) {
+  const signInUrl = new URL("/sign-in", requestUrl);
+  signInUrl.searchParams.set("error", error);
+
+  if (next !== "/") {
+    signInUrl.searchParams.set("next", next);
+  }
+
+  return NextResponse.redirect(signInUrl);
+}
+
+function getFriendlyCallbackError(error: unknown) {
+  if (error instanceof Error) {
+    if (error.message.toLowerCase().includes("expired") || error.message.toLowerCase().includes("invalid")) {
+      return "This email link is invalid or has expired. Request a new one to keep going.";
+    }
+
+    return error.message;
+  }
+
+  return "We could not finish signing you in. Request a new email link and try again.";
 }
