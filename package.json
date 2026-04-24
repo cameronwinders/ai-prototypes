@@ -11,6 +11,9 @@
     "build": "turbo build",
     "typecheck": "turbo run typecheck",
     "verify": "turbo run verify:config",
+    "factory:check": "node scripts/verify-factory-config.mjs",
+    "factory:provision": "node scripts/provision-prototype.mjs",
+    "factory:handoff": "node scripts/generate-notion-agent-pack.mjs",
     "dev:caretaking": "npm run dev --workspace=caretaking",
     "build:caretaking": "npm run build --workspace=caretaking",
     "typecheck:caretaking": "npm run typecheck --workspace=caretaking",
@@ -18,6 +21,7 @@
     "create:prototype": "node scripts/create-prototype.mjs"
   },
   "devDependencies": {
+    "pg": "^8.16.3",
     "turbo": "^2.5.0"
   }
 }

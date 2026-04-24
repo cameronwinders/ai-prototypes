@@ -1,0 +1,11 @@
+{
+  "displayName": "Caretaking App",
+  "description": "Prototype child #1 for the shared caregiving workflow product.",
+  "appSlug": "caretaking",
+  "schemaName": "app_caretaking",
+  "repoPath": "apps/caretaking",
+  "vercelProjectName": "ai-prototypes-caretaking",
+  "siteUrl": "https://caretakingapp.com",
+  "sharedSupabaseProjectRef": "xumzkfexegxzzujazpcj",
+  "managedBy": "ai-prototypes-factory"
+}

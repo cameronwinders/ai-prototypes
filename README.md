@@ -18,6 +18,9 @@ Current prototype children:
 
 ```bash
 npm install
+npm run factory:check
+npm run factory:provision -- --slug=my-new-idea --name="My New Idea"
+npm run factory:handoff -- --slug=my-new-idea --name="My New Idea"
 npm run dev:caretaking
 npm run typecheck:caretaking
 npm run build:caretaking
@@ -51,6 +54,22 @@ Suggested future schema naming:
 - root directory per deployment: `apps/[slug]`
 - preview and production env vars set per Vercel project
 
+## Factory Automation
+
+The repo now includes an app factory layer:
+
+- `.env.factory.example` - one-time automation env contract
+- `scripts/provision-prototype.mjs` - scaffold + shared-Supabase + Vercel provisioning
+- `scripts/generate-notion-agent-pack.mjs` - creates a Notion-ready PM/Design/Testing/Orchestrator prompt pack
+- `docs/app-factory.md` - runbook for the zero-manual new-app flow
+
+Recommended flow for a new idea:
+
+1. Generate the Notion agent pack for the target slug.
+2. Run the PM, Design, Testing, and Orchestrator agents.
+3. Run `npm run factory:provision -- --slug=<slug> --name="<Display Name>"`.
+4. Hand the resulting `apps/<slug>/spec/` briefs to Codex for implementation.
+
 ## One-Time Manual Bootstrap
 
 Complete once:
@@ -60,16 +79,16 @@ Complete once:
 3. Create the shared Supabase project.
 4. Configure shared Supabase Auth redirect URLs.
 5. Create a Vercel token and connect Vercel to GitHub.
+6. Copy `.env.factory.example` to `.env.factory.local` and fill in the tokens/URLs.
 
 ## Next Manual Steps
 
-After local structure is ready:
+Once the one-time bootstrap is complete, new child apps should not require manual Vercel or Supabase setup.
+The only expected human steps are:
 
-1. Put the `ai-prototypes` repo URL on the new local folder.
-2. Run `npm install` at the monorepo root to create the new root lockfile.
-3. Push the monorepo to GitHub.
-4. Import `apps/caretaking` into Vercel using root directory `apps/caretaking`.
-5. Add `apps/caretaking` environment variables in Vercel.
+1. Decide the idea slug and display name.
+2. Run the Notion agents using the generated prompt pack.
+3. Review the resulting MVP brief before Codex implementation if desired.
 
 ## Agent Contract
 
