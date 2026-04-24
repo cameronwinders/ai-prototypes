@@ -1,0 +1,11 @@
+{
+  "displayName": "Creator App Studio",
+  "description": "",
+  "appSlug": "creator-app-studio",
+  "schemaName": "app_creator_app_studio",
+  "repoPath": "apps/creator-app-studio",
+  "vercelProjectName": "ai-prototypes-creator-app-studio",
+  "siteUrl": "https://ai-prototypes-creator-app-studio.vercel.app",
+  "sharedSupabaseProjectRef": "xumzkfexegxzzujazpcj",
+  "managedBy": "ai-prototypes-factory"
+}
