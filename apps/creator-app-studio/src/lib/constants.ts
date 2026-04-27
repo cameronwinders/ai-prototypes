@@ -5,6 +5,13 @@ export const navLinks = [
   { label: "Partnership", href: "#partnership" }
 ] as const;
 
+export const demoStatusOptions = [
+  { value: "not_assigned", label: "Not assigned" },
+  { value: "shared", label: "Shared" },
+  { value: "reviewing", label: "Reviewing" },
+  { value: "live", label: "Live" }
+] as const;
+
 export const heroSignals = ["Built beautifully", "Launched quickly", "Structured to grow"] as const;
 
 export const opportunityPoints = [

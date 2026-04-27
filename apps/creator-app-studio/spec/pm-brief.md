@@ -4,7 +4,7 @@ Target app: `apps/creator-app-studio`
 
 ## Product Objective
 
-Build a premium landing website for a service that helps SMB creators launch branded web apps or website experiences their audiences can pay for.
+Build a premium landing website and lightweight creator portal for a service that helps SMB creators launch branded web apps or website experiences their audiences can pay for.
 
 ## Target Customer
 
@@ -16,7 +16,7 @@ We turn audience trust into a polished digital product designed around the creat
 
 ## Primary Conversion
 
-Submit a short lead form or request a consult.
+Submit a short lead form or request a consult, with that submission also preparing a user account for the creator.
 
 ## Secondary Actions
 
@@ -24,10 +24,12 @@ Submit a short lead form or request a consult.
 - Understand how the process works
 - Understand the build fee plus revenue share model at a high level
 - Share a rough product idea
+- Sign in to an account to review profile details and any shared demo links
+- Give internal admins one place to review every creator account
 
 ## Non-goals
 
-- No client dashboard in v1
+- No full client operations dashboard beyond profile + demo access + simple internal admin tools
 - No marketplace
 - No payment collection implementation
 - No niche-specific overfitting

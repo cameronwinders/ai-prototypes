@@ -14,13 +14,13 @@ export function LeadCaptureSection() {
                 Tell us what your audience already wants more of.
               </h2>
               <p className="mt-5 max-w-xl text-lg leading-8 text-[var(--text-secondary)]">
-                Share the rough shape of your brand, audience, and app idea. A short note is
-                enough. We'll review fit and come back with a clear next step.
+                Share the rough shape of your brand, audience, and app idea. This also prepares your secure account so you can review your profile and any demo links in one place.
               </p>
 
               <div className="mt-8 space-y-3">
                 {[
                   "Short form. No booking embed required.",
+                  "We email a secure account link after submission.",
                   "A good fit if you already have demand around a method, routine, or community."
                 ].map((item) => (
                   <div

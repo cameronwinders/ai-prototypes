@@ -54,9 +54,13 @@ export function getServerSupabaseEnv() {
 
   return {
     url,
+    publicKey,
+    serviceRoleKey,
     writeKey,
     schema: getAppDbSchema(),
     siteUrl: getSiteUrl(),
+    hasPublicAuth: Boolean(url && publicKey),
+    hasServiceRole: Boolean(url && serviceRoleKey),
     usesServiceRole: Boolean(serviceRoleKey),
     isConfigured: missing.length === 0,
     missing

@@ -1,11 +1,16 @@
 import { navLinks } from "@/lib/constants";
+import { getViewerContext } from "@/lib/viewer";
 
 const linkClasses =
   "text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)]";
 const ctaClasses =
   "inline-flex items-center justify-center rounded-full border border-[var(--accent)] bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(91,77,255,0.22)] hover:-translate-y-0.5 hover:bg-[var(--accent-dark)]";
 
-export function Header() {
+export async function Header() {
+  const viewer = await getViewerContext();
+  const accountHref = viewer.user ? (viewer.isAdmin ? "/admin" : "/account") : "/sign-in";
+  const accountLabel = viewer.user ? (viewer.isAdmin ? "Open admin" : "Open account") : "Sign in";
+
   return (
     <header className="sticky top-0 z-50 px-4 pt-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
@@ -24,6 +29,9 @@ export function Header() {
                   {link.label}
                 </a>
               ))}
+              <a href={accountHref} className={linkClasses}>
+                {accountLabel}
+              </a>
               <a href="#contact" className={ctaClasses}>
                 Submit your idea
               </a>
@@ -43,6 +51,12 @@ export function Header() {
                     {link.label}
                   </a>
                 ))}
+                <a
+                  href={accountHref}
+                  className="rounded-2xl px-3 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[rgba(91,77,255,0.08)] hover:text-[var(--text-primary)]"
+                >
+                  {accountLabel}
+                </a>
                 <a href="#contact" className={ctaClasses}>
                   Submit your idea
                 </a>

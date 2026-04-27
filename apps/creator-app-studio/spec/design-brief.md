@@ -4,7 +4,7 @@ Target app: `apps/creator-app-studio`
 
 ## Design Objective
 
-Create a premium, calm, modern landing page that feels closer to a product studio or consumer-tech brand than a generic SaaS homepage.
+Create a premium, calm, modern landing page and companion account surfaces that feel closer to a product studio or consumer-tech brand than a generic SaaS homepage.
 
 ## Visual Direction
 
@@ -23,6 +23,9 @@ Create a premium, calm, modern landing page that feels closer to a product studi
 - Sticky or simple anchor navigation
 - Responsive hero that stacks cleanly
 - Premium form card with polished success and error messaging
+- Calm, trustworthy auth and account flows with no abrupt visual shift from the landing page
+- Creator account pages that feel concise and product-like, not like a dense admin console
+- Admin surface that stays operationally useful without looking like a generic SaaS backend
 - Minimal motion only where it helps the experience feel refined
 
 ## Avoid
