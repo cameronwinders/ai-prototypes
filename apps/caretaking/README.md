@@ -22,6 +22,7 @@ This child app now targets the shared-platform schema model:
 ## Deployment Status
 
 The app has been verified through dependency install, config checks, typecheck, production build, hosted Supabase migrations, Supabase Auth URL configuration, and Vercel deployment. Full local Supabase verification still requires Docker Desktop to be running. Full live invite smoke testing requires production Resend environment variables to be configured.
+Production auth configuration was refreshed on 2026-04-27 to pick up the shared Supabase redirect allowlist updates.
 
 ## Prerequisites
 
