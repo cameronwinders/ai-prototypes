@@ -9,7 +9,6 @@ import {
 } from "@/lib/forms";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getServerSupabaseEnv } from "@/lib/supabase/env";
-import { createPublicAuthClient } from "@/lib/supabase/server";
 
 export type AccountRole = "creator" | "admin";
 
@@ -37,13 +36,6 @@ export type LeadProvisionResult =
   | {
       status: "success";
       account: AccountRecord;
-      emailSent: true;
-    }
-  | {
-      status: "partial";
-      account: AccountRecord;
-      emailSent: false;
-      message: string;
     }
   | {
       status: "error";
@@ -148,7 +140,7 @@ export async function provisionLeadAccount(
 ): Promise<LeadProvisionResult> {
   const env = getServerSupabaseEnv();
 
-  if (!env.hasServiceRole || !env.url || !env.publicKey) {
+  if (!env.hasServiceRole) {
     return {
       status: "error",
       message:
@@ -218,40 +210,13 @@ export async function provisionLeadAccount(
     return {
       status: "error",
       message:
-        "We could not save your idea just now. Please try again in a moment. Duplicate submissions are okay."
-    };
-  }
-
-  const authClient = createPublicAuthClient();
-  const { error: otpError } = await authClient.auth.signInWithOtp({
-    email,
-    options: {
-      shouldCreateUser: false,
-      emailRedirectTo: `${env.siteUrl}/api/auth/callback?next=${encodeURIComponent("/account")}`
-    }
-  });
-
-  if (otpError) {
-    console.error("Creator App Studio account link email failed", {
-      code: otpError.code,
-      message: otpError.message,
-      email,
-      accountId: ensured.account.id
-    });
-
-    return {
-      status: "partial",
-      account: ensured.account,
-      emailSent: false,
-      message:
-        "Your idea was received and your account was prepared, but the sign-in email could not be sent just now. We can still follow up manually."
+          "We could not save your idea just now. Please try again in a moment. Duplicate submissions are okay."
     };
   }
 
   return {
     status: "success",
-    account: ensured.account,
-    emailSent: true
+    account: ensured.account
   };
 }
 

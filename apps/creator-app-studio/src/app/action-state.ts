@@ -13,8 +13,11 @@ export type FormState<FieldName extends string = string> = {
 export type LeadFormState = FormState<LeadFieldName>;
 export type AccountFormState = FormState<CreatorProfileFieldName>;
 export type AdminAccountFormState = FormState<keyof AdminAccountValues>;
+export type LeadSubmitState = LeadFormState & {
+  accountEmail?: string;
+};
 
-export const initialLeadFormState: LeadFormState = {
+export const initialLeadFormState: LeadSubmitState = {
   status: "idle"
 };
 

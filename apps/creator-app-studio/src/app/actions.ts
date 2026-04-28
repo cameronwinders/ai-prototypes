@@ -5,7 +5,8 @@ import { redirect } from "next/navigation";
 import type {
   AccountFormState,
   AdminAccountFormState,
-  LeadFormState
+  LeadFormState,
+  LeadSubmitState
 } from "@/app/action-state";
 import { getOrCreateAccountFromUser, provisionLeadAccount } from "@/lib/account-service";
 import {
@@ -14,49 +15,50 @@ import {
   mapLeadFieldErrors,
   parseAdminAccountForm,
   parseCreatorProfileUpdateForm,
-  parseLeadForm,
-  type AdminAccountValues,
-  type CreatorProfileFieldName,
-  type LeadFieldName
+  parseLeadForm
 } from "@/lib/forms";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export async function submitLead(
-  _previousState: LeadFormState,
+  _previousState: LeadSubmitState,
   formData: FormData
-): Promise<LeadFormState> {
-  const parsed = parseLeadForm(formData);
+): Promise<LeadSubmitState> {
+  try {
+    const parsed = parseLeadForm(formData);
 
-  if (!parsed.success) {
+    if (!parsed.success) {
+      return {
+        status: "error",
+        message: "A couple details need attention before we can send this through.",
+        fieldErrors: mapLeadFieldErrors(parsed.error)
+      };
+    }
+
+    const result = await provisionLeadAccount(parsed.data, "landing_form");
+
+    if (result.status === "error") {
+      return {
+        status: "error",
+        message: result.message
+      };
+    }
+
+    return {
+      status: "success",
+      accountEmail: result.account.email,
+      message:
+        "Thanks. We have your idea and prepared your account. We’re sending your secure access link now."
+    };
+  } catch (error) {
+    console.error("Creator App Studio submitLead unexpected failure", error);
+
     return {
       status: "error",
-      message: "A couple details need attention before we can send this through.",
-      fieldErrors: mapLeadFieldErrors(parsed.error)
+      message:
+        "We hit an unexpected issue while preparing your account. Please try again in a moment."
     };
   }
-
-  const result = await provisionLeadAccount(parsed.data, "landing_form");
-
-  if (result.status === "error") {
-    return {
-      status: "error",
-      message: result.message
-    };
-  }
-
-  if (result.status === "partial") {
-    return {
-      status: "partial",
-      message: result.message
-    };
-  }
-
-  return {
-    status: "success",
-    message:
-      "Thanks. We have your idea, prepared your account, and sent a secure access link to your email."
-  };
 }
 
 export async function updateAccountProfile(
