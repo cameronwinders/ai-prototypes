@@ -11,6 +11,9 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
+    "smoke:auth": "node scripts/smoke-auth-suite.mjs",
+    "smoke:auth:browser": "node scripts/smoke-auth-signup-request.mjs",
+    "smoke:auth:supabase": "node scripts/smoke-auth-generated-link.mjs",
     "verify:config": "node scripts/verify-config.mjs",
     "db:reset": "supabase db reset",
     "db:push": "supabase db push"
