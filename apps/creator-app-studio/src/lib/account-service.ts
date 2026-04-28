@@ -92,30 +92,64 @@ export async function getOrCreateAccountFromUser(
   const metadataName =
     typeof user.user_metadata?.name === "string" ? user.user_metadata.name.trim() : undefined;
 
-  const upsertPayload: Partial<AccountRecord> & { id: string; email: string; role: AccountRole } = {
+  const accountPayload: Partial<AccountRecord> & { id: string; email: string; role: AccountRole } = {
     id: user.id,
     email,
     role
   };
 
   if (metadataName) {
-    upsertPayload.name = metadataName;
+    accountPayload.name = metadataName;
   }
 
   for (const [key, value] of Object.entries(pickCreatorProfile(profile ?? {}))) {
-    upsertPayload[key as keyof CreatorProfileValues] = value;
+    accountPayload[key as keyof CreatorProfileValues] = value;
   }
 
-  const { data, error } = await admin
+  const { data: existingAccount, error: existingAccountError } = await admin
     .from("accounts")
-    .upsert(upsertPayload, {
-      onConflict: "id"
-    })
     .select("*")
-    .single<AccountRecord>();
+    .eq("id", user.id)
+    .maybeSingle<AccountRecord>();
+
+  if (existingAccountError) {
+    console.error("Creator App Studio account lookup failed", {
+      code: existingAccountError.code,
+      message: existingAccountError.message,
+      email,
+      userId: user.id
+    });
+
+    return {
+      account: null,
+      message: "We could not finish setting up this account yet."
+    } as const;
+  }
+
+  const accountMutation = existingAccount
+    ? admin
+        .from("accounts")
+        .update({
+          email: accountPayload.email,
+          role: accountPayload.role,
+          name: accountPayload.name ?? existingAccount.name,
+          brand_name: accountPayload.brand_name ?? existingAccount.brand_name,
+          creator_handle: accountPayload.creator_handle ?? existingAccount.creator_handle,
+          primary_platform: accountPayload.primary_platform ?? existingAccount.primary_platform,
+          audience_size_range:
+            accountPayload.audience_size_range ?? existingAccount.audience_size_range,
+          niche: accountPayload.niche ?? existingAccount.niche,
+          current_monetization:
+            accountPayload.current_monetization ?? existingAccount.current_monetization,
+          rough_app_idea: accountPayload.rough_app_idea ?? existingAccount.rough_app_idea
+        })
+        .eq("id", user.id)
+    : admin.from("accounts").insert(accountPayload);
+
+  const { data, error } = await accountMutation.select("*").single<AccountRecord>();
 
   if (error || !data) {
-    console.error("Creator App Studio account upsert failed", {
+    console.error("Creator App Studio account write failed", {
       code: error?.code,
       message: error?.message,
       email,
