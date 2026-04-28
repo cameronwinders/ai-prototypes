@@ -32,6 +32,110 @@ async function ensureFactoryTables(client) {
   `);
 }
 
+async function upsertPrototypeAppRow(
+  client,
+  { appSlug, displayName, schemaName, repoPath, vercelProjectName, siteUrl }
+) {
+  await client.query(
+    `
+      insert into public.prototype_factory_apps (
+        app_slug,
+        display_name,
+        schema_name,
+        repo_path,
+        vercel_project_name,
+        site_url
+      )
+      values ($1, $2, $3, $4, $5, $6)
+      on conflict (app_slug) do update
+      set
+        display_name = excluded.display_name,
+        schema_name = excluded.schema_name,
+        repo_path = excluded.repo_path,
+        vercel_project_name = excluded.vercel_project_name,
+        site_url = excluded.site_url,
+        updated_at = now()
+    `,
+    [appSlug, displayName, schemaName, repoPath, vercelProjectName, siteUrl]
+  );
+}
+
+async function syncPostgrestSchemas(client) {
+  const result = await client.query(
+    `
+      select schema_name
+        from public.prototype_factory_apps
+       where schema_name is not null
+         and schema_name <> ''
+       order by schema_name
+    `
+  );
+
+  const desiredSchemas = [
+    "public",
+    "storage",
+    "graphql_public",
+    ...new Set(result.rows.map((row) => row.schema_name))
+  ];
+
+  const serialized = desiredSchemas.join(",");
+  const escaped = serialized.replaceAll("'", "''");
+
+  await client.query(`alter role authenticator set pgrst.db_schemas = '${escaped}'`);
+  await client.query(`notify pgrst, 'reload config'`);
+  await client.query(`notify pgrst, 'reload schema'`);
+
+  return desiredSchemas;
+}
+
+export async function reconcilePostgrestSchemas({ connectionString }) {
+  const client = new Client({
+    connectionString,
+    ssl: {
+      rejectUnauthorized: false
+    }
+  });
+
+  await client.connect();
+  await ensureFactoryTables(client);
+  const desiredSchemas = await syncPostgrestSchemas(client);
+  await client.end();
+
+  return desiredSchemas;
+}
+
+export async function upsertPrototypeApp({
+  connectionString,
+  appSlug,
+  displayName,
+  schemaName,
+  repoPath,
+  vercelProjectName,
+  siteUrl
+}) {
+  const client = new Client({
+    connectionString,
+    ssl: {
+      rejectUnauthorized: false
+    }
+  });
+
+  await client.connect();
+  await ensureFactoryTables(client);
+  await upsertPrototypeAppRow(client, {
+    appSlug,
+    displayName,
+    schemaName,
+    repoPath,
+    vercelProjectName,
+    siteUrl
+  });
+  const desiredSchemas = await syncPostgrestSchemas(client);
+  await client.end();
+
+  return desiredSchemas;
+}
+
 export async function applyAppMigrations({
   connectionString,
   appDir,
@@ -102,28 +206,15 @@ export async function applyAppMigrations({
     }
   }
 
-  await client.query(
-    `
-      insert into public.prototype_factory_apps (
-        app_slug,
-        display_name,
-        schema_name,
-        repo_path,
-        vercel_project_name,
-        site_url
-      )
-      values ($1, $2, $3, $4, $5, $6)
-      on conflict (app_slug) do update
-      set
-        display_name = excluded.display_name,
-        schema_name = excluded.schema_name,
-        repo_path = excluded.repo_path,
-        vercel_project_name = excluded.vercel_project_name,
-        site_url = excluded.site_url,
-        updated_at = now()
-    `,
-    [appSlug, displayName, schemaName, `apps/${appSlug}`, vercelProjectName, siteUrl]
-  );
+  await upsertPrototypeAppRow(client, {
+    appSlug,
+    displayName,
+    schemaName,
+    repoPath: `apps/${appSlug}`,
+    vercelProjectName,
+    siteUrl
+  });
+  await syncPostgrestSchemas(client);
 
   await client.end();
 }

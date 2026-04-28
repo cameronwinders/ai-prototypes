@@ -14,6 +14,7 @@
     "factory:check": "node scripts/verify-factory-config.mjs",
     "factory:provision": "node scripts/provision-prototype.mjs",
     "factory:handoff": "node scripts/generate-notion-agent-pack.mjs",
+    "factory:reconcile": "node scripts/reconcile-postgrest-schemas.mjs",
     "dev:caretaking": "npm run dev --workspace=caretaking",
     "build:caretaking": "npm run build --workspace=caretaking",
     "typecheck:caretaking": "npm run typecheck --workspace=caretaking",
