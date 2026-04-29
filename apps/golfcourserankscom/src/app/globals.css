@@ -101,6 +101,14 @@ select {
   color: var(--ink);
 }
 
+.text-white {
+  color: #fff !important;
+}
+
+.text-white\/70 {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
 .solid-button:disabled,
 .ghost-button:disabled {
   opacity: 0.6;
