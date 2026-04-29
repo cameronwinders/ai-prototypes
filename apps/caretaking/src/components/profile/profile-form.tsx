@@ -1,6 +1,7 @@
 import { saveProfile } from "@/actions/profile";
 import { SubmitButton } from "@/components/ui/submit-button";
 import type { UserProfile } from "@/lib/domain/profiles";
+import { DEFAULT_TIMEZONE } from "@/lib/timezone";
 
 type ProfileFormProps = {
   email: string;
@@ -38,6 +39,16 @@ export function ProfileForm({ email, profile }: ProfileFormProps) {
       <label className="field">
         <span>Relationship label</span>
         <input name="relationshipLabel" defaultValue={profile.relationship_label ?? ""} placeholder="Parent, sibling, neighbor..." />
+      </label>
+
+      <label className="field">
+        <span>Timezone</span>
+        <input
+          name="timezone"
+          defaultValue={profile.timezone || DEFAULT_TIMEZONE}
+          placeholder={DEFAULT_TIMEZONE}
+        />
+        <small className="muted">Used for timeline timestamps, reminders, and notification emails. Try an IANA timezone like America/Chicago.</small>
       </label>
 
       <SubmitButton className="button button-primary button-full" pendingLabel="Saving...">

@@ -1,4 +1,5 @@
 import type { AppSupabaseClient } from "@/lib/domain/shared";
+import { resolveTimezone } from "@/lib/timezone";
 
 export type UserProfile = {
   id: string;
@@ -50,6 +51,7 @@ export async function updateUserProfile(
     preferredName?: string;
     legalName?: string;
     relationshipLabel?: string;
+    timezone?: string;
   }
 ) {
   const { error } = await client
@@ -58,7 +60,8 @@ export async function updateUserProfile(
       display_name: params.displayName,
       preferred_name: params.preferredName || null,
       legal_name: params.legalName || null,
-      relationship_label: params.relationshipLabel || null
+      relationship_label: params.relationshipLabel || null,
+      timezone: resolveTimezone(params.timezone)
     })
     .eq("id", params.userId);
 

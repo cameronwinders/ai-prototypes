@@ -42,6 +42,7 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
             <div>
               <strong>{displayName}</strong>
               <p className="muted">{profile.relationship_label || "Care team member"}</p>
+              <p className="muted">Timezone: {profile.timezone}</p>
             </div>
           </div>
         </Card>

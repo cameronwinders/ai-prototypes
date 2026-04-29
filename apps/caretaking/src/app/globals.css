@@ -1195,6 +1195,7 @@ h3 {
 }
 
 .event-type-option {
+  --event-type-accent: var(--accent);
   position: relative;
   display: grid;
   gap: 0.55rem;
@@ -1225,9 +1226,28 @@ h3 {
   width: 2.4rem;
   height: 2.4rem;
   border-radius: 15px;
-  background: var(--accent);
-  color: #fff;
+  background: rgba(32, 26, 20, 0.09);
+  color: var(--muted);
   font-weight: 900;
+}
+
+.event-type-option:has(input:checked) .event-type-icon {
+  background: var(--event-type-accent);
+  color: #fff;
+}
+
+.event-type-state {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.event-type-option:has(input:not(:checked)) .event-type-state {
+  opacity: 0;
+}
+
+.event-type-option:has(input:checked) .event-type-state {
+  color: var(--accent-strong);
 }
 
 .sticky-action {

@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import { createEvent } from "@/actions/events";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { CareIcon } from "@/components/ui/care-icon";
@@ -27,7 +29,15 @@ export function EventForm({ spaceId, eventTypes, subjects, error }: EventFormPro
       <fieldset className="event-type-grid">
         <legend>Event type</legend>
         {eventTypes.map((eventType, index) => (
-          <label className="event-type-option" key={eventType.id}>
+          <label
+            className="event-type-option"
+            key={eventType.id}
+            style={
+              {
+                "--event-type-accent": eventType.color ?? "var(--accent)"
+              } as CSSProperties
+            }
+          >
             <input
               type="radio"
               name="eventTypeId"
@@ -35,10 +45,11 @@ export function EventForm({ spaceId, eventTypes, subjects, error }: EventFormPro
               defaultChecked={index === 0}
               required
             />
-            <span className="event-type-icon" style={{ background: eventType.color ?? undefined }}>
+            <span className="event-type-icon">
               <CareIcon icon={eventType.icon} label={eventType.name} />
             </span>
             <strong>{eventType.name}</strong>
+            <small className="event-type-state">Selected</small>
           </label>
         ))}
       </fieldset>
