@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #1d2a24;
+  --muted: #5c6b63;
+  --pine: #316b53;
+  --pine-soft: #d8e7dd;
+  --sand: #e7d6b0;
+  --linen: #fbf8f2;
+  --line: rgba(28, 41, 36, 0.1);
+  --shadow: 0 22px 65px rgba(18, 28, 25, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body), sans-serif;
+  color: var(--ink);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.brand-heading {
+  font-family: var(--font-display), serif;
+}
+
+.shell-panel {
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(255, 253, 249, 0.96), rgba(255, 250, 243, 0.84));
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.section-label {
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--pine);
+}
+
+.drag-handle {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.65rem 0.95rem;
+  background: var(--pine-soft);
+  color: var(--pine);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.solid-button,
+.ghost-button {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: transform 140ms ease, opacity 140ms ease, background-color 140ms ease;
+}
+
+.solid-button:hover,
+.ghost-button:hover {
+  transform: translateY(-1px);
+}
+
+.solid-button {
+  background: var(--ink);
+  color: white;
+}
+
+.ghost-button {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--ink);
+}
+
+.solid-button:disabled,
+.ghost-button:disabled {
+  opacity: 0.6;
+  transform: none;
+}
+
+.course-row-grid {
+  grid-template-columns: 74px minmax(0, 1.75fr) minmax(0, 1fr) minmax(0, 0.8fr);
+}
