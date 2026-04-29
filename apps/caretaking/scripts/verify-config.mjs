@@ -13,6 +13,7 @@ const requiredFiles = [
   "supabase/migrations/0004_final_rls_and_safety.sql",
   "supabase/migrations/0010_app_schema_isolation.sql",
   "supabase/migrations/0011_app_schema_grants.sql",
+  "supabase/migrations/0012_feedback_submissions.sql",
   "src/lib/supabase/server.ts",
   "src/lib/supabase/client.ts",
   "src/lib/supabase/middleware.ts"
@@ -38,6 +39,7 @@ const requiredSqlSnippets = [
   "create or replace function public.create_reminder_mvp",
   "create or replace function public.process_due_reminders_mvp",
   "create schema if not exists app_caretaking",
+  "create table if not exists app_caretaking.feedback_submissions",
   "create or replace function app_caretaking.create_space_mvp",
   "create policy \"events_select_member\"",
   "notifications_one_reminder_due_per_recipient_idx"
@@ -76,7 +78,8 @@ const combinedSql = [
   "supabase/migrations/0003_hardening_rpc_and_delivery.sql",
   "supabase/migrations/0004_final_rls_and_safety.sql",
   "supabase/migrations/0010_app_schema_isolation.sql",
-  "supabase/migrations/0011_app_schema_grants.sql"
+  "supabase/migrations/0011_app_schema_grants.sql",
+  "supabase/migrations/0012_feedback_submissions.sql"
 ]
   .map((file) => readFileSync(join(root, file), "utf8"))
   .join("\n");

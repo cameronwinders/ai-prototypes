@@ -1,7 +1,5 @@
 import Link from "next/link";
 
-import { SpaceNav } from "@/components/layout/space-nav";
-
 type AppShellProps = {
   title: string;
   subtitle?: string;
@@ -20,8 +18,7 @@ export function AppShell({
   actionHref,
   actionLabel,
   actionVariant = "secondary",
-  eyebrow = "Caretaking App",
-  spaceId
+  eyebrow = "Caretaking App"
 }: AppShellProps) {
   return (
     <main className="app-shell">
@@ -37,7 +34,6 @@ export function AppShell({
           </Link>
         ) : null}
       </header>
-      {spaceId ? <SpaceNav spaceId={spaceId} /> : null}
       {children}
     </main>
   );

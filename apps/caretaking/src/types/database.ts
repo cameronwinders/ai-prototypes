@@ -380,6 +380,39 @@ export type Database = {
         };
         Update: Partial<Database["public"]["Tables"]["notification_preferences"]["Insert"]>;
       };
+      feedback_submissions: {
+        Row: {
+          id: string;
+          user_id: string;
+          space_id: string | null;
+          type: "bug" | "feature_request" | "general_feedback";
+          subject: string;
+          description: string | null;
+          route: string;
+          severity: "low" | "medium" | "high" | "critical" | null;
+          contact_allowed: boolean;
+          status: "new" | "reviewing" | "planned" | "closed";
+          page_context: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          space_id?: string | null;
+          type: "bug" | "feature_request" | "general_feedback";
+          subject: string;
+          description?: string | null;
+          route: string;
+          severity?: "low" | "medium" | "high" | "critical" | null;
+          contact_allowed?: boolean;
+          status?: "new" | "reviewing" | "planned" | "closed";
+          page_context?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["feedback_submissions"]["Insert"]>;
+      };
       audit_logs: {
         Row: {
           id: string;
