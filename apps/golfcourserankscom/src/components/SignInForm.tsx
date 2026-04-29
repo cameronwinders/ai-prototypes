@@ -84,7 +84,7 @@ export function SignInForm() {
             type="button"
             onClick={() => setMode("sign-in")}
             className={`rounded-full px-4 py-2.5 text-sm font-semibold ${
-              mode === "sign-in" ? "bg-[var(--ink)] text-white" : "text-[var(--muted)]"
+              mode === "sign-in" ? "bg-[var(--ink)] text-[rgb(255,255,255)]" : "text-[var(--muted)]"
             }`}
           >
             Sign in
@@ -93,7 +93,7 @@ export function SignInForm() {
             type="button"
             onClick={() => setMode("sign-up")}
             className={`rounded-full px-4 py-2.5 text-sm font-semibold ${
-              mode === "sign-up" ? "bg-[var(--ink)] text-white" : "text-[var(--muted)]"
+              mode === "sign-up" ? "bg-[var(--ink)] text-[rgb(255,255,255)]" : "text-[var(--muted)]"
             }`}
           >
             Create account
@@ -122,7 +122,7 @@ export function SignInForm() {
       <button
         type="submit"
         disabled={submitting}
-        className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_50px_rgba(24,37,43,0.18)] disabled:opacity-70"
+        className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-[rgb(255,255,255)] shadow-[0_18px_50px_rgba(24,37,43,0.18)] disabled:opacity-70"
       >
         {submitting ? "Sending..." : mode === "sign-up" ? "Email my account link" : "Email my sign-in link"}
       </button>

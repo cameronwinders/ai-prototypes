@@ -79,7 +79,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                       key={item.href}
                       href={item.href}
                       className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                        active ? "bg-[var(--ink)] text-white" : "text-[var(--muted)] hover:bg-white/70"
+                        active ? "bg-[var(--ink)] text-[rgb(255,255,255)]" : "text-[var(--muted)] hover:bg-white/70"
                       }`}
                     >
                       {item.label}
@@ -128,7 +128,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                   <form action={signOut}>
                     <button
                       type="submit"
-                      className="rounded-full bg-[var(--ink)] px-4 py-2 text-sm font-semibold text-white"
+                      className="rounded-full bg-[var(--ink)] px-4 py-2 text-sm font-semibold text-[rgb(255,255,255)]"
                     >
                       Sign out
                     </button>
@@ -137,7 +137,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
               ) : (
                 <Link
                   href={`/sign-in?next=${encodeURIComponent(currentUrl)}`}
-                  className="rounded-full bg-[var(--ink)] px-4 py-2 text-sm font-semibold text-white"
+                  className="rounded-full bg-[var(--ink)] px-4 py-2 text-sm font-semibold text-[rgb(255,255,255)]"
                 >
                   Sign in
                 </Link>
@@ -156,7 +156,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                 key={item.href}
                 href={item.href}
                 className={`flex min-h-11 min-w-0 flex-1 items-center justify-center rounded-[1.2rem] px-2 py-3 text-xs font-semibold transition ${
-                  active ? "bg-[var(--ink)] text-white" : "text-[var(--muted)]"
+                  active ? "bg-[var(--ink)] text-[rgb(255,255,255)]" : "text-[var(--muted)]"
                 }`}
               >
                 {item.label}
@@ -167,7 +167,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
 
         <Link
           href={feedbackHref}
-          className="fixed bottom-[5.75rem] right-4 z-40 inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-white shadow-[0_20px_55px_rgba(22,38,34,0.28)] lg:bottom-6 lg:right-8"
+          className="fixed bottom-[5.75rem] right-4 z-40 inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-[rgb(255,255,255)] shadow-[0_20px_55px_rgba(22,38,34,0.28)] lg:bottom-6 lg:right-8"
         >
           <span className="text-base leading-none">+</span>
           <span>Feedback</span>

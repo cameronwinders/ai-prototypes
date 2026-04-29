@@ -137,7 +137,7 @@ export function CoursesBrowser({
                         disabled={busyCourseId === course.id}
                         data-testid={`course-play-toggle-${course.id}`}
                         className={`min-h-11 rounded-full px-4 py-2 text-sm font-semibold ${
-                          isPlayed ? "border border-[var(--line)] bg-white text-[var(--ink)]" : "bg-[var(--ink)] text-white"
+                          isPlayed ? "border border-[var(--line)] bg-white text-[var(--ink)]" : "bg-[var(--ink)] text-[rgb(255,255,255)]"
                         }`}
                       >
                         {busyCourseId === course.id ? "Saving..." : isPlayed ? "Played" : "Mark played"}

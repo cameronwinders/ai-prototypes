@@ -81,7 +81,7 @@ export function FeedbackForm({ initialScreenName, initialUrl, initialFeedbackTyp
             onClick={() => setFeedbackType(type)}
             className={`min-h-11 rounded-full px-4 py-2 text-sm font-semibold capitalize transition ${
               feedbackType === type
-                ? "bg-[var(--ink)] text-white"
+                ? "bg-[var(--ink)] text-[rgb(255,255,255)]"
                 : "border border-[var(--line)] bg-white text-[var(--muted)]"
             }`}
           >
@@ -117,7 +117,7 @@ export function FeedbackForm({ initialScreenName, initialUrl, initialFeedbackTyp
       <button
         type="submit"
         disabled={pending}
-        className="min-h-11 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-white disabled:opacity-70"
+        className="min-h-11 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-[rgb(255,255,255)] disabled:opacity-70"
       >
         {pending ? "Sending..." : "Send feedback"}
       </button>

@@ -44,8 +44,8 @@ export default async function CourseDetailPage({
             </h1>
             <p className="mt-3 text-lg text-[var(--muted)]">{formatLocation(course)}</p>
           </div>
-          <div className="rounded-[1.6rem] bg-[var(--ink)] px-5 py-4 text-white">
-            <p className="text-xs uppercase tracking-[0.18em] text-white/70">National rank</p>
+          <div className="rounded-[1.6rem] bg-[var(--ink)] px-5 py-4 text-[rgb(255,255,255)]">
+            <p className="text-xs uppercase tracking-[0.18em] text-[rgba(255,255,255,0.7)]">National rank</p>
             <p className="mt-2 text-3xl font-semibold tracking-[-0.05em]">
               #{aggregate?.rank ?? course.seed_rank}
             </p>

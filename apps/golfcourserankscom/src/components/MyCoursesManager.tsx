@@ -205,7 +205,7 @@ export function MyCoursesManager({ initialPlayedCourses }: MyCoursesManagerProps
             type="button"
             onClick={() => setActiveTab("ranked")}
             className={`flex-1 rounded-full px-4 py-2.5 text-sm font-semibold ${
-              activeTab === "ranked" ? "bg-[var(--ink)] text-white" : "text-[var(--muted)]"
+              activeTab === "ranked" ? "bg-[var(--ink)] text-[rgb(255,255,255)]" : "text-[var(--muted)]"
             }`}
           >
             Ranked
@@ -214,7 +214,7 @@ export function MyCoursesManager({ initialPlayedCourses }: MyCoursesManagerProps
             type="button"
             onClick={() => setActiveTab("unranked")}
             className={`flex-1 rounded-full px-4 py-2.5 text-sm font-semibold ${
-              activeTab === "unranked" ? "bg-[var(--ink)] text-white" : "text-[var(--muted)]"
+              activeTab === "unranked" ? "bg-[var(--ink)] text-[rgb(255,255,255)]" : "text-[var(--muted)]"
             }`}
           >
             Needs ranking
