@@ -27,7 +27,7 @@ export default async function OnboardingPage({
           One last detail before the leaderboard opens.
         </h1>
         <p className="mt-4 max-w-2xl text-lg leading-8 text-[var(--muted)]">
-          Phase 1 only needs your handicap band. No home region, no tees, no long profile questionnaire.
+          Choose the handicap band that best fits your game so the leaderboard can stay relevant from the start.
         </p>
 
         {error ? (

@@ -200,13 +200,14 @@ async function run() {
   }
 
   await userPage.goto(`${siteUrl}/leaderboard?band=6-10&minSignals=0`, { waitUntil: "networkidle" });
-  await userPage.getByText(/Early \/ seeded/i).first().waitFor();
+  await userPage.getByText(/Early read/i).first().waitFor();
 
   await userPage.goto(`${siteUrl}/courses/${await getCourseIdByName("Pebble Beach Golf Links")}`, {
     waitUntil: "networkidle"
   });
   await userPage.getByPlaceholder(/Fast greens/i).fill("Amazing setting and still worth the splurge.");
   await userPage.getByRole("button", { name: /Save note/i }).click();
+  await userPage.waitForTimeout(1200);
   await userPage.reload({ waitUntil: "networkidle" });
   const savedNote = await userPage.getByPlaceholder(/Fast greens/i).inputValue();
   if (savedNote !== "Amazing setting and still worth the splurge.") {
@@ -215,12 +216,12 @@ async function run() {
 
   await userPage.getByRole("link", { name: /Feedback/i }).first().click();
   await userPage.getByRole("button", { name: /^bug$/i }).click();
-  await userPage.getByPlaceholder(/Describe the bug/i).fill("Smoke test feedback from the leaderboard-first flow.");
+  await userPage.locator("textarea").fill("Smoke test feedback from the leaderboard-first flow.");
   await userPage.getByRole("button", { name: /Send feedback/i }).click();
   await userPage.getByText(/Feedback captured/i).waitFor();
 
   await userPage.goto(`${siteUrl}/admin/feedback`, { waitUntil: "networkidle" });
-  await userPage.getByText(/Smoke test feedback from the leaderboard-first flow./i).waitFor();
+  await userPage.getByText(/Smoke test feedback from the leaderboard-first flow./i).first().waitFor();
 
   const friendContext = await browser.newContext({ viewport: { width: 1365, height: 960 } });
   const friendPage = await friendContext.newPage();
@@ -257,7 +258,7 @@ async function run() {
   const mobilePage = await mobileContext.newPage();
   await loginWithMagicLink(mobileContext, mobilePage, testEmail, "/leaderboard", "6-10");
   await mobilePage.goto(`${siteUrl}/leaderboard`, { waitUntil: "networkidle" });
-  await mobilePage.getByRole("link", { name: /Board/i }).waitFor();
+  await mobilePage.locator("nav").last().getByRole("link", { name: /^Board$/i }).waitFor();
   await mobilePage.goto(`${siteUrl}/me/courses`, { waitUntil: "networkidle" });
   await mobilePage.getByText(/Drag to reorder/i).waitFor();
 

@@ -60,6 +60,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
   const pathname = usePathname();
   const currentUrl = pathname;
   const feedbackHref = `/feedback?screen=${encodeURIComponent(toScreenName(pathname))}&from=${encodeURIComponent(currentUrl)}`;
+  const requestCourseHref = `/feedback?screen=${encodeURIComponent(toScreenName(pathname))}&from=${encodeURIComponent(currentUrl)}&topic=course-addition`;
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(202,218,201,0.45),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(233,216,182,0.32),_transparent_28%),linear-gradient(180deg,_#f6f3ec_0%,_#efe8db_52%,_#f7f4ee_100%)] text-[var(--ink)]">
@@ -68,7 +69,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
           <div className="flex items-center justify-between gap-4">
             <div className="flex min-w-0 items-center gap-5">
               <Link href="/" className="brand-heading text-[1.45rem] font-semibold tracking-[-0.05em] text-[var(--ink)]">
-                GolfCourseRanks.com
+                Golf Course Ranks
               </Link>
               <nav className="hidden items-center gap-2 lg:flex">
                 {desktopNav.map((item) => {
@@ -100,6 +101,12 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                 className="hidden rounded-full border border-[var(--line)] bg-[var(--pine-soft)] px-4 py-2 text-sm font-semibold text-[var(--pine)] sm:inline-flex"
               >
                 Feedback
+              </Link>
+              <Link
+                href={requestCourseHref}
+                className="hidden rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--ink)] md:inline-flex"
+              >
+                Request a course
               </Link>
 
               {viewer.signedIn ? (

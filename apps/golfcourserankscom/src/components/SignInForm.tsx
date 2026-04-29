@@ -25,7 +25,7 @@ export function SignInForm() {
     setError(null);
 
     if (!env.isConfigured) {
-      setError("Supabase email sign-in is not configured for this environment yet.");
+      setError("Email sign-in is not available right now. Please try again in a moment.");
       setSubmitting(false);
       return;
     }
@@ -48,7 +48,7 @@ export function SignInForm() {
 
       setMessage(
         mode === "sign-up"
-          ? "Check your email for the account link. After the callback we will capture your handicap band and return you to the page you started from."
+          ? "Check your email for the account link. Once you open it, we will help you set your handicap band and bring you back to where you started."
           : "Check your email for the secure sign-in link."
       );
       setSubmitting(false);
@@ -115,7 +115,7 @@ export function SignInForm() {
 
       <p className="text-sm leading-6 text-[var(--muted)]">
         {mode === "sign-up"
-          ? "Phase 1 onboarding stays minimal. We only ask for your handicap band after the magic link."
+          ? "We only ask for your handicap band before you start building your rankings."
           : "Your played courses, ranking order, and compare access all reopen as soon as the link completes the session."}
       </p>
 

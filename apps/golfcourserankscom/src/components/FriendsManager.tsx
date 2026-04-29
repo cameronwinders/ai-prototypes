@@ -47,10 +47,10 @@ export function FriendsManager({ initialData }: FriendsManagerProps) {
       <section className="shell-panel rounded-[2rem] p-6">
         <p className="section-label">Add by email</p>
         <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
-          Compare only with golfers you both trust.
+          Build your golf circle and compare real lists.
         </h2>
         <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-          Requests stay private until the other golfer accepts. Only accepted friendships unlock the overlap-only compare view.
+          Requests stay private until the other golfer accepts. Once you are connected, you can compare shared courses without exposing your full history to everyone.
         </p>
 
         <div className="mt-5 flex flex-col gap-3 sm:flex-row">
@@ -74,7 +74,7 @@ export function FriendsManager({ initialData }: FriendsManagerProps) {
             <div className="mt-3 grid gap-3">
               {data.accepted.length === 0 ? (
                 <div className="rounded-[1.5rem] border border-dashed border-[var(--line)] px-4 py-6 text-sm text-[var(--muted)]">
-                  No accepted friendships yet.
+                  No accepted friendships yet. Add a golf friend by email to unlock side-by-side comparisons.
                 </div>
               ) : (
                 data.accepted.map((friend) => (
@@ -83,12 +83,17 @@ export function FriendsManager({ initialData }: FriendsManagerProps) {
                       <div>
                         <p className="text-lg font-semibold text-[var(--ink)]">{friend.profile.display_name ?? friend.profile.handle}</p>
                         <p className="mt-1 text-sm text-[var(--muted)]">
-                          {friend.overlapCount} overlap · {friend.rankedCount} ranked courses
+                          {friend.overlapCount} shared courses | {friend.rankedCount} ranked courses
                         </p>
                       </div>
-                      <Link href={`/compare/${friend.profile.id}`} className="solid-button min-h-11">
-                        Compare
-                      </Link>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Link href={`/compare/${friend.profile.id}`} className="solid-button min-h-11">
+                          Compare
+                        </Link>
+                        <Link href={`/feedback?screen=Friends&from=%2Ffriends&topic=feature`} className="ghost-button min-h-11">
+                          Suggest a social feature
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 ))

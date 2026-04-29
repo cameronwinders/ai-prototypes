@@ -1,5 +1,5 @@
 export const HANDICAP_OPTIONS = ["0-5", "6-10", "11-18", "19+"] as const;
-export const FEEDBACK_TYPES = ["bug", "feature", "general"] as const;
+export const FEEDBACK_TYPES = ["bug", "feature", "general", "course-addition"] as const;
 export const FRIENDSHIP_STATUSES = ["pending", "accepted"] as const;
 
 export type HandicapBand = (typeof HANDICAP_OPTIONS)[number];

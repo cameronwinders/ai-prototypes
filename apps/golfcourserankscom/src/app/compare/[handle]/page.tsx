@@ -23,7 +23,7 @@ export default async function ComparePage({
       <section className="shell-panel rounded-[2.3rem] p-6 sm:p-8">
         <p className="section-label">Compare</p>
         <h1 className="brand-heading mt-4 text-5xl font-semibold tracking-[-0.05em] text-[var(--ink)]">
-          Your ranking stack vs {overview.friend.display_name ?? overview.friend.handle}
+          Your ranking list vs {overview.friend.display_name ?? overview.friend.handle}
         </h1>
         <p className="mt-4 max-w-3xl text-lg leading-8 text-[var(--muted)]">
           This view only shows courses both of you have ranked. It is intentionally overlap-only so the compare stays useful without overexposing private course history.

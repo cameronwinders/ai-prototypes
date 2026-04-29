@@ -70,7 +70,7 @@ export function CourseDetailActions({
         Open My Courses
       </Link>
       {viewerNeedsOnboarding ? (
-        <p className="text-sm text-[var(--muted)]">Complete your handicap band first so your played list contributes to the right leaderboard slice.</p>
+        <p className="text-sm text-[var(--muted)]">Add your handicap band first so your rankings show up in the right leaderboard view.</p>
       ) : null}
       {status ? <p className="text-sm text-[var(--muted)]">{status}</p> : null}
     </div>

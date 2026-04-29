@@ -338,9 +338,47 @@ async function buildFilteredLeaderboard(handicapBand: HandicapBand, minSignals: 
   return normalized.slice(0, limit);
 }
 
+function sortLeaderboardRows(
+  courses: LeaderboardCourse[],
+  sort: "rank" | "score" | "most-played" | "most-compared"
+) {
+  const ranked = [...courses];
+
+  ranked.sort((left, right) => {
+    if (sort === "score") {
+      if (right.normalizedScore !== left.normalizedScore) {
+        return right.normalizedScore - left.normalizedScore;
+      }
+    } else if (sort === "most-played") {
+      if (right.numUniqueGolfers !== left.numUniqueGolfers) {
+        return right.numUniqueGolfers - left.numUniqueGolfers;
+      }
+    } else if (sort === "most-compared") {
+      if (right.numSignals !== left.numSignals) {
+        return right.numSignals - left.numSignals;
+      }
+    } else if (left.leaderboardRank !== right.leaderboardRank) {
+      return left.leaderboardRank - right.leaderboardRank;
+    }
+
+    if (right.normalizedScore !== left.normalizedScore) {
+      return right.normalizedScore - left.normalizedScore;
+    }
+
+    return left.seed_rank - right.seed_rank;
+  });
+
+  return ranked.map((course, index) => ({
+    ...course,
+    leaderboardRank: index + 1
+  }));
+}
+
 export async function getLeaderboardCourses(options?: {
   handicapBand?: HandicapBand | null;
   minSignals?: number;
+  state?: string | null;
+  sort?: "rank" | "score" | "most-played" | "most-compared";
   limit?: number;
 }) {
   const { configured } = ensureConfigured();
@@ -351,10 +389,16 @@ export async function getLeaderboardCourses(options?: {
 
   const handicapBand = options?.handicapBand ?? null;
   const minSignals = options?.minSignals ?? 0;
+  const selectedState = options?.state?.trim().toUpperCase() ?? null;
+  const sort = options?.sort ?? "rank";
   const limit = options?.limit ?? 100;
 
   if (handicapBand) {
-    return buildFilteredLeaderboard(handicapBand, minSignals, limit);
+    const filteredByBand = await buildFilteredLeaderboard(handicapBand, minSignals, 250);
+    const filteredByState = selectedState
+      ? filteredByBand.filter((course) => course.state.toUpperCase() === selectedState)
+      : filteredByBand;
+    return sortLeaderboardRows(filteredByState, sort).slice(0, limit);
   }
 
   const admin = createAdminClient();
@@ -371,10 +415,12 @@ export async function getLeaderboardCourses(options?: {
     ((aggregateRows.data ?? []) as CourseAggregateRecord[]).map((row) => [row.course_id, row])
   );
 
-  return courses
+  const leaderboard = courses
     .map((course) => toLeaderboardCourse(course, aggregateByCourse.get(course.id) ?? null))
     .filter((course) => course.numSignals >= minSignals)
-    .slice(0, limit);
+    .filter((course) => (selectedState ? course.state.toUpperCase() === selectedState : true));
+
+  return sortLeaderboardRows(leaderboard, sort).slice(0, limit);
 }
 
 export async function getCourseDetail(

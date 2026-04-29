@@ -1,8 +1,15 @@
 import Link from "next/link";
 
-import { getAppOverviewStats, getLeaderboardCourses } from "@/lib/data";
-import { formatLocation, getPriceBandLabel, pluralize } from "@/lib/ranking";
+import { getAllCourses, getAppOverviewStats, getLeaderboardCourses } from "@/lib/data";
+import { formatLocation, pluralize } from "@/lib/ranking";
 import { HANDICAP_OPTIONS } from "@/lib/types";
+
+const SORT_OPTIONS = [
+  { value: "rank", label: "Leaderboard rank" },
+  { value: "score", label: "Highest score" },
+  { value: "most-played", label: "Most golfers" },
+  { value: "most-compared", label: "Most comparisons" }
+] as const;
 
 export default async function LeaderboardPage({
   searchParams
@@ -12,19 +19,31 @@ export default async function LeaderboardPage({
   const params = await searchParams;
   const bandParam = Array.isArray(params.band) ? params.band[0] : params.band;
   const minSignalsParam = Array.isArray(params.minSignals) ? params.minSignals[0] : params.minSignals;
+  const stateParam = Array.isArray(params.state) ? params.state[0] : params.state;
+  const sortParam = Array.isArray(params.sort) ? params.sort[0] : params.sort;
+
   const band = HANDICAP_OPTIONS.includes(bandParam as (typeof HANDICAP_OPTIONS)[number])
     ? (bandParam as (typeof HANDICAP_OPTIONS)[number])
     : null;
   const minSignals = Number.isFinite(Number(minSignalsParam)) ? Math.max(0, Number(minSignalsParam)) : 0;
+  const selectedState = stateParam?.trim().toUpperCase() ?? "";
+  const sort = SORT_OPTIONS.some((option) => option.value === sortParam)
+    ? (sortParam as (typeof SORT_OPTIONS)[number]["value"])
+    : "rank";
 
-  const [stats, courses] = await Promise.all([
+  const [stats, courses, allCourses] = await Promise.all([
     getAppOverviewStats(),
     getLeaderboardCourses({
       handicapBand: band,
       minSignals,
+      state: selectedState || null,
+      sort,
       limit: 200
-    })
+    }),
+    getAllCourses()
   ]);
+
+  const states = Array.from(new Set(allCourses.map((course) => course.state))).sort((left, right) => left.localeCompare(right));
 
   return (
     <div className="space-y-6">
@@ -32,10 +51,10 @@ export default async function LeaderboardPage({
         <div className="shell-panel rounded-[2.4rem] p-6 sm:p-8">
           <p className="section-label">National leaderboard</p>
           <h1 className="brand-heading mt-4 text-5xl font-semibold tracking-[-0.05em] text-[var(--ink)] sm:text-[5rem]">
-            Public courses ranked by comparative lists, not star ratings.
+            Public courses ranked by golfers, not by star ratings.
           </h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 text-[var(--muted)]">
-            Every golfer contributes one ordered stack. We infer head-to-head outcomes from those lists, blend them with a seeded baseline during cold start, and keep the trust cues visible while the board matures.
+            Every list on Golf Course Ranks comes from golfers ordering the public courses they have actually played. The result is a cleaner, more useful board for trip planning, bucket lists, and golf-group debates.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <span className="rounded-full bg-[var(--pine-soft)] px-4 py-2 text-sm font-semibold text-[var(--pine)]">
@@ -45,41 +64,76 @@ export default async function LeaderboardPage({
               {pluralize(stats.signalCount, "comparison")}
             </span>
             <span className="rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--muted)]">
-              Seeded baseline visible while early
+              Score reflects course momentum and list strength
             </span>
           </div>
         </div>
 
         <section className="shell-panel rounded-[2rem] p-6">
           <form className="grid gap-4" action="/leaderboard">
-            <div>
-              <label className="text-sm font-semibold text-[var(--ink)]">Handicap band</label>
-              <select
-                name="band"
-                defaultValue={band ?? ""}
-                className="mt-2 min-h-11 w-full rounded-[1.2rem] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none"
-              >
-                <option value="">All golfers</option>
-                {HANDICAP_OPTIONS.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className="text-sm font-semibold text-[var(--ink)]">Handicap band</label>
+                <select
+                  name="band"
+                  defaultValue={band ?? ""}
+                  className="mt-2 min-h-11 w-full rounded-[1.2rem] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none"
+                >
+                  <option value="">All golfers</option>
+                  {HANDICAP_OPTIONS.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-semibold text-[var(--ink)]">State</label>
+                <select
+                  name="state"
+                  defaultValue={selectedState}
+                  className="mt-2 min-h-11 w-full rounded-[1.2rem] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none"
+                >
+                  <option value="">All states</option>
+                  {states.map((state) => (
+                    <option key={state} value={state}>
+                      {state}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
-            <div>
-              <label className="text-sm font-semibold text-[var(--ink)]">Minimum comparisons</label>
-              <input
-                type="range"
-                min="0"
-                max="20"
-                step="1"
-                name="minSignals"
-                defaultValue={String(minSignals)}
-                className="mt-3 w-full"
-              />
-              <p className="mt-2 text-sm text-[var(--muted)]">Currently showing courses with at least {minSignals} comparisons.</p>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className="text-sm font-semibold text-[var(--ink)]">Sort by</label>
+                <select
+                  name="sort"
+                  defaultValue={sort}
+                  className="mt-2 min-h-11 w-full rounded-[1.2rem] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none"
+                >
+                  {SORT_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-semibold text-[var(--ink)]">Minimum comparisons</label>
+                <input
+                  type="range"
+                  min="0"
+                  max="20"
+                  step="1"
+                  name="minSignals"
+                  defaultValue={String(minSignals)}
+                  className="mt-3 w-full"
+                />
+                <p className="mt-2 text-sm text-[var(--muted)]">Showing courses with at least {minSignals} comparisons.</p>
+              </div>
             </div>
+
             <button type="submit" className="solid-button min-h-11 justify-center">
               Apply filters
             </button>
@@ -102,23 +156,22 @@ export default async function LeaderboardPage({
 
         {courses.length === 0 ? (
           <div className="mt-6 rounded-[1.8rem] border border-dashed border-[var(--line)] px-5 py-10 text-sm leading-6 text-[var(--muted)]">
-            No course clears the current comparison threshold for this filter. Lower the minimum comparisons or switch back to all golfers.
+            No courses match that filter combination yet. Try another state, lower the comparison threshold, or switch back to all golfers.
           </div>
         ) : (
           <div className="mt-6 overflow-hidden rounded-[1.8rem] border border-[var(--line)]">
-            <div className="hidden grid-cols-[78px_1.6fr_1fr_0.8fr_0.8fr] gap-4 bg-[rgba(255,255,255,0.78)] px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)] md:grid">
+            <div className="hidden grid-cols-[78px_1.8fr_1fr_1fr] gap-4 bg-[rgba(255,255,255,0.78)] px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)] md:grid">
               <div>Rank</div>
               <div>Course</div>
-              <div>Trust cues</div>
+              <div>Activity</div>
               <div>Score</div>
-              <div>Price</div>
             </div>
             <div className="divide-y divide-[var(--line)]">
               {courses.map((course) => (
                 <Link
                   key={course.id}
                   href={`/courses/${course.id}`}
-                  className="grid gap-3 bg-white/90 px-5 py-4 transition hover:bg-white md:grid-cols-[78px_1.6fr_1fr_0.8fr_0.8fr] md:items-center"
+                  className="grid gap-3 bg-white/90 px-5 py-4 transition hover:bg-white md:grid-cols-[78px_1.8fr_1fr_1fr] md:items-center"
                 >
                   <div className="text-3xl font-semibold tracking-[-0.05em] text-[var(--ink)]">#{course.leaderboardRank}</div>
                   <div>
@@ -135,20 +188,19 @@ export default async function LeaderboardPage({
                       </span>
                       {course.isEarly ? (
                         <span className="rounded-full bg-[var(--pine-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pine)]">
-                          Early / seeded
+                          Early read
                         </span>
                       ) : null}
                     </div>
                   </div>
                   <div>
                     <div className="inline-flex rounded-full bg-[var(--pine-soft)] px-3 py-2 text-sm font-semibold text-[var(--pine)]">
-                      {course.normalizedScore.toFixed(1)}
+                      Leaderboard score {course.normalizedScore.toFixed(1)}
                     </div>
-                    <p className="mt-2 text-xs uppercase tracking-[0.16em] text-[var(--muted)]">
-                      {course.wins}W / {course.losses}L
+                    <p className="mt-2 text-xs text-[var(--muted)]">
+                      Higher scores reflect stronger support from golfer rankings.
                     </p>
                   </div>
-                  <div className="text-sm text-[var(--muted)]">{getPriceBandLabel(course.price_band)}</div>
                 </Link>
               ))}
             </div>

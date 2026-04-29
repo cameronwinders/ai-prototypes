@@ -450,7 +450,7 @@ export async function submitFeedback(input: {
   if (!isFeedbackType(input.feedbackType)) {
     return {
       ok: false,
-      message: "Pick bug, feature, or general before you send feedback."
+      message: "Choose a feedback topic before you send your note."
     };
   }
 

@@ -1,6 +1,13 @@
 import { getAdminFeedbackEntries } from "@/lib/data";
 import { requireAdminViewer } from "@/lib/viewer";
 
+const FEEDBACK_LABELS: Record<string, string> = {
+  bug: "Bug",
+  feature: "Feature request",
+  general: "General feedback",
+  "course-addition": "Course addition"
+};
+
 export default async function AdminFeedbackPage() {
   await requireAdminViewer("/admin/feedback");
   const feedback = await getAdminFeedbackEntries(100);
@@ -28,7 +35,7 @@ export default async function AdminFeedbackPage() {
               <div key={item.id} className="rounded-[1.7rem] border border-[var(--line)] bg-white/92 p-5">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded-full bg-[var(--pine-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pine)]">
-                    {item.feedback_type}
+                    {FEEDBACK_LABELS[item.feedback_type] ?? item.feedback_type}
                   </span>
                   <span className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
                     {item.screen_name}

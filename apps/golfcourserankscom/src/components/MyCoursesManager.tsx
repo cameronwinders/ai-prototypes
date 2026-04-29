@@ -183,14 +183,14 @@ export function MyCoursesManager({ initialPlayedCourses }: MyCoursesManagerProps
       <section className="shell-panel rounded-[2rem] p-5 sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="section-label">My ranking stack</p>
+            <p className="section-label">My ranking list</p>
             <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
               Rank the public courses you have actually played.
             </h2>
           </div>
 
           <div className="rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-medium text-[var(--muted)]">
-            {status} {lastSavedAt ? `· Last saved ${formatUpdatedAt(lastSavedAt)}` : ""}
+            {status} {lastSavedAt ? `| Last saved ${formatUpdatedAt(lastSavedAt)}` : ""}
           </div>
         </div>
 
@@ -222,7 +222,7 @@ export function MyCoursesManager({ initialPlayedCourses }: MyCoursesManagerProps
         </div>
 
         <p className="mt-4 text-sm leading-6 text-[var(--muted)]">
-          Drag with the handle on larger screens or use the move buttons anywhere. Each saved order rebuilds pairwise comparisons for the national leaderboard.
+          Drag with the handle on larger screens or use the move buttons anywhere. Every saved order helps shape the national leaderboard.
         </p>
 
         <div className="sr-only" aria-live="polite">
@@ -232,7 +232,7 @@ export function MyCoursesManager({ initialPlayedCourses }: MyCoursesManagerProps
         {activeTab === "ranked" ? (
           ranked.length === 0 ? (
             <div className="mt-6 rounded-[1.6rem] border border-dashed border-[var(--line)] px-5 py-8 text-sm leading-6 text-[var(--muted)]">
-              No ranked courses yet. Mark a course as played, then add it to your ranking stack.
+              No ranked courses yet. Mark a few courses as played, then drop them into your list once you know the order.
             </div>
           ) : (
             <div className="mt-6 grid gap-3">
@@ -286,7 +286,7 @@ export function MyCoursesManager({ initialPlayedCourses }: MyCoursesManagerProps
           )
         ) : unranked.length === 0 ? (
           <div className="mt-6 rounded-[1.6rem] border border-dashed border-[var(--line)] px-5 py-8 text-sm leading-6 text-[var(--muted)]">
-            Every played course is already in your ranking. Add more from the seeded course catalog when you have another round to log.
+            Every played course is already in your ranking. Add more the next time you want to expand your list.
           </div>
         ) : (
           <div className="mt-6 grid gap-3">
@@ -327,17 +327,17 @@ export function MyCoursesManager({ initialPlayedCourses }: MyCoursesManagerProps
         <section className="shell-panel rounded-[2rem] p-6">
           <p className="section-label">Where to next</p>
           <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
-            Keep feeding the leaderboard.
+            Keep your golf list moving.
           </h3>
           <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-            Mark more seeded public courses as played, then decide whether they belong in the stack. You can keep a course played without ranking it right away.
+            Mark more public courses as played, then decide whether they belong in your order. You can keep a course logged without ranking it right away.
           </p>
           <div className="mt-5 flex flex-col gap-3">
             <Link href="/courses" className="solid-button min-h-11 justify-center">
-              Browse seeded courses
+              Browse courses
             </Link>
             <Link href="/leaderboard" className="ghost-button min-h-11 justify-center">
-              See the national board
+              See the leaderboard
             </Link>
           </div>
         </section>

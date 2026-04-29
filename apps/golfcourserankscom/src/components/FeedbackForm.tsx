@@ -8,6 +8,7 @@ import { FEEDBACK_TYPES } from "@/lib/types";
 type FeedbackFormProps = {
   initialScreenName: string;
   initialUrl: string;
+  initialFeedbackType?: (typeof FEEDBACK_TYPES)[number];
 };
 
 function makeSubmissionId() {
@@ -18,8 +19,22 @@ function makeSubmissionId() {
   return `feedback-${Date.now()}`;
 }
 
-export function FeedbackForm({ initialScreenName, initialUrl }: FeedbackFormProps) {
-  const [feedbackType, setFeedbackType] = useState<(typeof FEEDBACK_TYPES)[number]>("feature");
+const FEEDBACK_LABELS: Record<(typeof FEEDBACK_TYPES)[number], string> = {
+  bug: "Bug",
+  feature: "Feature request",
+  general: "General feedback",
+  "course-addition": "Course addition"
+};
+
+const PLACEHOLDERS: Record<(typeof FEEDBACK_TYPES)[number], string> = {
+  bug: "Tell us what went wrong and where you saw it.",
+  feature: "Describe the feature or improvement you want to see.",
+  general: "Tell us what felt great, confusing, or worth improving.",
+  "course-addition": "Which course should be added, and why does it belong on Golf Course Ranks?"
+};
+
+export function FeedbackForm({ initialScreenName, initialUrl, initialFeedbackType = "feature" }: FeedbackFormProps) {
+  const [feedbackType, setFeedbackType] = useState<(typeof FEEDBACK_TYPES)[number]>(initialFeedbackType);
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -70,7 +85,7 @@ export function FeedbackForm({ initialScreenName, initialUrl }: FeedbackFormProp
                 : "border border-[var(--line)] bg-white text-[var(--muted)]"
             }`}
           >
-            {type}
+            {FEEDBACK_LABELS[type]}
           </button>
         ))}
       </div>
@@ -92,7 +107,7 @@ export function FeedbackForm({ initialScreenName, initialUrl }: FeedbackFormProp
           value={message}
           onChange={(event) => setMessage(event.target.value)}
           rows={6}
-          placeholder="Describe the bug, idea, or rough edge you hit."
+          placeholder={PLACEHOLDERS[feedbackType]}
           className="mt-2 w-full rounded-[1.5rem] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none focus:border-[rgba(49,107,83,0.45)]"
         />
       </label>

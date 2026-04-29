@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 
 import { setCoursePlayed } from "@/app/actions";
-import { formatLocation, getPriceBandLabel } from "@/lib/ranking";
+import { formatLocation } from "@/lib/ranking";
 import type { CourseRecord, PlayedCourse } from "@/lib/types";
 
 type CoursesBrowserProps = {
@@ -63,25 +63,30 @@ export function CoursesBrowser({
     <div className="space-y-5">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-2xl">
-          <p className="section-label">Seeded course catalog</p>
+          <p className="section-label">Course directory</p>
           <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
-            Search the curated national shortlist.
+            Search notable public courses across the country.
           </h2>
           <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-            Phase 1 keeps the leaderboard universe tight on purpose. These are the seeded U.S. public courses that can earn national rank movement right now.
+            Mark the courses you have played, open a course page for more detail, or request a missing course in one tap.
           </p>
         </div>
 
-        <label className="w-full max-w-xl text-sm font-semibold text-[var(--ink)]">
-          Search by course, city, or state
-          <input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Pebble, Bandon, Scottsdale, Wisconsin..."
-            data-testid="courses-search"
-            className="mt-2 w-full rounded-[1.35rem] border border-[var(--line)] bg-white px-4 py-3 text-sm font-normal outline-none focus:border-[rgba(49,107,83,0.45)]"
-          />
-        </label>
+        <div className="w-full max-w-xl space-y-3">
+          <label className="block text-sm font-semibold text-[var(--ink)]">
+            Search by course, city, or state
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Pebble, Bandon, Scottsdale, Wisconsin..."
+              data-testid="courses-search"
+              className="mt-2 w-full rounded-[1.35rem] border border-[var(--line)] bg-white px-4 py-3 text-sm font-normal outline-none focus:border-[rgba(49,107,83,0.45)]"
+            />
+          </label>
+          <Link href="/feedback?screen=Courses&from=%2Fcourses&topic=course-addition" className="ghost-button min-h-11 justify-center">
+            Request a course addition
+          </Link>
+        </div>
       </div>
 
       {status ? <p className="text-sm text-[var(--muted)]">{status}</p> : null}
@@ -96,21 +101,20 @@ export function CoursesBrowser({
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded-full bg-[var(--pine-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pine)]">
-                      Seed #{course.seed_rank}
+                      Editorial start #{course.seed_rank}
                     </span>
-                    {course.seed_source?.seed_tier ? (
+                    {course.seed_source?.lists?.[0] ?? course.seed_source?.seed_tier ? (
                       <span className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
-                        {course.seed_source.seed_tier}
+                        {course.seed_source?.lists?.[0] ?? course.seed_source?.seed_tier}
                       </span>
                     ) : null}
                   </div>
                   <h3 className="mt-3 text-xl font-semibold tracking-[-0.03em] text-[var(--ink)]">{course.name}</h3>
                   <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
                   <div className="mt-3 flex flex-wrap gap-3 text-sm text-[var(--muted)]">
-                    <span>Par {course.par ?? "—"}</span>
-                    <span>Slope {course.slope ?? "—"}</span>
-                    <span>Rating {course.rating ?? "—"}</span>
-                    <span>{getPriceBandLabel(course.price_band)}</span>
+                    <span>Par {course.par ?? "-"}</span>
+                    <span>Slope {course.slope ?? "-"}</span>
+                    <span>Rating {course.rating ?? "-"}</span>
                   </div>
                 </div>
 
