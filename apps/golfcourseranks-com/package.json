@@ -1,0 +1,29 @@
+{
+  "name": "golfcourseranks-com",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "npm@10.9.2",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "verify:config": "node scripts/verify-config.mjs",
+    "seed:courses": "node scripts/seed-courses.mjs"
+  },
+  "dependencies": {
+    "next": "15.5.15",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "@supabase/ssr": "0.7.0",
+    "@supabase/supabase-js": "2.103.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.4",
+    "typescript": "5.8.3",
+    "@types/node": "22.14.1",
+    "@types/react": "19.0.10",
+    "@types/react-dom": "19.0.4",
+    "tailwindcss": "^4.2.4"
+  }
+}

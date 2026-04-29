@@ -1,0 +1,11 @@
+{
+  "displayName": "GolfCourseRanks.com",
+  "description": "",
+  "appSlug": "golfcourseranks-com",
+  "schemaName": "app_golfcourseranks_com_",
+  "repoPath": "apps/golfcourseranks-com",
+  "vercelProjectName": "ai-prototypes-golfcourseranks-com",
+  "siteUrl": "https://ai-prototypes-golfcourseranks-com.vercel.app",
+  "sharedSupabaseProjectRef": "xumzkfexegxzzujazpcj",
+  "managedBy": "ai-prototypes-factory"
+}

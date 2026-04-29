@@ -1,0 +1,201 @@
+﻿name,city,state,par,slope,rating,price_band,seed_source_name,seed_source_tier,seed_source_notes
+Pebble Beach Dunes Golf Club,Pebble Beach,CA,70,118,68.4,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Monterey Links Golf Links,Monterey,CA,71,121,68.7,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Half Moon Bay Harbor Public Golf Club,Half Moon Bay,CA,72,124,69,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Carlsbad Pines Municipal Golf Club,Carlsbad,CA,70,127,69.4,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Palm Desert Canyon Resort Course,Palm Desert,CA,71,130,69.7,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+La Quinta Ridge Championship Course,La Quinta,CA,72,133,70,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+San Diego Shores Golf Preserve,San Diego,CA,70,136,70.3,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Sacramento Highland Golf Grounds,Sacramento,CA,71,139,70.6,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Bandon Trail Public Links,Bandon,OR,72,142,71,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Bend National Golf Park,Bend,OR,70,145,71.3,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Prineville Reserve Golf Club,Prineville,OR,71,120,71.6,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Eugene Bay Golf Links,Eugene,OR,72,123,71.9,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Salem Bluffs Public Golf Club,Salem,OR,70,126,72.2,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Gearhart Run Municipal Golf Club,Gearhart,OR,71,129,72.6,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Tacoma Point Resort Course,Tacoma,WA,72,132,72.9,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Bremerton Club Championship Course,Bremerton,WA,70,135,73.2,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Spokane Commons Golf Preserve,Spokane,WA,71,138,73.5,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Snoqualmie Creek Golf Grounds,Snoqualmie,WA,72,141,73.8,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Olympia Landing Public Links,Olympia,WA,70,144,74.2,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Richland Vista Golf Park,Richland,WA,71,119,74.5,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Scottsdale Dunes Golf Club,Scottsdale,AZ,72,122,74.8,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Tucson Links Golf Links,Tucson,AZ,70,125,75.1,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Sedona Harbor Public Golf Club,Sedona,AZ,71,128,75.4,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Mesa Pines Municipal Golf Club,Mesa,AZ,72,131,75.8,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Gilbert Canyon Resort Course,Gilbert,AZ,70,134,68.4,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Flagstaff Ridge Championship Course,Flagstaff,AZ,71,137,68.7,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Las Vegas Shores Golf Preserve,Las Vegas,NV,72,140,69,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Henderson Highland Golf Grounds,Henderson,NV,70,143,69.4,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Mesquite Trail Public Links,Mesquite,NV,71,118,69.7,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Reno National Golf Park,Reno,NV,72,121,70,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Austin Reserve Golf Club,Austin,TX,70,124,70.3,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+San Antonio Bay Golf Links,San Antonio,TX,71,127,70.6,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Dallas Bluffs Public Golf Club,Dallas,TX,72,130,71,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Houston Run Municipal Golf Club,Houston,TX,70,133,71.3,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Fort Worth Point Resort Course,Fort Worth,TX,71,136,71.6,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Lubbock Club Championship Course,Lubbock,TX,72,139,71.9,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Frisco Commons Golf Preserve,Frisco,TX,70,142,72.2,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Denver Creek Golf Grounds,Denver,CO,71,145,72.6,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Colorado Springs Landing Public Links,Colorado Springs,CO,72,120,72.9,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Boulder Vista Golf Park,Boulder,CO,70,123,73.2,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Aurora Dunes Golf Club,Aurora,CO,71,126,73.5,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Fort Collins Links Golf Links,Fort Collins,CO,72,129,73.8,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Park City Harbor Public Golf Club,Park City,UT,70,132,74.2,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+St George Pines Municipal Golf Club,St George,UT,71,135,74.5,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Salt Lake City Canyon Resort Course,Salt Lake City,UT,72,138,74.8,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Midway Ridge Championship Course,Midway,UT,70,141,75.1,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Orlando Shores Golf Preserve,Orlando,FL,71,144,75.4,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Jacksonville Highland Golf Grounds,Jacksonville,FL,72,119,75.8,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Tampa Trail Public Links,Tampa,FL,70,122,68.4,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Naples National Golf Park,Naples,FL,71,125,68.7,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Miami Reserve Golf Club,Miami,FL,72,128,69,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Palm Beach Gardens Bay Golf Links,Palm Beach Gardens,FL,70,131,69.4,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Destin Bluffs Public Golf Club,Destin,FL,71,134,69.7,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Atlanta Run Municipal Golf Club,Atlanta,GA,72,137,70,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Savannah Point Resort Course,Savannah,GA,70,140,70.3,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Athens Club Championship Course,Athens,GA,71,143,70.6,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Sea Island Commons Golf Preserve,Sea Island,GA,72,118,71,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Augusta Creek Golf Grounds,Augusta,GA,70,121,71.3,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Hilton Head Landing Public Links,Hilton Head,SC,71,124,71.6,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Myrtle Beach Vista Golf Park,Myrtle Beach,SC,72,127,71.9,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Charleston Dunes Golf Club,Charleston,SC,70,130,72.2,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Aiken Links Golf Links,Aiken,SC,71,133,72.6,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Kiawah Island Harbor Public Golf Club,Kiawah Island,SC,72,136,72.9,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Pinehurst Pines Municipal Golf Club,Pinehurst,NC,70,139,73.2,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Asheville Canyon Resort Course,Asheville,NC,71,142,73.5,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Raleigh Ridge Championship Course,Raleigh,NC,72,145,73.8,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Wilmington Shores Golf Preserve,Wilmington,NC,70,120,74.2,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Boone Highland Golf Grounds,Boone,NC,71,123,74.5,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Charlotte Trail Public Links,Charlotte,NC,72,126,74.8,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Nashville National Golf Park,Nashville,TN,70,129,75.1,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Knoxville Reserve Golf Club,Knoxville,TN,71,132,75.4,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Chattanooga Bay Golf Links,Chattanooga,TN,72,135,75.8,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Memphis Bluffs Public Golf Club,Memphis,TN,70,138,68.4,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Crossville Run Municipal Golf Club,Crossville,TN,71,141,68.7,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Louisville Point Resort Course,Louisville,KY,72,144,69,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Lexington Club Championship Course,Lexington,KY,70,119,69.4,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Bowling Green Commons Golf Preserve,Bowling Green,KY,71,122,69.7,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Chicago Creek Golf Grounds,Chicago,IL,72,125,70,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Lemont Landing Public Links,Lemont,IL,70,128,70.3,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Lake Forest Vista Golf Park,Lake Forest,IL,71,131,70.6,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Springfield Dunes Golf Club,Springfield,IL,72,134,71,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Galena Links Golf Links,Galena,IL,70,137,71.3,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+French Lick Harbor Public Golf Club,French Lick,IN,71,140,71.6,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Indianapolis Pines Municipal Golf Club,Indianapolis,IN,72,143,71.9,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+South Bend Canyon Resort Course,South Bend,IN,70,118,72.2,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Westfield Ridge Championship Course,Westfield,IN,71,121,72.6,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Traverse City Shores Golf Preserve,Traverse City,MI,72,124,72.9,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Grand Rapids Highland Golf Grounds,Grand Rapids,MI,70,127,73.2,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Harbor Springs Trail Public Links,Harbor Springs,MI,71,130,73.5,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Arcadia National Golf Park,Arcadia,MI,72,133,73.8,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Detroit Reserve Golf Club,Detroit,MI,70,136,74.2,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Brainerd Bay Golf Links,Brainerd,MN,71,139,74.5,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Duluth Bluffs Public Golf Club,Duluth,MN,72,142,74.8,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Minneapolis Run Municipal Golf Club,Minneapolis,MN,70,145,75.1,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Blaine Point Resort Course,Blaine,MN,71,120,75.4,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Nisswa Club Championship Course,Nisswa,MN,72,123,75.8,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Kohler Commons Golf Preserve,Kohler,WI,70,126,68.4,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Madison Creek Golf Grounds,Madison,WI,71,129,68.7,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Wisconsin Dells Landing Public Links,Wisconsin Dells,WI,72,132,69,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Green Lake Vista Golf Park,Green Lake,WI,70,135,69.4,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Erin Dunes Golf Club,Erin,WI,71,138,69.7,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Branson Links Golf Links,Branson,MO,72,141,70,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+St Louis Harbor Public Golf Club,St Louis,MO,70,144,70.3,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Kansas City Pines Municipal Golf Club,Kansas City,MO,71,119,70.6,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Ozark Canyon Resort Course,Ozark,MO,72,122,71,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Omaha Ridge Championship Course,Omaha,NE,70,125,71.3,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Lincoln Shores Golf Preserve,Lincoln,NE,71,128,71.6,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Valentine Highland Golf Grounds,Valentine,NE,72,131,71.9,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Wichita Trail Public Links,Wichita,KS,70,134,72.2,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Overland Park National Golf Park,Overland Park,KS,71,137,72.6,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Manhattan Reserve Golf Club,Manhattan,KS,72,140,72.9,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Tulsa Bay Golf Links,Tulsa,OK,70,143,73.2,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Oklahoma City Bluffs Public Golf Club,Oklahoma City,OK,71,118,73.5,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Broken Arrow Run Municipal Golf Club,Broken Arrow,OK,72,121,73.8,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Hot Springs Point Resort Course,Hot Springs,AR,70,124,74.2,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Bella Vista Club Championship Course,Bella Vista,AR,71,127,74.5,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Bentonville Commons Golf Preserve,Bentonville,AR,72,130,74.8,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+New Orleans Creek Golf Grounds,New Orleans,LA,70,133,75.1,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Lake Charles Landing Public Links,Lake Charles,LA,71,136,75.4,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Baton Rouge Vista Golf Park,Baton Rouge,LA,72,139,75.8,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Birmingham Dunes Golf Club,Birmingham,AL,70,142,68.4,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Mobile Links Golf Links,Mobile,AL,71,145,68.7,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Auburn Harbor Public Golf Club,Auburn,AL,72,120,69,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Opelika Pines Municipal Golf Club,Opelika,AL,70,123,69.4,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Biloxi Canyon Resort Course,Biloxi,MS,71,126,69.7,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Starkville Ridge Championship Course,Starkville,MS,72,129,70,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Tunica Shores Golf Preserve,Tunica,MS,70,132,70.3,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Williamsburg Highland Golf Grounds,Williamsburg,VA,71,135,70.6,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Roanoke Trail Public Links,Roanoke,VA,72,138,71,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Richmond National Golf Park,Richmond,VA,70,141,71.3,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Virginia Beach Reserve Golf Club,Virginia Beach,VA,71,144,71.6,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Baltimore Bay Golf Links,Baltimore,MD,72,119,71.9,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Ocean City Bluffs Public Golf Club,Ocean City,MD,70,122,72.2,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Frederick Run Municipal Golf Club,Frederick,MD,71,125,72.6,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Pittsburgh Point Resort Course,Pittsburgh,PA,72,128,72.9,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Philadelphia Club Championship Course,Philadelphia,PA,70,131,73.2,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Hershey Commons Golf Preserve,Hershey,PA,71,134,73.5,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Erie Creek Golf Grounds,Erie,PA,72,137,73.8,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Bethpage Landing Public Links,Bethpage,NY,70,140,74.2,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Rochester Vista Golf Park,Rochester,NY,71,143,74.5,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Syracuse Dunes Golf Club,Syracuse,NY,72,118,74.8,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Lake Placid Links Golf Links,Lake Placid,NY,70,121,75.1,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Montauk Harbor Public Golf Club,Montauk,NY,71,124,75.4,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Atlantic City Pines Municipal Golf Club,Atlantic City,NJ,72,127,75.8,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Princeton Canyon Resort Course,Princeton,NJ,70,130,68.4,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Somerset Ridge Championship Course,Somerset,NJ,71,133,68.7,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Cape Cod Shores Golf Preserve,Cape Cod,MA,72,136,69,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Plymouth Highland Golf Grounds,Plymouth,MA,70,139,69.4,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Boston Trail Public Links,Boston,MA,71,142,69.7,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Lenox National Golf Park,Lenox,MA,72,145,70,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Newport Reserve Golf Club,Newport,RI,70,120,70.3,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Providence Bay Golf Links,Providence,RI,71,123,70.6,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Hartford Bluffs Public Golf Club,Hartford,CT,72,126,71,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Mystic Run Municipal Golf Club,Mystic,CT,70,129,71.3,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+New Haven Point Resort Course,New Haven,CT,71,132,71.6,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Burlington Club Championship Course,Burlington,VT,72,135,71.9,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Stowe Commons Golf Preserve,Stowe,VT,70,138,72.2,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+North Conway Creek Golf Grounds,North Conway,NH,71,141,72.6,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Manchester Landing Public Links,Manchester,NH,72,144,72.9,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Kennebunkport Vista Golf Park,Kennebunkport,ME,70,119,73.2,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Bar Harbor Dunes Golf Club,Bar Harbor,ME,71,122,73.5,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Portland Links Golf Links,Portland,ME,72,125,73.8,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Charleston Ridge Golf Grounds 163,Charleston,SC,70,128,74.2,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Asheville Shores Public Links 164,Asheville,NC,71,131,74.5,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Crossville Highland Golf Park 165,Crossville,TN,72,134,74.8,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Louisville Trail Golf Club 166,Louisville,KY,70,137,75.1,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Lemont National Golf Links 167,Lemont,IL,71,140,75.4,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Westfield Reserve Public Golf Club 168,Westfield,IN,72,143,75.8,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Arcadia Bay Municipal Golf Club 169,Arcadia,MI,70,118,68.4,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Nisswa Bluffs Resort Course 170,Nisswa,MN,71,121,68.7,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Kohler Run Championship Course 171,Kohler,WI,72,124,69,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Ozark Point Golf Preserve 172,Ozark,MO,70,127,69.4,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Lincoln Club Golf Grounds 173,Lincoln,NE,71,130,69.7,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Manhattan Commons Public Links 174,Manhattan,KS,72,133,70,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Tulsa Creek Golf Park 175,Tulsa,OK,70,136,70.3,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Bella Vista Landing Golf Club 176,Bella Vista,AR,71,139,70.6,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Baton Rouge Vista Golf Links 177,Baton Rouge,LA,72,142,71,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Mobile Dunes Public Golf Club 178,Mobile,AL,70,145,71.3,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Starkville Links Municipal Golf Club 179,Starkville,MS,71,120,71.6,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Virginia Beach Harbor Resort Course 180,Virginia Beach,VA,72,123,71.9,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Baltimore Pines Championship Course 181,Baltimore,MD,70,126,72.2,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Philadelphia Canyon Golf Preserve 182,Philadelphia,PA,71,129,72.6,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Syracuse Ridge Golf Grounds 183,Syracuse,NY,72,132,72.9,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Atlantic City Shores Public Links 184,Atlantic City,NJ,70,135,73.2,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Cape Cod Highland Golf Park 185,Cape Cod,MA,71,138,73.5,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Providence Trail Golf Club 186,Providence,RI,72,141,73.8,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Hartford National Golf Links 187,Hartford,CT,70,144,74.2,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Stowe Reserve Public Golf Club 188,Stowe,VT,71,119,74.5,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+North Conway Bay Municipal Golf Club 189,North Conway,NH,72,122,74.8,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Kennebunkport Bluffs Resort Course 190,Kennebunkport,ME,70,125,75.1,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+San Diego Run Championship Course 191,San Diego,CA,71,128,75.4,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Gearhart Point Golf Preserve 192,Gearhart,OR,72,131,75.8,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Tacoma Club Golf Grounds 193,Tacoma,WA,70,134,68.4,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Tucson Commons Public Links 194,Tucson,AZ,71,137,68.7,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Mesquite Creek Golf Park 195,Mesquite,NV,72,140,69,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Frisco Landing Golf Club 196,Frisco,TX,70,143,69.4,1,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Colorado Springs Vista Golf Links 197,Colorado Springs,CO,71,118,69.7,2,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+St George Dunes Public Golf Club 198,St George,UT,72,121,70,3,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Tampa Links Municipal Golf Club 199,Tampa,FL,70,124,70.3,4,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
+Augusta Harbor Resort Course 200,Augusta,GA,71,127,70.6,5,phase1-curated-shortlist,core-public-seed,generated-national-public-catalog
