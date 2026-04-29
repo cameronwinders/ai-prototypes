@@ -20,6 +20,13 @@ type AppNavigationProps = {
   showFeedbackReview?: boolean;
 };
 
+type NavigationLink = {
+  label: string;
+  href: string;
+  active: boolean;
+  detail?: string;
+};
+
 function getCurrentSpaceId(pathname: string) {
   const match = pathname.match(/^\/spaces\/([^/]+)/);
   return match?.[1] ?? null;
@@ -29,9 +36,14 @@ function matchesPath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+function getInitial(displayName: string) {
+  return displayName.slice(0, 1).toUpperCase();
+}
+
 export function AppNavigation({ displayName, relationshipLabel, spaces, defaultSpaceId, showFeedbackReview = false }: AppNavigationProps) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
 
   const currentSpaceId = getCurrentSpaceId(pathname);
   const preferredSpaceId = currentSpaceId ?? defaultSpaceId ?? null;
@@ -44,7 +56,7 @@ export function AppNavigation({ displayName, relationshipLabel, spaces, defaultS
     return spaces.find((space) => space.id === preferredSpaceId) ?? null;
   }, [preferredSpaceId, spaces]);
 
-  const primaryLinks = [
+  const primaryLinks: NavigationLink[] = [
     {
       label: "Timeline",
       href: preferredSpaceId ? `/spaces/${preferredSpaceId}/timeline` : "/spaces",
@@ -67,48 +79,168 @@ export function AppNavigation({ displayName, relationshipLabel, spaces, defaultS
     }
   ];
 
-  const accountLinks = [
+  const spaceLinks: NavigationLink[] = [
+    {
+      label: "Current space",
+      href: preferredSpaceId ? `/spaces/${preferredSpaceId}/timeline` : "/spaces",
+      active: Boolean(currentSpaceId),
+      detail: preferredSpace?.name ?? "Choose a space"
+    },
+    {
+      label: "Switch space",
+      href: "/spaces",
+      active: pathname === "/spaces" || pathname === "/spaces/new",
+      detail: spaces.length > 0 ? `${spaces.length} available` : "Create your first space"
+    },
+    ...(preferredSpaceId
+      ? [
+          {
+            label: "Space settings",
+            href: `/spaces/${preferredSpaceId}/settings`,
+            active: matchesPath(pathname, `/spaces/${preferredSpaceId}/settings`),
+            detail: "Team, access, and structure"
+          }
+        ]
+      : [])
+  ];
+
+  const accountLinks: NavigationLink[] = [
     { label: "Profile", href: "/profile", active: matchesPath(pathname, "/profile") },
     { label: "Submit Feedback", href: "/feedback", active: pathname === "/feedback" },
     ...(showFeedbackReview ? [{ label: "Feedback Review", href: "/feedback/review", active: matchesPath(pathname, "/feedback/review") }] : [])
   ];
 
+  const closeMenus = () => {
+    setMenuOpen(false);
+    setAccountOpen(false);
+  };
+
   return (
     <>
-      <button
-        aria-controls="app-navigation"
-        aria-expanded={menuOpen}
-        className="nav-mobile-trigger"
-        onClick={() => setMenuOpen((open) => !open)}
-        type="button"
-      >
-        <span className="nav-mobile-trigger-icon" aria-hidden="true">
-          {displayName.slice(0, 1).toUpperCase()}
-        </span>
-        <span>
-          <strong>Menu</strong>
-          <small>{preferredSpace?.name ?? "Caretaking App"}</small>
-        </span>
-      </button>
-
-      {menuOpen ? <button aria-label="Close navigation" className="nav-overlay" onClick={() => setMenuOpen(false)} type="button" /> : null}
-
-      <aside className={`app-navigation ${menuOpen ? "is-open" : ""}`} id="app-navigation">
-        <div className="nav-header">
-          <div>
-            <p className="eyebrow">Caretaking App</p>
-            <h2>Shared care</h2>
-            <p className="muted">Move through the product without losing context.</p>
+      <header className="app-topbar">
+        <div className="app-topbar-inner">
+          <div className="app-brand">
+            <Link className="app-brand-link" href={preferredSpaceId ? `/spaces/${preferredSpaceId}/timeline` : "/spaces"} onClick={closeMenus}>
+              <span className="app-brand-mark" aria-hidden="true">
+                C
+              </span>
+              <span className="app-brand-copy">
+                <strong>Caretaking App</strong>
+                <small>{preferredSpace?.name ?? "Shared care, calmly coordinated."}</small>
+              </span>
+            </Link>
           </div>
-          <button aria-label="Close navigation" className="nav-close" onClick={() => setMenuOpen(false)} type="button">
+
+          <nav className="app-nav-desktop" aria-label="Primary navigation">
+            {primaryLinks.map((item) => (
+              <Link
+                aria-current={item.active ? "page" : undefined}
+                className={`app-nav-link ${item.active ? "is-active" : ""}`}
+                href={item.href}
+                key={item.label}
+                onClick={() => setAccountOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="app-topbar-actions">
+            <Link className="app-space-summary" href="/spaces" onClick={() => setAccountOpen(false)}>
+              <span>Spaces</span>
+              <strong>{preferredSpace?.name ?? "Choose a space"}</strong>
+            </Link>
+
+            <div className={`account-dropdown ${accountOpen ? "is-open" : ""}`}>
+              <button
+                aria-expanded={accountOpen}
+                aria-haspopup="menu"
+                className="account-trigger"
+                onClick={() => {
+                  setAccountOpen((open) => !open);
+                  setMenuOpen(false);
+                }}
+                type="button"
+              >
+                <span className="account-trigger-avatar" aria-hidden="true">
+                  {getInitial(displayName)}
+                </span>
+                <span className="account-trigger-copy">
+                  <strong>{displayName}</strong>
+                  <small>{relationshipLabel || "Account"}</small>
+                </span>
+                <span className="account-trigger-caret" aria-hidden="true">
+                  ▾
+                </span>
+              </button>
+
+              {accountOpen ? (
+                <div className="account-dropdown-menu" role="menu">
+                  {accountLinks.map((item) => (
+                    <Link
+                      aria-current={item.active ? "page" : undefined}
+                      className={`account-dropdown-link ${item.active ? "is-active" : ""}`}
+                      href={item.href}
+                      key={item.label}
+                      onClick={closeMenus}
+                      role="menuitem"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                  <form action={signOut}>
+                    <button className="account-dropdown-link account-dropdown-button" role="menuitem" type="submit">
+                      Log out
+                    </button>
+                  </form>
+                </div>
+              ) : null}
+            </div>
+
+            <button
+              aria-controls="app-navigation-drawer"
+              aria-expanded={menuOpen}
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              className="hamburger-button"
+              onClick={() => {
+                setMenuOpen((open) => !open);
+                setAccountOpen(false);
+              }}
+              type="button"
+            >
+              <span />
+              <span />
+              <span />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {menuOpen || accountOpen ? (
+        <button
+          aria-label="Dismiss navigation"
+          className="nav-overlay"
+          onClick={closeMenus}
+          type="button"
+        />
+      ) : null}
+
+      <aside className={`mobile-drawer ${menuOpen ? "is-open" : ""}`} id="app-navigation-drawer">
+        <div className="mobile-drawer-header">
+          <div>
+            <p className="eyebrow">Menu</p>
+            <h2>Navigate the app</h2>
+            <p className="muted">Move quickly between care updates, reminders, and spaces.</p>
+          </div>
+          <button aria-label="Close menu" className="mobile-drawer-close" onClick={closeMenus} type="button">
             Close
           </button>
         </div>
 
-        <section className="nav-section">
-          <div className="nav-account-card">
+        <section className="mobile-drawer-section">
+          <div className="mobile-account-card">
             <div className="nav-account-avatar" aria-hidden="true">
-              {displayName.slice(0, 1).toUpperCase()}
+              {getInitial(displayName)}
             </div>
             <div>
               <strong>{displayName}</strong>
@@ -117,96 +249,83 @@ export function AppNavigation({ displayName, relationshipLabel, spaces, defaultS
           </div>
         </section>
 
-        <section className="nav-section" aria-labelledby="nav-core-heading">
-          <div className="nav-section-heading" id="nav-core-heading">
-            Core app
+        <section className="mobile-drawer-section" aria-labelledby="mobile-primary-heading">
+          <div className="mobile-drawer-heading" id="mobile-primary-heading">
+            Main navigation
           </div>
-          <nav className="nav-list" aria-label="Core navigation">
+          <nav className="mobile-drawer-list" aria-label="Mobile primary navigation">
             {primaryLinks.map((item) => (
               <Link
                 aria-current={item.active ? "page" : undefined}
-                className={`nav-link ${item.active ? "is-active" : ""}`}
+                className={`mobile-drawer-link ${item.active ? "is-active" : ""}`}
                 href={item.href}
                 key={item.label}
-                onClick={() => setMenuOpen(false)}
+                onClick={closeMenus}
               >
-                {item.label}
+                <span>{item.label}</span>
               </Link>
             ))}
           </nav>
         </section>
 
-        <section className="nav-section" aria-labelledby="nav-spaces-heading">
-          <div className="nav-section-heading" id="nav-spaces-heading">
+        <section className="mobile-drawer-section" aria-labelledby="mobile-spaces-heading">
+          <div className="mobile-drawer-heading" id="mobile-spaces-heading">
             Spaces
           </div>
-          <div className="nav-space-panel">
-            <Link
-              className={`nav-link nav-link-compact ${currentSpaceId ? "is-active" : ""}`}
-              href={preferredSpaceId ? `/spaces/${preferredSpaceId}/timeline` : "/spaces"}
-              onClick={() => setMenuOpen(false)}
-            >
-              Current space
-              <small>{preferredSpace?.name ?? "Choose a space"}</small>
-            </Link>
-            <Link className="nav-link nav-link-compact" href="/spaces" onClick={() => setMenuOpen(false)}>
-              Switch space
-              <small>{spaces.length > 0 ? `${spaces.length} available` : "Create your first space"}</small>
-            </Link>
-            {preferredSpaceId ? (
+          <div className="mobile-drawer-list">
+            {spaceLinks.map((item) => (
               <Link
-                className={`nav-link nav-link-compact ${matchesPath(pathname, `/spaces/${preferredSpaceId}/settings`) ? "is-active" : ""}`}
-                href={`/spaces/${preferredSpaceId}/settings`}
-                onClick={() => setMenuOpen(false)}
+                aria-current={item.active ? "page" : undefined}
+                className={`mobile-drawer-link ${item.active ? "is-active" : ""}`}
+                href={item.href}
+                key={item.label}
+                onClick={closeMenus}
               >
-                Space settings
-                <small>Team, access, and structure</small>
+                <span>{item.label}</span>
+                {item.detail ? <small>{item.detail}</small> : null}
               </Link>
-            ) : null}
+            ))}
+            {spaces.map((space) => {
+              const active = currentSpaceId === space.id;
+
+              return (
+                <Link
+                  aria-current={active ? "page" : undefined}
+                  className={`mobile-drawer-link ${active ? "is-active" : ""}`}
+                  href={`/spaces/${space.id}/timeline`}
+                  key={space.id}
+                  onClick={closeMenus}
+                >
+                  <span>{space.name}</span>
+                  <small>{active ? "Current space" : "Open space"}</small>
+                </Link>
+              );
+            })}
           </div>
-          {spaces.length > 0 ? (
-            <div className="nav-space-list" aria-label="Available spaces">
-              {spaces.map((space) => {
-                const active = currentSpaceId === space.id;
-                return (
-                  <Link
-                    aria-current={active ? "page" : undefined}
-                    className={`nav-space-link ${active ? "is-active" : ""}`}
-                    href={`/spaces/${space.id}/timeline`}
-                    key={space.id}
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    <span>{space.name}</span>
-                    <small>{active ? "Current space" : "Open"}</small>
-                  </Link>
-                );
-              })}
-            </div>
-          ) : null}
         </section>
 
-        <section className="nav-section" aria-labelledby="nav-account-heading">
-          <div className="nav-section-heading" id="nav-account-heading">
+        <section className="mobile-drawer-section" aria-labelledby="mobile-account-heading">
+          <div className="mobile-drawer-heading" id="mobile-account-heading">
             Account
           </div>
-          <nav className="nav-list" aria-label="Account navigation">
+          <div className="mobile-drawer-list">
             {accountLinks.map((item) => (
               <Link
                 aria-current={item.active ? "page" : undefined}
-                className={`nav-link ${item.active ? "is-active" : ""}`}
+                className={`mobile-drawer-link ${item.active ? "is-active" : ""}`}
                 href={item.href}
                 key={item.label}
-                onClick={() => setMenuOpen(false)}
+                onClick={closeMenus}
               >
-                {item.label}
+                <span>{item.label}</span>
               </Link>
             ))}
-          </nav>
-          <form action={signOut}>
-            <button className="nav-link nav-link-button" type="submit">
-              Log out
-            </button>
-          </form>
+            <form action={signOut}>
+              <button className="mobile-drawer-link mobile-drawer-button" type="submit">
+                <span>Log out</span>
+              </button>
+            </form>
+          </div>
         </section>
       </aside>
     </>
