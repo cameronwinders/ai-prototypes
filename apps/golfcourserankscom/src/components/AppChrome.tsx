@@ -128,7 +128,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                   <form action={signOut}>
                     <button
                       type="submit"
-                      className="rounded-full bg-[var(--ink)] px-4 py-2 text-sm font-semibold text-[rgb(255,255,255)]"
+                      className="solid-button min-h-11 whitespace-nowrap px-4 text-[rgb(255,255,255)]"
                     >
                       Sign out
                     </button>
@@ -137,7 +137,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
               ) : (
                 <Link
                   href={`/sign-in?next=${encodeURIComponent(currentUrl)}`}
-                  className="rounded-full bg-[var(--ink)] px-4 py-2 text-sm font-semibold text-[rgb(255,255,255)]"
+                  className="solid-button min-h-11 whitespace-nowrap px-4 text-[rgb(255,255,255)]"
                 >
                   Sign in
                 </Link>
@@ -167,7 +167,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
 
         <Link
           href={feedbackHref}
-          className="fixed bottom-[5.75rem] right-4 z-40 inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-[rgb(255,255,255)] shadow-[0_20px_55px_rgba(22,38,34,0.28)] lg:bottom-6 lg:right-8"
+          className="solid-button fixed bottom-[5.75rem] right-4 z-40 min-h-11 gap-2 whitespace-nowrap px-5 text-[rgb(255,255,255)] shadow-[0_20px_55px_rgba(22,38,34,0.28)] lg:bottom-6 lg:right-8"
         >
           <span className="text-base leading-none">+</span>
           <span>Feedback</span>
