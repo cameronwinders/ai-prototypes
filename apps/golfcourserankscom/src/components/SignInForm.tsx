@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 
-import { createBrowserSupabaseClient } from "@/lib/supabase/client";
-import { getPublicSupabaseEnv, getSiteUrl } from "@/lib/supabase/env";
+import { requestSignInLink } from "@/app/actions";
 
 export function SignInForm() {
   const searchParams = useSearchParams();
@@ -16,7 +15,6 @@ export function SignInForm() {
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(callbackError);
-  const env = getPublicSupabaseEnv();
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -24,33 +22,20 @@ export function SignInForm() {
     setMessage(null);
     setError(null);
 
-    if (!env.isConfigured) {
-      setError("Email sign-in is not available right now. Please try again in a moment.");
-      setSubmitting(false);
-      return;
-    }
-
     try {
-      const supabase = createBrowserSupabaseClient();
-      const { error: authError } = await supabase.auth.signInWithOtp({
+      const result = await requestSignInLink({
         email,
-        options: {
-          shouldCreateUser: true,
-          emailRedirectTo: `${getSiteUrl()}/api/auth/callback?next=${encodeURIComponent(next)}`
-        }
+        next,
+        mode
       });
 
-      if (authError) {
-        setError(authError.message);
+      if (!result.ok) {
+        setError(result.message ?? "We could not send the sign-in email.");
         setSubmitting(false);
         return;
       }
 
-      setMessage(
-        mode === "sign-up"
-          ? "Check your email for the account link. Once you open it, we will help you set your handicap band and bring you back to where you started."
-          : "Check your email for the secure sign-in link."
-      );
+      setMessage(result.message ?? "Check your email for the secure sign-in link.");
       setSubmitting(false);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "We could not send the sign-in email.");

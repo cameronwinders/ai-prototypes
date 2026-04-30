@@ -11,6 +11,7 @@ import {
   getRankedCoursesForUser
 } from "@/lib/data";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getSiteUrl } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import {
   FEEDBACK_TYPES,
@@ -27,6 +28,8 @@ type ActionResult<T> = {
   message?: string;
   data?: T;
 };
+
+type AuthMode = "sign-in" | "sign-up";
 
 function isHandicapBand(value: string): value is (typeof HANDICAP_OPTIONS)[number] {
   return HANDICAP_OPTIONS.includes(value as (typeof HANDICAP_OPTIONS)[number]);
@@ -57,6 +60,56 @@ function appPaths(handle?: string | null) {
 function revalidateApp(handle?: string | null) {
   for (const path of appPaths(handle)) {
     revalidatePath(path);
+  }
+}
+
+async function sendAuthLinkEmail(input: {
+  to: string;
+  subject: string;
+  actionLink: string;
+  mode: AuthMode;
+}) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.RESEND_FROM_EMAIL ?? "Golf Course Ranks <hello@caretakingapp.com>";
+  const replyTo = process.env.RESEND_REPLY_TO?.trim() || undefined;
+
+  if (!apiKey) {
+    throw new Error("Email delivery is not configured.");
+  }
+
+  const intro =
+    input.mode === "sign-up"
+      ? "Open the secure link below to confirm your Golf Course Ranks account and finish your handicap setup."
+      : "Open the secure link below to sign in to Golf Course Ranks.";
+
+  const html = `
+    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#14231d">
+      <p>${intro}</p>
+      <p><a href="${input.actionLink}" style="display:inline-block;padding:12px 18px;border-radius:999px;background:#162622;color:#ffffff;text-decoration:none;font-weight:600">Open Golf Course Ranks</a></p>
+      <p style="font-size:14px;color:#5d6a64">If the button does not work, copy and paste this link into your browser:</p>
+      <p style="font-size:14px;word-break:break-all;color:#5d6a64">${input.actionLink}</p>
+    </div>
+  `;
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      from,
+      to: [input.to],
+      reply_to: replyTo,
+      subject: input.subject,
+      html,
+      text: `${intro}\n\n${input.actionLink}`
+    })
+  });
+
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error(`Email delivery failed: ${detail}`);
   }
 }
 
@@ -102,6 +155,90 @@ export async function signOut() {
   const supabase = await createServerSupabaseClient();
   await supabase.auth.signOut();
   redirect("/sign-in?signed_out=1");
+}
+
+export async function requestSignInLink(input: {
+  email: string;
+  next: string;
+  mode: AuthMode;
+}): Promise<ActionResult<null>> {
+  const email = input.email.trim().toLowerCase();
+  const next = input.next.startsWith("/") ? input.next : "/leaderboard";
+
+  if (!email.includes("@")) {
+    return {
+      ok: false,
+      message: "Enter a valid email address."
+    };
+  }
+
+  const admin = createAdminClient();
+  const createUserResult = await admin.auth.admin.createUser({
+    email,
+    email_confirm: false
+  });
+
+  if (
+    createUserResult.error &&
+    !createUserResult.error.message.includes("already been registered")
+  ) {
+    return {
+      ok: false,
+      message: createUserResult.error.message
+    };
+  }
+
+  const generatedLink = await admin.auth.admin.generateLink({
+    type: "magiclink",
+    email,
+    options: {
+      redirectTo: `${getSiteUrl()}/api/auth/callback?next=${encodeURIComponent(next)}`
+    }
+  });
+
+  if (generatedLink.error) {
+    return {
+      ok: false,
+      message: generatedLink.error.message
+    };
+  }
+
+  const hashedToken = generatedLink.data.properties?.hashed_token;
+  const verificationType = generatedLink.data.properties?.verification_type;
+
+  if (!hashedToken || !verificationType) {
+    return {
+      ok: false,
+      message: "We could not create the sign-in link."
+    };
+  }
+
+  const actionLink = `${getSiteUrl()}/api/auth/callback?token_hash=${encodeURIComponent(hashedToken)}&type=${encodeURIComponent(verificationType)}&next=${encodeURIComponent(next)}`;
+
+  try {
+    await sendAuthLinkEmail({
+      to: email,
+      subject:
+        input.mode === "sign-up"
+          ? "Confirm your Golf Course Ranks account"
+          : "Your Golf Course Ranks sign-in link",
+      actionLink,
+      mode: input.mode
+    });
+  } catch (caught) {
+    return {
+      ok: false,
+      message: caught instanceof Error ? caught.message : "We could not send the sign-in email."
+    };
+  }
+
+  return {
+    ok: true,
+    message:
+      input.mode === "sign-up"
+        ? "Check your email for the account link. Once you open it, we will help you set your handicap band and bring you back to where you started."
+        : "Check your email for the secure sign-in link."
+  };
 }
 
 export async function setCoursePlayed(courseId: string, played: boolean): Promise<ActionResult<PlayedCourse[]>> {
