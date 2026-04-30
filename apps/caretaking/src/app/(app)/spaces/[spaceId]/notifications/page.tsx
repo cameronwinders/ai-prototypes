@@ -5,6 +5,7 @@ import { EmailPreferencesForm } from "@/components/notifications/email-preferenc
 import { NotificationList } from "@/components/notifications/notification-list";
 import { Card, StatCard } from "@/components/ui/design";
 import { requireSpaceMembership } from "@/lib/auth/guards";
+import { getUserProfile } from "@/lib/domain/profiles";
 import {
   getEmailNotificationPreference,
   getUnreadNotificationCount,
@@ -20,10 +21,11 @@ export default async function NotificationsPage({ params, searchParams }: Notifi
   const { spaceId } = await params;
   const search = await searchParams;
   const { supabase, user } = await requireSpaceMembership(spaceId);
-  const [notifications, unreadCount, emailPreference] = await Promise.all([
+  const [notifications, unreadCount, emailPreference, profile] = await Promise.all([
     listNotifications(supabase, user.id, spaceId),
     getUnreadNotificationCount(supabase, user.id, spaceId),
-    getEmailNotificationPreference(supabase, user.id, spaceId)
+    getEmailNotificationPreference(supabase, user.id, spaceId),
+    getUserProfile(supabase, user.id)
   ]);
   const success = typeof search.success === "string" ? search.success : "";
   const error = typeof search.error === "string" ? search.error : "";
@@ -53,7 +55,7 @@ export default async function NotificationsPage({ params, searchParams }: Notifi
               Reminders
             </Link>
           </div>
-          <NotificationList items={notifications} spaceId={spaceId} />
+          <NotificationList items={notifications} spaceId={spaceId} timezone={profile.timezone} />
         </Card>
         <Card>
           <div className="section-title">

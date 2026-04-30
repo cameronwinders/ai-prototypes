@@ -2,6 +2,7 @@ import { buildEmailSubject, sendActivityEmail } from "@/lib/email/activity";
 import { getProfileDisplayName } from "@/lib/domain/profiles";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getSiteUrl } from "@/lib/supabase/env";
+import { isUtcTimezone, resolveTimezone } from "@/lib/timezone";
 
 type PreferenceRow = {
   enabled?: boolean | null;
@@ -209,7 +210,9 @@ async function getRecipient(admin: ReturnType<typeof createAdminClient>, userId:
   return {
     userId,
     email: authData.user.email,
-    timezone: profile?.timezone || "America/Chicago"
+    timezone: isUtcTimezone(profile?.timezone)
+      ? resolveTimezone(authData.user.user_metadata?.timezone)
+      : resolveTimezone(profile?.timezone, authData.user.user_metadata?.timezone)
   };
 }
 

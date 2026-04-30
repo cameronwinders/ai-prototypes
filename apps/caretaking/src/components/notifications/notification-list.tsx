@@ -1,27 +1,18 @@
 import { markNotificationAsRead } from "@/actions/notifications";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { EmptyState, StatusPill } from "@/components/ui/design";
+import type { NotificationListItem } from "@/lib/domain/notifications";
 import Link from "next/link";
 import { LocalTime } from "@/components/ui/local-time";
 
-type NotificationRow = {
-  id: string;
-  title: string;
-  body: string | null;
-  status: "pending" | "sent" | "failed" | "read";
-  read_at: string | null;
-  created_at: string;
-  type: string;
-  event_id: string | null;
-  reminder_id: string | null;
-};
-
 export function NotificationList({
   items,
-  spaceId
+  spaceId,
+  timezone
 }: {
-  items: NotificationRow[];
+  items: NotificationListItem[];
   spaceId: string;
+  timezone: string;
 }) {
   if (items.length === 0) {
     return (
@@ -41,7 +32,9 @@ export function NotificationList({
               <h3>{item.title}</h3>
               {item.body ? <p className="muted">{item.body}</p> : null}
             </div>
-            <p className="timeline-time"><LocalTime value={item.created_at} /></p>
+            <p className="timeline-time">
+              {item.display_label} <LocalTime value={item.display_at} timezone={timezone} />
+            </p>
           </div>
           {item.status !== "read" ? (
             <form action={markNotificationAsRead} className="notification-action">

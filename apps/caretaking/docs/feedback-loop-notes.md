@@ -29,3 +29,28 @@ What Codex intentionally did not change in this pass:
 Follow-up shipped after triage:
 
 - Added browser timezone capture plus a profile-editable timezone field, so new users stop inheriting `UTC` and older profiles can recover to a real local zone.
+
+## 2026-04-30 Round 13 triage
+
+Source: `C:\Users\cwind\OneDrive\Documents\Cam Cowork\Caregiving App\Feedback\latest.md`
+
+Highest-priority product pain points from the report:
+
+- Bugs affecting trust:
+  - Notification emails still showed UTC-style timestamps for recipients whose stored profile timezone was still effectively the old seed value.
+  - The in-app notifications page showed notification row creation time instead of the real reminder due time or event occurrence time.
+- UX issues affecting clarity and repeated use:
+  - Auth email templates are still Supabase-hosted defaults outside the repo.
+  - Timeline event cards remain non-clickable.
+  - Invite flow still tells non-owners to ask the owner without identifying that owner.
+
+What Codex fixed from this round:
+
+- Wired notifications to render the meaningful care timestamp for each item: event occurred time, reminder due time, or reminder completed time.
+- Made notification timestamp formatting explicit with the viewer's saved timezone instead of relying on ambient server or browser defaults.
+- Hardened email notification timezone fallback so stale `UTC` profile rows no longer keep sending UTC-style timestamps when a more useful application timezone can be resolved.
+
+What Codex intentionally did not change in this pass:
+
+- Supabase Auth email templates and link-domain branding, because they still live outside the repo.
+- Event detail routes and owner-label invite UX, because they are larger workflow changes than this safe heartbeat pass.
