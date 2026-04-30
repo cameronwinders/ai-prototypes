@@ -4,14 +4,19 @@ import { CoursesBrowser } from "@/components/CoursesBrowser";
 import { getAllCourses, getLeaderboardCourses, getPlayedCoursesForUser } from "@/lib/data";
 import { formatLocation, pluralize } from "@/lib/ranking";
 import { getViewerContext } from "@/lib/viewer";
+import { getAppOverviewStats } from "@/lib/data";
 
 export default async function HomePage() {
   const viewer = await getViewerContext();
-  const [leaderboard, courses, playedCourses] = await Promise.all([
+  const [leaderboard, courses, playedCourses, stats] = await Promise.all([
     getLeaderboardCourses({ limit: 8 }),
     getAllCourses(),
-    viewer.user ? getPlayedCoursesForUser(viewer.user.id) : Promise.resolve([])
+    viewer.user ? getPlayedCoursesForUser(viewer.user.id) : Promise.resolve([]),
+    getAppOverviewStats()
   ]);
+  const crowdPreview = leaderboard.filter((course) => !course.isEarly && course.numUniqueGolfers > 0);
+  const previewCourses = (crowdPreview.length > 0 ? crowdPreview : leaderboard).slice(0, 6);
+  const showingFallbackPreview = crowdPreview.length === 0;
 
   return (
     <div className="space-y-6">
@@ -30,6 +35,17 @@ export default async function HomePage() {
         <p className="mt-5 max-w-4xl text-lg leading-8 text-[var(--muted)]">
           Golf Course Ranks turns real golfer opinions into one clean national board. Browse the leaderboard, save the public courses you have played, compare your list with friends, and keep a running order of the rounds you would gladly book again.
         </p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <span className="rounded-full bg-[var(--pine-soft)] px-4 py-2 text-sm font-semibold text-[var(--pine)]">
+            {pluralize(stats.golferCount, "golfer")} on the board
+          </span>
+          <span className="rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--muted)]">
+            {pluralize(stats.signalCount, "comparison")} saved so far
+          </span>
+          <span className="rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--muted)]">
+            {pluralize(stats.courseCount, "course")} in the national lineup
+          </span>
+        </div>
 
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
@@ -51,7 +67,7 @@ export default async function HomePage() {
         <div className="shell-panel rounded-[2rem] p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="section-label">Leaderboard preview</p>
+              <p className="section-label">Live leaderboard preview</p>
               <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
                 The courses golfers keep near the top
               </h2>
@@ -61,8 +77,18 @@ export default async function HomePage() {
             </Link>
           </div>
 
+          {showingFallbackPreview ? (
+            <p className="mt-4 text-sm leading-6 text-[var(--muted)]">
+              The crowd board is still growing, so this preview includes the editorial starting order until more golfers finish their lists.
+            </p>
+          ) : (
+            <p className="mt-4 text-sm leading-6 text-[var(--muted)]">
+              This preview only shows courses that already have live golfer participation behind them.
+            </p>
+          )}
+
           <div className="mt-6 grid gap-3">
-            {leaderboard.map((course) => (
+            {previewCourses.map((course) => (
               <Link key={course.id} href={`/courses/${course.id}`} className="rounded-[1.7rem] border border-[var(--line)] bg-white/92 p-4 transition hover:bg-white">
                 <div className="grid gap-3 md:course-row-grid md:items-center">
                   <div className="text-3xl font-semibold tracking-[-0.05em] text-[var(--ink)]">#{course.leaderboardRank}</div>

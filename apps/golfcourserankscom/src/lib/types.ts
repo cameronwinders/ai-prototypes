@@ -34,6 +34,8 @@ export type CourseRecord = {
     seed_tier?: string;
     [key: string]: unknown;
   } | null;
+  leaderboard_rank?: number | null;
+  is_early?: boolean | null;
   created_at?: string;
   updated_at?: string;
 };

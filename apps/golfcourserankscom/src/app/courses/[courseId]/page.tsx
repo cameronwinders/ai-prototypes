@@ -74,9 +74,9 @@ export default async function CourseDetailPage({
           <section className="shell-panel rounded-[2rem] p-6">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="section-label">Course notes</p>
+                <p className="section-label">Your note</p>
                 <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
-                  A cleaner course page built for planning, sharing, and ranking.
+                  Save what stood out while the round is still fresh.
                 </h2>
               </div>
               <Link
@@ -88,7 +88,7 @@ export default async function CourseDetailPage({
             </div>
 
             <div className="mt-5 rounded-[1.6rem] border border-[var(--line)] bg-white/88 p-5 text-sm leading-6 text-[var(--muted)]">
-              Save a quick note after you play so future comparisons stay grounded in what you actually remember about the round.
+              Keep a private note on conditioning, pace, strategy, or whether this is a course you would happily book again.
             </div>
 
             {viewer.user ? (
@@ -97,7 +97,7 @@ export default async function CourseDetailPage({
               </div>
             ) : (
               <div className="mt-6 rounded-[1.6rem] border border-dashed border-[var(--line)] px-5 py-8 text-sm leading-6 text-[var(--muted)]">
-                Sign in to save your own note, mark the course as played, and add it to your ranking list.
+                Sign in to save your own note, mark the course as played, and decide where it belongs in your personal ranking.
               </div>
             )}
           </section>

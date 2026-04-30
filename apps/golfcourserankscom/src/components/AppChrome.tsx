@@ -94,7 +94,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                 href="/courses"
                 className="hidden rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--ink)] md:inline-flex"
               >
-                Quick search
+                Browse courses
               </Link>
               <Link
                 href={feedbackHref}

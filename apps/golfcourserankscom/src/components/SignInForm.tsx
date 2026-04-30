@@ -35,7 +35,7 @@ export function SignInForm() {
       const { error: authError } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          shouldCreateUser: mode === "sign-up",
+          shouldCreateUser: true,
           emailRedirectTo: `${getSiteUrl()}/api/auth/callback?next=${encodeURIComponent(next)}`
         }
       });
@@ -115,8 +115,8 @@ export function SignInForm() {
 
       <p className="text-sm leading-6 text-[var(--muted)]">
         {mode === "sign-up"
-          ? "We only ask for your handicap band before you start building your rankings."
-          : "Your played courses, ranking order, and compare access all reopen as soon as the link completes the session."}
+          ? "We will help you set your handicap band after the link opens so you can start ranking right away."
+          : "We will email a secure access link. If this is your first time, we will finish your setup after you open it."}
       </p>
 
       <button

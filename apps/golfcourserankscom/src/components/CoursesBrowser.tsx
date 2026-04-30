@@ -7,6 +7,59 @@ import { setCoursePlayed } from "@/app/actions";
 import { formatLocation } from "@/lib/ranking";
 import type { CourseRecord, PlayedCourse } from "@/lib/types";
 
+const STATE_NAME_BY_CODE: Record<string, string> = {
+  AL: "alabama",
+  AK: "alaska",
+  AZ: "arizona",
+  AR: "arkansas",
+  CA: "california",
+  CO: "colorado",
+  CT: "connecticut",
+  DE: "delaware",
+  FL: "florida",
+  GA: "georgia",
+  HI: "hawaii",
+  ID: "idaho",
+  IL: "illinois",
+  IN: "indiana",
+  IA: "iowa",
+  KS: "kansas",
+  KY: "kentucky",
+  LA: "louisiana",
+  ME: "maine",
+  MD: "maryland",
+  MA: "massachusetts",
+  MI: "michigan",
+  MN: "minnesota",
+  MS: "mississippi",
+  MO: "missouri",
+  MT: "montana",
+  NE: "nebraska",
+  NV: "nevada",
+  NH: "new hampshire",
+  NJ: "new jersey",
+  NM: "new mexico",
+  NY: "new york",
+  NC: "north carolina",
+  ND: "north dakota",
+  OH: "ohio",
+  OK: "oklahoma",
+  OR: "oregon",
+  PA: "pennsylvania",
+  RI: "rhode island",
+  SC: "south carolina",
+  SD: "south dakota",
+  TN: "tennessee",
+  TX: "texas",
+  UT: "utah",
+  VT: "vermont",
+  VA: "virginia",
+  WA: "washington",
+  WV: "west virginia",
+  WI: "wisconsin",
+  WY: "wyoming"
+};
+
 type CoursesBrowserProps = {
   courses: CourseRecord[];
   initialPlayedCourses: PlayedCourse[];
@@ -35,9 +88,12 @@ export function CoursesBrowser({
       return defaultVisibleCount ? courses.slice(0, defaultVisibleCount) : courses;
     }
 
-    return courses.filter((course) =>
-      [course.name, course.city, course.state].some((value) => value.toLowerCase().includes(normalized))
-    );
+    return courses.filter((course) => {
+      const stateName = STATE_NAME_BY_CODE[course.state.toUpperCase()] ?? "";
+      return [course.name, course.city, course.state, stateName].some((value) =>
+        value.toLowerCase().includes(normalized)
+      );
+    });
   }, [courses, defaultVisibleCount, query]);
 
   async function handleToggle(courseId: string, nextPlayed: boolean) {
@@ -68,7 +124,7 @@ export function CoursesBrowser({
             Search notable public courses across the country.
           </h2>
           <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-            Mark the courses you have played, open a course page for more detail, or request a missing course in one tap.
+            Courses are ordered by the current national board first, with editorial starting order used only as a fallback while the network keeps growing.
           </p>
         </div>
 
@@ -100,7 +156,12 @@ export function CoursesBrowser({
               <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-[var(--pine-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pine)]">
+                    {course.leaderboard_rank ? (
+                      <span className="rounded-full bg-[var(--pine-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pine)]">
+                        National rank #{course.leaderboard_rank}
+                      </span>
+                    ) : null}
+                    <span className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
                       Editorial start #{course.seed_rank}
                     </span>
                     {course.seed_source?.lists?.[0] ?? course.seed_source?.seed_tier ? (
@@ -144,8 +205,8 @@ export function CoursesBrowser({
                       </button>
                     )
                   ) : (
-                    <Link href={`/sign-in?next=${encodeURIComponent(`/courses/${course.id}`)}`} className="solid-button min-h-11">
-                      Sign in to log it
+                    <Link href={`/sign-in?next=${encodeURIComponent(`/courses/${course.id}`)}`} className="ghost-button min-h-11">
+                      Sign in to save
                     </Link>
                   )}
                 </div>

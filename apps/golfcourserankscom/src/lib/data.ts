@@ -199,13 +199,46 @@ export async function getAllCourses() {
   }
 
   const admin = createAdminClient();
-  const { data, error } = await admin.from("courses").select("*").order("seed_rank", { ascending: true }).limit(250);
+  const [{ data, error }, { data: aggregateRows, error: aggregateError }] = await Promise.all([
+    admin.from("courses").select("*").limit(250),
+    admin.from("course_aggregates").select("course_id, rank, is_early").limit(250)
+  ]);
 
   if (error) {
     throw new Error(error.message);
   }
 
-  return (data ?? []) as CourseRecord[];
+  if (aggregateError) {
+    throw new Error(aggregateError.message);
+  }
+
+  const aggregateByCourse = new Map(
+    ((aggregateRows ?? []) as Array<Pick<CourseAggregateRecord, "course_id" | "rank" | "is_early">>).map((row) => [
+      row.course_id,
+      row
+    ])
+  );
+
+  return ((data ?? []) as CourseRecord[])
+    .map((course) => {
+      const aggregate = aggregateByCourse.get(course.id);
+      return {
+        ...course,
+        name: course.name === "Whistling Straits Straits Course" ? "Whistling Straits" : course.name,
+        leaderboard_rank: aggregate?.rank ?? null,
+        is_early: aggregate?.is_early ?? true
+      };
+    })
+    .sort((left, right) => {
+      const leftRank = left.leaderboard_rank ?? Number.MAX_SAFE_INTEGER;
+      const rightRank = right.leaderboard_rank ?? Number.MAX_SAFE_INTEGER;
+
+      if (leftRank !== rightRank) {
+        return leftRank - rightRank;
+      }
+
+      return left.seed_rank - right.seed_rank;
+    });
 }
 
 export async function getPlayedCoursesForUser(userId: string) {
