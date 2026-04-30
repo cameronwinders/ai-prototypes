@@ -18,9 +18,14 @@ type AppChromeProps = {
 const desktopNav = [
   { href: "/leaderboard", label: "Leaderboard" },
   { href: "/courses", label: "Courses" },
-  { href: "/me/courses", label: "My Courses" },
   { href: "/friends", label: "Friends" },
   { href: "/profile", label: "Me" }
+];
+
+const courseSubnav = [
+  { href: "/courses", label: "Browse courses" },
+  { href: "/me/courses", label: "My courses" },
+  { href: "/feedback?topic=course-addition", label: "Request a course" }
 ];
 
 const mobileNav = [
@@ -61,13 +66,31 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
   const currentUrl = pathname;
   const feedbackHref = `/feedback?screen=${encodeURIComponent(toScreenName(pathname))}&from=${encodeURIComponent(currentUrl)}`;
   const requestCourseHref = `/feedback?screen=${encodeURIComponent(toScreenName(pathname))}&from=${encodeURIComponent(currentUrl)}&topic=course-addition`;
+  const inCourseSection = pathname === "/courses" || pathname === "/me/courses" || pathname.startsWith("/courses/");
+
+  function isDesktopNavActive(href: string) {
+    if (href === "/courses") {
+      return pathname === "/courses" || pathname === "/me/courses" || pathname.startsWith("/courses/");
+    }
+
+    return pathname === href || pathname.startsWith(`${href}/`);
+  }
+
+  function isCourseSubnavActive(href: string) {
+    if (href === "/feedback?topic=course-addition") {
+      return pathname === "/feedback" && currentUrl.includes("/feedback");
+    }
+
+    return pathname === href || pathname.startsWith(`${href}/`);
+  }
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(202,218,201,0.45),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(233,216,182,0.32),_transparent_28%),linear-gradient(180deg,_#f6f3ec_0%,_#efe8db_52%,_#f7f4ee_100%)] text-[var(--ink)]">
       <div className="mx-auto flex min-h-screen w-full max-w-[1280px] flex-col px-4 pb-28 pt-4 sm:px-6 lg:px-8">
         <header className="shell-panel sticky top-4 z-40 rounded-[2rem] px-4 py-3 sm:px-6">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex min-w-0 items-center gap-5">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex min-w-0 items-center gap-5">
               <Link
                 href="/"
                 className="brand-heading shrink-0 whitespace-nowrap text-[1.35rem] font-semibold leading-none tracking-[-0.05em] text-[var(--ink)] sm:text-[1.45rem]"
@@ -76,16 +99,18 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
               </Link>
               <nav className="hidden items-center gap-2 lg:flex">
                 {desktopNav.map((item) => {
-                  const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                  const active = isDesktopNavActive(item.href);
                   return (
                     <Link
                       key={item.href}
                       href={item.href}
-                      className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                        active ? "bg-[var(--ink)] text-[rgb(255,255,255)]" : "text-[var(--muted)] hover:bg-white/70"
+                      className={`inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition ${
+                        active
+                          ? "bg-[var(--ink)] text-[rgb(255,255,255)] shadow-[0_10px_25px_rgba(24,37,43,0.12)]"
+                          : "text-[var(--muted)] hover:bg-white/70"
                       }`}
                     >
-                      {item.label}
+                      <span className={active ? "text-[rgb(255,255,255)]" : ""}>{item.label}</span>
                     </Link>
                   );
                 })}
@@ -94,22 +119,10 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
 
             <div className="flex items-center gap-2">
               <Link
-                href="/courses"
-                className="hidden rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--ink)] md:inline-flex"
-              >
-                Browse courses
-              </Link>
-              <Link
                 href={feedbackHref}
-                className="hidden rounded-full border border-[var(--line)] bg-[var(--pine-soft)] px-4 py-2 text-sm font-semibold text-[var(--pine)] sm:inline-flex"
+                className="hidden min-h-11 items-center justify-center whitespace-nowrap rounded-full border border-[var(--line)] bg-[var(--pine-soft)] px-4 py-2 text-sm font-semibold text-[var(--pine)] sm:inline-flex"
               >
                 Feedback
-              </Link>
-              <Link
-                href={requestCourseHref}
-                className="hidden rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--ink)] md:inline-flex"
-              >
-                Request a course
               </Link>
 
               {viewer.signedIn ? (
@@ -117,17 +130,11 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                   {viewer.isAdmin ? (
                     <Link
                       href="/admin/feedback"
-                      className="hidden rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--ink)] xl:inline-flex"
+                      className="hidden min-h-11 items-center justify-center whitespace-nowrap rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--ink)] xl:inline-flex"
                     >
                       Admin
                     </Link>
                   ) : null}
-                  <Link
-                    href={viewer.needsOnboarding ? "/onboarding" : "/profile"}
-                    className="rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--ink)]"
-                  >
-                    {viewer.needsOnboarding ? "Finish profile" : "Me"}
-                  </Link>
                   <form action={signOut}>
                     <button
                       type="submit"
@@ -145,6 +152,40 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                   Sign in
                 </Link>
               )}
+            </div>
+          </div>
+
+            <div className="hidden items-center gap-2 lg:flex">
+              <span
+                className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${
+                  inCourseSection ? "bg-[var(--pine-soft)] text-[var(--pine)]" : "text-[var(--muted)]"
+                }`}
+              >
+                Courses
+              </span>
+              <div className="flex min-w-0 items-center gap-2 overflow-x-auto">
+                {courseSubnav.map((item) => {
+                  const href =
+                    item.href === "/feedback?topic=course-addition"
+                      ? requestCourseHref
+                      : item.href;
+                  const active = isCourseSubnavActive(item.href);
+
+                  return (
+                    <Link
+                      key={item.label}
+                      href={href}
+                      className={`inline-flex min-h-10 items-center justify-center whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                        active
+                          ? "border-[rgba(49,107,83,0.18)] bg-[var(--pine-soft)] text-[var(--pine)]"
+                          : "border-[var(--line)] bg-white/72 text-[var(--muted)] hover:bg-white"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </header>
