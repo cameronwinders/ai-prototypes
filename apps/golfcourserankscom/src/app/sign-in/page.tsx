@@ -25,7 +25,7 @@ export default function SignInPage() {
       </section>
 
       <section className="shell-panel rounded-[2.3rem] p-6 sm:p-8">
-        <p className="section-label">Magic-link access</p>
+        <p className="section-label">One-tap email sign-in</p>
         <h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
           Email yourself the secure link.
         </h2>

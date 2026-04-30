@@ -25,6 +25,11 @@ export default async function CourseDetailPage({
   const { course, aggregate, viewerPlayed } = detail;
   const courseUrl = `/courses/${course.id}`;
   const siteUrl = getSiteUrl();
+  const isEditorialOnly = (aggregate?.num_unique_golfers ?? 0) === 0;
+  const scoreLabel = isEditorialOnly ? "Starting score" : "Leaderboard score";
+  const scoreContext = isEditorialOnly
+    ? "This is the editorial starting point until more golfers add the course to their rankings."
+    : "This score reflects where golfers currently keep the course on their personal lists.";
 
   return (
     <div className="space-y-6">
@@ -56,7 +61,7 @@ export default async function CourseDetailPage({
 
         <div className="mt-8 grid gap-4 md:grid-cols-4">
           {[
-            { label: "Leaderboard score", value: aggregate ? aggregate.normalized_score.toFixed(1) : "0.0" },
+            { label: scoreLabel, value: aggregate ? aggregate.normalized_score.toFixed(1) : "0.0" },
             { label: "Golfers", value: aggregate ? pluralize(aggregate.num_unique_golfers, "golfer") : "0 golfers" },
             { label: "Comparisons", value: aggregate ? pluralize(aggregate.num_signals, "comparison") : "0 comparisons" },
             { label: "Editorial ranking source", value: course.seed_source?.lists?.join(", ") ?? "Curated public rankings" }
@@ -67,6 +72,7 @@ export default async function CourseDetailPage({
             </div>
           ))}
         </div>
+        <p className="mt-4 text-sm leading-6 text-[var(--muted)]">{scoreContext}</p>
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1.08fr_0.92fr]">
@@ -100,6 +106,23 @@ export default async function CourseDetailPage({
                 Sign in to save your own note, mark the course as played, and decide where it belongs in your personal ranking.
               </div>
             )}
+          </section>
+
+          <section className="shell-panel rounded-[2rem] p-6">
+            <p className="section-label">What to know</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
+              A clean read on where this course stands right now.
+            </h2>
+            <div className="mt-5 grid gap-3">
+              <div className="rounded-[1.5rem] border border-[var(--line)] bg-white/88 px-4 py-4 text-sm leading-6 text-[var(--muted)]">
+                {isEditorialOnly
+                  ? "This page is still in its early stage. The national rank is being held by the editorial starting board until more golfers save and rank the course."
+                  : "This page is already being shaped by real golfer rankings, so the national rank and score reflect active crowd signal."}
+              </div>
+              <div className="rounded-[1.5rem] border border-[var(--line)] bg-white/88 px-4 py-4 text-sm leading-6 text-[var(--muted)]">
+                Save the course to your list if you have played it, then rank it against your other rounds to help sharpen the national leaderboard and your friend comparisons.
+              </div>
+            </div>
           </section>
         </div>
 

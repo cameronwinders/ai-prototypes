@@ -41,7 +41,7 @@ export function CourseDetailActions({
   if (!viewerSignedIn) {
     return (
       <Link href={`/sign-in?next=${encodeURIComponent(`/courses/${courseId}`)}`} className="solid-button min-h-11 justify-center">
-        Sign in to log it
+        Sign in to save
       </Link>
     );
   }

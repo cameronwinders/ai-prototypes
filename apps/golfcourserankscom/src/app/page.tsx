@@ -98,7 +98,7 @@ export default async function HomePage() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <span className="rounded-full bg-[var(--pine-soft)] px-3 py-2 text-sm font-semibold text-[var(--pine)]">
-                      Score {course.normalizedScore.toFixed(1)}
+                      Crowd score {course.normalizedScore.toFixed(1)}
                     </span>
                     {course.isEarly ? (
                       <span className="rounded-full border border-[var(--line)] px-3 py-2 text-sm font-semibold text-[var(--muted)]">
