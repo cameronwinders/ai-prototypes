@@ -68,7 +68,10 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
         <header className="shell-panel sticky top-4 z-40 rounded-[2rem] px-4 py-3 sm:px-6">
           <div className="flex items-center justify-between gap-4">
             <div className="flex min-w-0 items-center gap-5">
-              <Link href="/" className="brand-heading text-[1.45rem] font-semibold tracking-[-0.05em] text-[var(--ink)]">
+              <Link
+                href="/"
+                className="brand-heading shrink-0 whitespace-nowrap text-[1.35rem] font-semibold leading-none tracking-[-0.05em] text-[var(--ink)] sm:text-[1.45rem]"
+              >
                 Golf Course Ranks
               </Link>
               <nav className="hidden items-center gap-2 lg:flex">

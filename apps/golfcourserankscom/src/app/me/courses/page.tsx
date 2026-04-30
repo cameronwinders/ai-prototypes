@@ -1,12 +1,12 @@
 import { MyCoursesManager } from "@/components/MyCoursesManager";
 import { ShareButton } from "@/components/ShareButton";
-import { getPlayedCoursesForUser } from "@/lib/data";
+import { getAllCourses, getPlayedCoursesForUser } from "@/lib/data";
 import { getSiteUrl } from "@/lib/supabase/env";
 import { requireOnboardedViewer } from "@/lib/viewer";
 
 export default async function MyCoursesPage() {
   const viewer = await requireOnboardedViewer("/me/courses");
-  const playedCourses = await getPlayedCoursesForUser(viewer.user!.id);
+  const [playedCourses, allCourses] = await Promise.all([getPlayedCoursesForUser(viewer.user!.id), getAllCourses()]);
   const siteUrl = getSiteUrl();
 
   return (
@@ -29,7 +29,7 @@ export default async function MyCoursesPage() {
         </div>
       </section>
 
-      <MyCoursesManager initialPlayedCourses={playedCourses} />
+      <MyCoursesManager initialPlayedCourses={playedCourses} allCourses={allCourses} />
     </div>
   );
 }

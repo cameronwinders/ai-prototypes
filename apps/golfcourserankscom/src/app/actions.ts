@@ -348,6 +348,67 @@ export async function addCourseToRanking(courseId: string): Promise<ActionResult
   };
 }
 
+export async function quickAddCourseToRanking(courseId: string): Promise<ActionResult<PlayedCourse[]>> {
+  const viewer = await requireOnboardedViewer("/me/courses");
+  const admin = createAdminClient();
+  const userId = viewer.user!.id;
+
+  const playResult = await admin.from("played_courses").upsert(
+    {
+      user_id: userId,
+      course_id: courseId
+    },
+    {
+      onConflict: "user_id,course_id",
+      ignoreDuplicates: false
+    }
+  );
+
+  if (playResult.error) {
+    return {
+      ok: false,
+      message: playResult.error.message
+    };
+  }
+
+  const [existingRank, rankCount] = await Promise.all([
+    admin.from("user_course_ranks").select("course_id").eq("user_id", userId).eq("course_id", courseId).maybeSingle(),
+    admin.from("user_course_ranks").select("course_id", { count: "exact", head: true }).eq("user_id", userId)
+  ]);
+
+  if (existingRank.error) {
+    return {
+      ok: false,
+      message: existingRank.error.message
+    };
+  }
+
+  if (!existingRank.data) {
+    const insertRank = await admin.from("user_course_ranks").insert({
+      user_id: userId,
+      course_id: courseId,
+      rank_position: rankCount.count ?? 0
+    });
+
+    if (insertRank.error) {
+      return {
+        ok: false,
+        message: insertRank.error.message
+      };
+    }
+  }
+
+  await rebuildSignalsForUser(userId);
+  const played = await getPlayedCoursesForUser(userId);
+  revalidateApp(viewer.profile?.handle);
+
+  return {
+    ok: true,
+    data: played,
+    message: "Added to your ranking list."
+  };
+}
+
 export async function removeCourseFromRanking(courseId: string): Promise<ActionResult<PlayedCourse[]>> {
   const viewer = await requireOnboardedViewer("/me/courses");
   const admin = createAdminClient();

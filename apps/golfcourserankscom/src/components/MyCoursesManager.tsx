@@ -3,12 +3,66 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
-import { addCourseToRanking, removeCourseFromRanking, saveCourseOrder, setCoursePlayed } from "@/app/actions";
+import { quickAddCourseToRanking, removeCourseFromRanking, saveCourseOrder, setCoursePlayed } from "@/app/actions";
 import { formatLocation, formatUpdatedAt, splitPlayedCourses } from "@/lib/ranking";
-import type { PlayedCourse } from "@/lib/types";
+import type { CourseRecord, PlayedCourse } from "@/lib/types";
 
 type MyCoursesManagerProps = {
   initialPlayedCourses: PlayedCourse[];
+  allCourses: CourseRecord[];
+};
+
+const STATE_NAME_BY_CODE: Record<string, string> = {
+  AL: "alabama",
+  AK: "alaska",
+  AZ: "arizona",
+  AR: "arkansas",
+  CA: "california",
+  CO: "colorado",
+  CT: "connecticut",
+  DE: "delaware",
+  FL: "florida",
+  GA: "georgia",
+  HI: "hawaii",
+  ID: "idaho",
+  IL: "illinois",
+  IN: "indiana",
+  IA: "iowa",
+  KS: "kansas",
+  KY: "kentucky",
+  LA: "louisiana",
+  ME: "maine",
+  MD: "maryland",
+  MA: "massachusetts",
+  MI: "michigan",
+  MN: "minnesota",
+  MS: "mississippi",
+  MO: "missouri",
+  MT: "montana",
+  NE: "nebraska",
+  NV: "nevada",
+  NH: "new hampshire",
+  NJ: "new jersey",
+  NM: "new mexico",
+  NY: "new york",
+  NC: "north carolina",
+  ND: "north dakota",
+  OH: "ohio",
+  OK: "oklahoma",
+  OR: "oregon",
+  PA: "pennsylvania",
+  RI: "rhode island",
+  SC: "south carolina",
+  SD: "south dakota",
+  TN: "tennessee",
+  TX: "texas",
+  UT: "utah",
+  VT: "vermont",
+  VA: "virginia",
+  WA: "washington",
+  WV: "west virginia",
+  WI: "wisconsin",
+  WY: "wyoming"
 };
 
 function mergePlayedCourses(current: PlayedCourse[], ranked: Array<{ id: string; rankPosition: number }>) {
@@ -19,13 +73,14 @@ function mergePlayedCourses(current: PlayedCourse[], ranked: Array<{ id: string;
   }));
 }
 
-export function MyCoursesManager({ initialPlayedCourses }: MyCoursesManagerProps) {
+export function MyCoursesManager({ initialPlayedCourses, allCourses }: MyCoursesManagerProps) {
   const [playedCourses, setPlayedCourses] = useState(initialPlayedCourses);
   const [activeTab, setActiveTab] = useState<"ranked" | "unranked">("ranked");
   const [status, setStatus] = useState<string>("Drag to reorder. Top means favorite.");
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(new Date().toISOString());
   const [saveError, setSaveError] = useState<string | null>(null);
   const [busyCourseId, setBusyCourseId] = useState<string | null>(null);
+  const [catalogQuery, setCatalogQuery] = useState("");
   const [announcement, setAnnouncement] = useState("");
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const latestServerState = useRef(initialPlayedCourses);
@@ -38,6 +93,24 @@ export function MyCoursesManager({ initialPlayedCourses }: MyCoursesManagerProps
   }, [playedCourses]);
 
   const { ranked, unranked } = useMemo(() => splitPlayedCourses(playedCourses), [playedCourses]);
+  const rankedIds = useMemo(() => new Set(ranked.map((course) => course.id)), [ranked]);
+  const playedIds = useMemo(() => new Set(playedCourses.map((course) => course.id)), [playedCourses]);
+  const filteredCatalog = useMemo(() => {
+    const normalized = catalogQuery.trim().toLowerCase();
+
+    if (!normalized) {
+      return allCourses.slice(0, 18);
+    }
+
+    return allCourses
+      .filter((course) => {
+        const stateName = STATE_NAME_BY_CODE[course.state.toUpperCase()] ?? "";
+        return [course.name, course.city, course.state, stateName].some((value) =>
+          value.toLowerCase().includes(normalized)
+        );
+      })
+      .slice(0, 24);
+  }, [allCourses, catalogQuery]);
 
   async function flushOrder(orderIds: string[]) {
     if (savingRef.current) {
@@ -121,9 +194,9 @@ export function MyCoursesManager({ initialPlayedCourses }: MyCoursesManagerProps
     setDraggingId(null);
   }
 
-  async function handleAddToRanking(courseId: string) {
+  async function handleQuickAdd(courseId: string) {
     setBusyCourseId(courseId);
-    const result = await addCourseToRanking(courseId);
+    const result = await quickAddCourseToRanking(courseId);
     setBusyCourseId(null);
 
     if (!result.ok || !result.data) {
@@ -131,17 +204,10 @@ export function MyCoursesManager({ initialPlayedCourses }: MyCoursesManagerProps
       return;
     }
 
-    const next = mergePlayedCourses(
-      latestState.current,
-      result.data.map((course) => ({
-        id: course.id,
-        rankPosition: course.rankPosition
-      }))
-    );
-    latestServerState.current = next;
-    setPlayedCourses(next);
+    latestServerState.current = result.data;
+    setPlayedCourses(result.data);
     setLastSavedAt(new Date().toISOString());
-    setStatus("Saved");
+    setStatus(result.message ?? "Saved");
     setActiveTab("ranked");
   }
 
@@ -300,7 +366,7 @@ export function MyCoursesManager({ initialPlayedCourses }: MyCoursesManagerProps
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
-                      onClick={() => handleAddToRanking(course.id)}
+                      onClick={() => handleQuickAdd(course.id)}
                       disabled={busyCourseId === course.id}
                       data-testid={`add-to-ranking-${course.id}`}
                       className="solid-button min-h-11"
@@ -321,6 +387,82 @@ export function MyCoursesManager({ initialPlayedCourses }: MyCoursesManagerProps
             ))}
           </div>
         )}
+
+        <div className="mt-8 border-t border-[rgba(24,37,43,0.08)] pt-8">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="section-label">Add from the leaderboard</p>
+              <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
+                Search and add the public courses you have already played.
+              </h3>
+              <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+                This list starts in national leaderboard order, so you can keep adding courses to your ranking list without leaving the page.
+              </p>
+            </div>
+
+            <label className="block w-full max-w-xl text-sm font-semibold text-[var(--ink)]">
+              Search by course, city, or state
+              <input
+                value={catalogQuery}
+                onChange={(event) => setCatalogQuery(event.target.value)}
+                placeholder="Pebble, Bandon, Scottsdale, Wisconsin..."
+                className="mt-2 w-full rounded-[1.35rem] border border-[var(--line)] bg-white px-4 py-3 text-sm font-normal outline-none focus:border-[rgba(49,107,83,0.45)]"
+              />
+            </label>
+          </div>
+
+          <div className="mt-6 grid gap-3">
+            {filteredCatalog.map((course) => {
+              const isRanked = rankedIds.has(course.id);
+              const isPlayed = playedIds.has(course.id);
+
+              return (
+                <div key={course.id} className="rounded-[1.6rem] border border-[var(--line)] bg-white/90 p-4">
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        {course.leaderboard_rank ? (
+                          <span className="rounded-full bg-[var(--pine-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pine)]">
+                            National rank #{course.leaderboard_rank}
+                          </span>
+                        ) : null}
+                        <span className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
+                          Editorial start #{course.seed_rank}
+                        </span>
+                      </div>
+                      <h4 className="mt-3 text-lg font-semibold tracking-[-0.03em] text-[var(--ink)]">{course.name}</h4>
+                      <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Link href={`/courses/${course.id}`} className="ghost-button min-h-11">
+                        View detail
+                      </Link>
+                      {isRanked ? (
+                        <span className="rounded-full bg-[var(--ink)] px-4 py-3 text-sm font-semibold text-[rgb(255,255,255)]">
+                          In ranking
+                        </span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleQuickAdd(course.id)}
+                          disabled={busyCourseId === course.id}
+                          className="solid-button min-h-11"
+                        >
+                          {busyCourseId === course.id
+                            ? "Adding..."
+                            : isPlayed
+                              ? "Add to ranking list"
+                              : "Mark played + add"}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </section>
 
       <aside className="space-y-6">

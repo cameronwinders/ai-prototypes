@@ -38,21 +38,39 @@ export default async function OnboardingPage({
 
         <form action={completeOnboarding} className="mt-8 space-y-5">
           <input type="hidden" name="next" value={next} />
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--pine)]">Handicap band</p>
+            <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+              Pick the range that best matches your current game.
+            </p>
+          </div>
+          <div className="grid gap-3">
             {HANDICAP_OPTIONS.map((option) => (
               <label
                 key={option}
-                className="cursor-pointer rounded-[1.7rem] border border-[rgba(24,37,43,0.08)] bg-white/90 p-5 transition hover:bg-white"
+                className="block cursor-pointer rounded-[1.7rem] border border-[rgba(24,37,43,0.08)] bg-white/90 p-5 transition hover:bg-white has-[:checked]:border-[rgba(49,107,83,0.55)] has-[:checked]:bg-[var(--pine-soft)] has-[:checked]:shadow-[0_0_0_2px_rgba(49,107,83,0.12)]"
               >
                 <input
                   type="radio"
                   name="handicap_band"
                   value={option}
                   defaultChecked={viewer.profile?.handicap_band === option}
-                  className="sr-only"
+                  className="h-5 w-5 accent-[var(--pine)]"
                 />
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--pine)]">Handicap band</p>
-                <p className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-[var(--ink)]">{option}</p>
+                <div className="mt-3 flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-3xl font-semibold tracking-[-0.05em] text-[var(--ink)]">{option}</p>
+                    <p className="mt-2 text-sm text-[var(--muted)]">
+                      {option === "0-5"
+                        ? "Low-handicap range"
+                        : option === "6-10"
+                          ? "Competitive regular range"
+                          : option === "11-18"
+                            ? "Mid-handicap range"
+                            : "High-handicap range"}
+                    </p>
+                  </div>
+                </div>
               </label>
             ))}
           </div>
