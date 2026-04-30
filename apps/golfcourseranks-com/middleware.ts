@@ -1,11 +1,13 @@
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-import { updateSession } from "@/lib/supabase/middleware";
+const CANONICAL_ORIGIN = "https://ai-prototypes-golfcourserankscom.vercel.app";
 
-export async function middleware(request: NextRequest) {
-  return updateSession(request);
+export function middleware(request: NextRequest) {
+  const redirectUrl = new URL(request.nextUrl.pathname + request.nextUrl.search, CANONICAL_ORIGIN);
+  return NextResponse.redirect(redirectUrl, 308);
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"]
+  matcher: ["/:path*"]
 };

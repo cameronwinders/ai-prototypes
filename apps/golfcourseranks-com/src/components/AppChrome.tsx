@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { signOut } from "@/app/actions";
 
@@ -47,9 +47,7 @@ function toScreenName(pathname: string) {
 
 export function AppChrome({ viewer, children }: AppChromeProps) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const queryString = searchParams.toString();
-  const currentUrl = `${pathname}${queryString ? `?${queryString}` : ""}`;
+  const currentUrl = pathname;
   const feedbackHref = `/feedback?screen=${encodeURIComponent(toScreenName(pathname))}&from=${encodeURIComponent(currentUrl)}`;
 
   return (

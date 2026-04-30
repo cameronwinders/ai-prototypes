@@ -1,22 +1,32 @@
 "use client";
 
-import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { getPublicSupabaseEnv, getSiteUrl } from "@/lib/supabase/env";
 
 export function SignInForm() {
-  const searchParams = useSearchParams();
-  const next = searchParams.get("next") ?? "/leaderboard";
-  const signedOut = searchParams.get("signed_out") === "1";
-  const callbackError = searchParams.get("error");
+  const [next, setNext] = useState("/leaderboard");
+  const [signedOut, setSignedOut] = useState(false);
+  const [callbackError, setCallbackError] = useState<string | null>(null);
   const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(callbackError);
   const env = getPublicSupabaseEnv();
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    setNext(params.get("next") ?? "/leaderboard");
+    setSignedOut(params.get("signed_out") === "1");
+    setCallbackError(params.get("error"));
+    setError(params.get("error"));
+  }, []);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
