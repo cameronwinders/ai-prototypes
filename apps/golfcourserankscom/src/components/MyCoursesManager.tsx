@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
-import { quickAddCourseToRanking, removeCourseFromRanking, saveCourseOrder, setCoursePlayed } from "@/app/actions";
+import { removeCourseFromRanking, saveCourseOrder, setCoursePlayed } from "@/app/actions";
 import { formatLocation, formatUpdatedAt, splitPlayedCourses } from "@/lib/ranking";
 import type { CourseRecord, PlayedCourse } from "@/lib/types";
 
@@ -11,6 +11,11 @@ type MyCoursesManagerProps = {
   initialPlayedCourses: PlayedCourse[];
   allCourses: CourseRecord[];
 };
+
+type DragState = {
+  id: string;
+  source: "ranked" | "unranked";
+} | null;
 
 const STATE_NAME_BY_CODE: Record<string, string> = {
   AL: "alabama",
@@ -75,14 +80,13 @@ function mergePlayedCourses(current: PlayedCourse[], ranked: Array<{ id: string;
 
 export function MyCoursesManager({ initialPlayedCourses, allCourses }: MyCoursesManagerProps) {
   const [playedCourses, setPlayedCourses] = useState(initialPlayedCourses);
-  const [activeTab, setActiveTab] = useState<"ranked" | "unranked">("ranked");
-  const [status, setStatus] = useState<string>("Drag to reorder. Top means favorite.");
+  const [status, setStatus] = useState<string>("Drag a played course into the ranked section. Top means favorite.");
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(new Date().toISOString());
   const [saveError, setSaveError] = useState<string | null>(null);
   const [busyCourseId, setBusyCourseId] = useState<string | null>(null);
   const [catalogQuery, setCatalogQuery] = useState("");
   const [announcement, setAnnouncement] = useState("");
-  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [dragState, setDragState] = useState<DragState>(null);
   const latestServerState = useRef(initialPlayedCourses);
   const latestState = useRef(initialPlayedCourses);
   const savingRef = useRef(false);
@@ -159,6 +163,44 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses }: MyCourses
     void flushOrder(orderIds);
   }
 
+  function buildNextRankedIds(targetId?: string | null) {
+    if (!dragState) {
+      return ranked.map((course) => course.id);
+    }
+
+    const withoutDragged = ranked.filter((course) => course.id !== dragState.id).map((course) => course.id);
+
+    if (!targetId) {
+      return [...withoutDragged, dragState.id];
+    }
+
+    const targetIndex = withoutDragged.indexOf(targetId);
+    if (targetIndex === -1) {
+      return [...withoutDragged, dragState.id];
+    }
+
+    withoutDragged.splice(targetIndex, 0, dragState.id);
+    return withoutDragged;
+  }
+
+  function commitRankDrop(targetId?: string | null) {
+    if (!dragState) {
+      return;
+    }
+
+    const nextIds = buildNextRankedIds(targetId);
+    const newIndex = nextIds.indexOf(dragState.id);
+    const movedCourse = playedCourses.find((course) => course.id === dragState.id);
+
+    applyOptimisticOrder(nextIds);
+
+    if (movedCourse) {
+      setAnnouncement(`${movedCourse.name} moved into rank ${newIndex + 1}.`);
+    }
+
+    setDragState(null);
+  }
+
   function handleMove(courseId: string, direction: -1 | 1) {
     const currentIndex = ranked.findIndex((course) => course.id === courseId);
     const targetIndex = currentIndex + direction;
@@ -172,43 +214,6 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses }: MyCourses
     next.splice(targetIndex, 0, moved);
     applyOptimisticOrder(next.map((course) => course.id));
     setAnnouncement(`${moved.name} moved to rank ${targetIndex + 1}.`);
-  }
-
-  function handleDrop(targetId: string) {
-    if (!draggingId || draggingId === targetId) {
-      return;
-    }
-
-    const fromIndex = ranked.findIndex((course) => course.id === draggingId);
-    const toIndex = ranked.findIndex((course) => course.id === targetId);
-
-    if (fromIndex === -1 || toIndex === -1) {
-      return;
-    }
-
-    const next = [...ranked];
-    const [moved] = next.splice(fromIndex, 1);
-    next.splice(toIndex, 0, moved);
-    applyOptimisticOrder(next.map((course) => course.id));
-    setAnnouncement(`${moved.name} moved to rank ${toIndex + 1}.`);
-    setDraggingId(null);
-  }
-
-  async function handleQuickAdd(courseId: string) {
-    setBusyCourseId(courseId);
-    const result = await quickAddCourseToRanking(courseId);
-    setBusyCourseId(null);
-
-    if (!result.ok || !result.data) {
-      setSaveError(result.message ?? "We could not add that course to the ranking.");
-      return;
-    }
-
-    latestServerState.current = result.data;
-    setPlayedCourses(result.data);
-    setLastSavedAt(new Date().toISOString());
-    setStatus(result.message ?? "Saved");
-    setActiveTab("ranked");
   }
 
   async function handleRemoveFromRanking(courseId: string) {
@@ -225,7 +230,6 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses }: MyCourses
     setPlayedCourses(result.data);
     setLastSavedAt(new Date().toISOString());
     setStatus("Saved");
-    setActiveTab("unranked");
   }
 
   async function handleUnplay(courseId: string) {
@@ -242,6 +246,22 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses }: MyCourses
     setPlayedCourses(result.data);
     setLastSavedAt(new Date().toISOString());
     setStatus("Saved");
+  }
+
+  async function handleMarkPlayed(courseId: string) {
+    setBusyCourseId(courseId);
+    const result = await setCoursePlayed(courseId, true);
+    setBusyCourseId(null);
+
+    if (!result.ok || !result.data) {
+      setSaveError(result.message ?? "We could not add that course to your played list.");
+      return;
+    }
+
+    latestServerState.current = result.data;
+    setPlayedCourses(result.data);
+    setLastSavedAt(new Date().toISOString());
+    setStatus("Added to your played list.");
   }
 
   return (
@@ -266,53 +286,48 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses }: MyCourses
           </div>
         ) : null}
 
-        <div className="mt-6 flex gap-2 rounded-full border border-[var(--line)] bg-white/80 p-1">
-          <button
-            type="button"
-            onClick={() => setActiveTab("ranked")}
-            className={`flex-1 rounded-full px-4 py-2.5 text-sm font-semibold ${
-              activeTab === "ranked" ? "bg-[var(--ink)] text-[rgb(255,255,255)]" : "text-[var(--muted)]"
-            }`}
-          >
-            Ranked
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("unranked")}
-            className={`flex-1 rounded-full px-4 py-2.5 text-sm font-semibold ${
-              activeTab === "unranked" ? "bg-[var(--ink)] text-[rgb(255,255,255)]" : "text-[var(--muted)]"
-            }`}
-          >
-            Needs ranking
-          </button>
-        </div>
-
         <p className="mt-4 text-sm leading-6 text-[var(--muted)]">
-          Drag with the handle on larger screens or use the move buttons anywhere. Every saved order helps shape the national leaderboard.
+          Drag within the ranked stack to reorder favorites. Drag any played course from below into the ranked section when it deserves a spot.
         </p>
 
         <div className="sr-only" aria-live="polite">
           {announcement}
         </div>
 
-        {activeTab === "ranked" ? (
-          ranked.length === 0 ? (
-            <div className="mt-6 rounded-[1.6rem] border border-dashed border-[var(--line)] px-5 py-8 text-sm leading-6 text-[var(--muted)]">
-              No ranked courses yet. Mark a few courses as played, then drop them into your list once you know the order.
+        <div className="mt-6">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--pine)]">Ranked</p>
+              <p className="mt-2 text-sm leading-6 text-[var(--muted)]">Top means favorite. This order shapes your public-course list.</p>
+            </div>
+            {ranked.length > 0 ? (
+              <span className="rounded-full border border-[var(--line)] bg-white/85 px-3 py-2 text-sm font-semibold text-[var(--muted)]">
+                {ranked.length} ranked
+              </span>
+            ) : null}
+          </div>
+
+          {ranked.length === 0 ? (
+            <div
+              onDragOver={(event) => event.preventDefault()}
+              onDrop={() => commitRankDrop(null)}
+              className="mt-5 rounded-[1.7rem] border border-dashed border-[var(--line)] px-5 py-8 text-sm leading-6 text-[var(--muted)]"
+            >
+              Drag a played course here once you know where it belongs. Your first drop becomes rank #1.
             </div>
           ) : (
-            <div className="mt-6 grid gap-3">
+            <div className="mt-5 grid gap-3">
               {ranked.map((course) => (
                 <div
                   key={course.id}
                   data-testid={`ranked-course-${course.id}`}
                   draggable
-                  onDragStart={() => setDraggingId(course.id)}
+                  onDragStart={() => setDragState({ id: course.id, source: "ranked" })}
                   onDragOver={(event) => event.preventDefault()}
-                  onDrop={() => handleDrop(course.id)}
-                  onDragEnd={() => setDraggingId(null)}
+                  onDrop={() => commitRankDrop(course.id)}
+                  onDragEnd={() => setDragState(null)}
                   className={`rounded-[1.7rem] border border-[var(--line)] bg-white/92 p-4 shadow-[0_10px_30px_rgba(24,37,43,0.06)] ${
-                    draggingId === course.id ? "opacity-80" : ""
+                    dragState?.id === course.id ? "opacity-80" : ""
                   }`}
                 >
                   <div className="flex items-start gap-4">
@@ -338,9 +353,10 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses }: MyCourses
                           <button
                             type="button"
                             onClick={() => handleRemoveFromRanking(course.id)}
+                            disabled={busyCourseId === course.id}
                             className="ghost-button min-h-11"
                           >
-                            Unrank
+                            Move below
                           </button>
                         </div>
                       </div>
@@ -348,31 +364,56 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses }: MyCourses
                   </div>
                 </div>
               ))}
+
+              <div
+                onDragOver={(event) => event.preventDefault()}
+                onDrop={() => commitRankDrop(null)}
+                className="rounded-[1.5rem] border border-dashed border-[rgba(24,37,43,0.1)] px-4 py-4 text-sm text-[var(--muted)]"
+              >
+                Drop here to place a course at the end of your ranking.
+              </div>
             </div>
-          )
-        ) : unranked.length === 0 ? (
-          <div className="mt-6 rounded-[1.6rem] border border-dashed border-[var(--line)] px-5 py-8 text-sm leading-6 text-[var(--muted)]">
-            Every played course is already in your ranking. Add more the next time you want to expand your list.
+          )}
+        </div>
+
+        <div className="mt-8 border-t border-[rgba(24,37,43,0.08)] pt-8">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--pine)]">Played but unranked</p>
+              <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                These courses are already in your played list. Drag one upward whenever you want it to join the ranking.
+              </p>
+            </div>
+            <span className="rounded-full border border-[var(--line)] bg-white/85 px-3 py-2 text-sm font-semibold text-[var(--muted)]">
+              {unranked.length} waiting
+            </span>
           </div>
-        ) : (
-          <div className="mt-6 grid gap-3">
-            {unranked.map((course) => (
-              <div key={course.id} data-testid={`unranked-course-${course.id}`} className="rounded-[1.6rem] border border-[var(--line)] bg-white/90 p-4">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <h3 className="text-lg font-semibold tracking-[-0.03em] text-[var(--ink)]">{course.name}</h3>
-                    <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => handleQuickAdd(course.id)}
-                      disabled={busyCourseId === course.id}
-                      data-testid={`add-to-ranking-${course.id}`}
-                      className="solid-button min-h-11"
-                    >
-                      {busyCourseId === course.id ? "Adding..." : "Add to ranking"}
-                    </button>
+
+          {unranked.length === 0 ? (
+            <div className="mt-5 rounded-[1.6rem] border border-dashed border-[var(--line)] px-5 py-8 text-sm leading-6 text-[var(--muted)]">
+              Every played course is already ranked. Add another played course below when you want to expand the stack.
+            </div>
+          ) : (
+            <div className="mt-5 grid gap-3">
+              {unranked.map((course) => (
+                <div
+                  key={course.id}
+                  data-testid={`unranked-course-${course.id}`}
+                  draggable
+                  onDragStart={() => setDragState({ id: course.id, source: "unranked" })}
+                  onDragEnd={() => setDragState(null)}
+                  className={`rounded-[1.6rem] border border-[var(--line)] bg-white/90 p-4 ${
+                    dragState?.id === course.id ? "opacity-80" : ""
+                  }`}
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="drag-handle hidden md:inline-flex">Drag up</span>
+                        <h3 className="text-lg font-semibold tracking-[-0.03em] text-[var(--ink)]">{course.name}</h3>
+                      </div>
+                      <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
+                    </div>
                     <button
                       type="button"
                       onClick={() => handleUnplay(course.id)}
@@ -383,20 +424,20 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses }: MyCourses
                     </button>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
 
         <div className="mt-8 border-t border-[rgba(24,37,43,0.08)] pt-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
               <p className="section-label">Add from the leaderboard</p>
               <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
-                Search and add the public courses you have already played.
+                Search and mark more public courses as played.
               </h3>
               <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-                This list starts in national leaderboard order, so you can keep adding courses to your ranking list without leaving the page.
+                This list starts in national leaderboard order. Once you mark a course as played, it drops into the unranked section above so you can drag it into your stack.
               </p>
             </div>
 
@@ -442,18 +483,18 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses }: MyCourses
                         <span className="rounded-full bg-[var(--ink)] px-4 py-3 text-sm font-semibold text-[rgb(255,255,255)]">
                           In ranking
                         </span>
+                      ) : isPlayed ? (
+                        <span className="rounded-full border border-[var(--line)] bg-white px-4 py-3 text-sm font-semibold text-[var(--muted)]">
+                          In played list
+                        </span>
                       ) : (
                         <button
                           type="button"
-                          onClick={() => handleQuickAdd(course.id)}
+                          onClick={() => handleMarkPlayed(course.id)}
                           disabled={busyCourseId === course.id}
                           className="solid-button min-h-11"
                         >
-                          {busyCourseId === course.id
-                            ? "Adding..."
-                            : isPlayed
-                              ? "Add to ranking list"
-                              : "Mark played + add"}
+                          {busyCourseId === course.id ? "Saving..." : "Mark played"}
                         </button>
                       )}
                     </div>
@@ -472,7 +513,7 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses }: MyCourses
             Keep your golf list moving.
           </h3>
           <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-            Mark more public courses as played, then decide whether they belong in your order. You can keep a course logged without ranking it right away.
+            Mark more public courses as played, then drag the ones that matter most into your ranked stack when you are ready.
           </p>
           <div className="mt-5 flex flex-col gap-3">
             <Link href="/courses" className="solid-button min-h-11 justify-center">
@@ -490,7 +531,7 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses }: MyCourses
             {[
               { label: "Played", value: playedCourses.length },
               { label: "Ranked", value: ranked.length },
-              { label: "Needs ranking", value: unranked.length }
+              { label: "Waiting below", value: unranked.length }
             ].map((item) => (
               <div key={item.label} className="rounded-[1.5rem] bg-white/82 px-4 py-4">
                 <p className="text-sm text-[var(--muted)]">{item.label}</p>
