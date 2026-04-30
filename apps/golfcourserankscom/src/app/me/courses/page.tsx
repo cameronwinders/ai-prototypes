@@ -1,11 +1,13 @@
 import { MyCoursesManager } from "@/components/MyCoursesManager";
 import { ShareButton } from "@/components/ShareButton";
 import { getPlayedCoursesForUser } from "@/lib/data";
+import { getSiteUrl } from "@/lib/supabase/env";
 import { requireOnboardedViewer } from "@/lib/viewer";
 
 export default async function MyCoursesPage() {
   const viewer = await requireOnboardedViewer("/me/courses");
   const playedCourses = await getPlayedCoursesForUser(viewer.user!.id);
+  const siteUrl = getSiteUrl();
 
   return (
     <div className="space-y-6">
@@ -21,7 +23,7 @@ export default async function MyCoursesPage() {
           <ShareButton
             title="Share your ranking list"
             text="See how I rank public golf courses on Golf Course Ranks."
-            url="https://ai-prototypes-golfcourserankscom.vercel.app/me/courses"
+            url={`${siteUrl}/me/courses`}
             className="ghost-button min-h-11"
           />
         </div>

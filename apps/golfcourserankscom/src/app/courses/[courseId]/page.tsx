@@ -6,6 +6,7 @@ import { NoteEditor } from "@/components/NoteEditor";
 import { ShareButton } from "@/components/ShareButton";
 import { getCourseDetail } from "@/lib/data";
 import { formatLocation, pluralize } from "@/lib/ranking";
+import { getSiteUrl } from "@/lib/supabase/env";
 import { getViewerContext } from "@/lib/viewer";
 
 export default async function CourseDetailPage({
@@ -23,6 +24,7 @@ export default async function CourseDetailPage({
 
   const { course, aggregate, viewerPlayed } = detail;
   const courseUrl = `/courses/${course.id}`;
+  const siteUrl = getSiteUrl();
 
   return (
     <div className="space-y-6">
@@ -129,7 +131,7 @@ export default async function CourseDetailPage({
               <ShareButton
                 title={`${course.name} | Golf Course Ranks`}
                 text={`Take a look at ${course.name} on Golf Course Ranks.`}
-                url={`https://ai-prototypes-golfcourserankscom.vercel.app${courseUrl}`}
+                url={`${siteUrl}${courseUrl}`}
                 className="solid-button min-h-11 justify-center"
               />
               <Link href="/friends" className="ghost-button min-h-11 justify-center">

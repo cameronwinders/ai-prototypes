@@ -4,7 +4,7 @@ Target app: `apps/golfcourserankscom`
 
 ## Production URL
 
-- Canonical public URL: `https://ai-prototypes-golfcourserankscom.vercel.app`
+- Canonical public URL: `https://golfcourseranks.com`
 - Vercel project: `ai-prototypes-golfcourserankscom`
 - Shared schema: `app_golfcourserankscom_`
 

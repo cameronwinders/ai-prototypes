@@ -19,7 +19,7 @@ const bodyFont = Public_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "GolfCourseRanks.com",
+  title: "Golf Course Ranks",
   description:
     "Crowd-ranked leaderboard for U.S. public golf courses, powered by real golfers dragging their played lists into order."
 };

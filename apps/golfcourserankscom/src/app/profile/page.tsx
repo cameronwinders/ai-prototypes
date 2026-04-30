@@ -2,11 +2,13 @@ import Link from "next/link";
 
 import { ShareButton } from "@/components/ShareButton";
 import { getProfileSummary } from "@/lib/data";
+import { getSiteUrl } from "@/lib/supabase/env";
 import { requireViewer } from "@/lib/viewer";
 
 export default async function ProfilePage() {
   const viewer = await requireViewer("/profile");
   const summary = await getProfileSummary(viewer.user!.id);
+  const siteUrl = getSiteUrl();
 
   return (
     <div className="space-y-6">
@@ -22,7 +24,7 @@ export default async function ProfilePage() {
           <ShareButton
             title="Share your Golf Course Ranks profile"
             text="See how I rank public golf courses on Golf Course Ranks."
-            url="https://ai-prototypes-golfcourserankscom.vercel.app/profile"
+            url={`${siteUrl}/profile`}
             className="ghost-button min-h-11"
           />
         </div>

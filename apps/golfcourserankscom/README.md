@@ -1,4 +1,4 @@
-# GolfCourseRanks.com
+# Golf Course Ranks
 
 This prototype lives at `apps/golfcourserankscom` in the `ai-prototypes` monorepo.
 
@@ -11,7 +11,7 @@ This prototype lives at `apps/golfcourserankscom` in the `ai-prototypes` monorep
 
 ## Product Summary
 
-GolfCourseRanks.com is a leaderboard-first MVP for U.S. public golf courses. Golfers sign in with magic link auth, choose a handicap band, mark seeded courses as played, drag them into a personal order, and contribute pairwise ranking signal to a national crowd leaderboard.
+Golf Course Ranks is a leaderboard-first MVP for U.S. public golf courses. Golfers sign in with magic link auth, choose a handicap band, mark seeded courses as played, drag them into a personal order, and contribute ranking signal to a national crowd leaderboard.
 
 ## Core Routes
 
@@ -47,5 +47,5 @@ Browser smoke coverage lives in `scripts/playwright-smoke.mjs`. It relies on a l
 ## Deployment Notes
 
 - Vercel root directory: `apps/golfcourserankscom`
-- Canonical production URL: `https://ai-prototypes-golfcourserankscom.vercel.app`
+- Canonical production URL: `https://golfcourseranks.com`
 - Keep `SMOKE_TEST_SECRET` unset in production

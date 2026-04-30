@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const CANONICAL_ORIGIN = "https://ai-prototypes-golfcourserankscom.vercel.app";
+const CANONICAL_ORIGIN = "https://golfcourseranks.com";
 
 const nextConfig: NextConfig = {
   async redirects() {
