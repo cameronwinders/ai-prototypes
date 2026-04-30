@@ -18,8 +18,7 @@ type AppChromeProps = {
 const desktopNav = [
   { href: "/leaderboard", label: "Leaderboard" },
   { href: "/courses", label: "Courses" },
-  { href: "/friends", label: "Friends" },
-  { href: "/profile", label: "Me" }
+  { href: "/friends", label: "Friends" }
 ];
 
 const courseSubnav = [
@@ -33,7 +32,7 @@ const mobileNav = [
   { href: "/courses", label: "Courses" },
   { href: "/me/courses", label: "My Courses" },
   { href: "/friends", label: "Friends" },
-  { href: "/profile", label: "Me" }
+  { href: "/profile", label: "Profile" }
 ];
 
 function toScreenName(pathname: string) {
@@ -67,6 +66,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
   const feedbackHref = `/feedback?screen=${encodeURIComponent(toScreenName(pathname))}&from=${encodeURIComponent(currentUrl)}`;
   const requestCourseHref = `/feedback?screen=${encodeURIComponent(toScreenName(pathname))}&from=${encodeURIComponent(currentUrl)}&topic=course-addition`;
   const inCourseSection = pathname === "/courses" || pathname === "/me/courses" || pathname.startsWith("/courses/");
+  const profileHref = viewer.signedIn && viewer.handle ? `/profile/${viewer.handle}` : "/profile";
 
   function isDesktopNavActive(href: string) {
     if (href === "/courses") {
@@ -77,10 +77,6 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
   }
 
   function isCourseSubnavActive(href: string) {
-    if (href === "/feedback?topic=course-addition") {
-      return pathname === "/feedback" && currentUrl.includes("/feedback");
-    }
-
     return pathname === href || pathname.startsWith(`${href}/`);
   }
 
@@ -91,50 +87,55 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between gap-4">
               <div className="flex min-w-0 items-center gap-5">
-              <Link
-                href="/"
-                className="brand-heading shrink-0 whitespace-nowrap text-[1.35rem] font-semibold leading-none tracking-[-0.05em] text-[var(--ink)] sm:text-[1.45rem]"
-              >
-                Golf Course Ranks
-              </Link>
-              <nav className="hidden items-center gap-2 lg:flex">
-                {desktopNav.map((item) => {
-                  const active = isDesktopNavActive(item.href);
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition ${
-                        active
-                          ? "bg-[var(--ink)] text-[rgb(255,255,255)] shadow-[0_10px_25px_rgba(24,37,43,0.12)]"
-                          : "text-[var(--muted)] hover:bg-white/70"
-                      }`}
-                    >
-                      <span className={active ? "text-[rgb(255,255,255)]" : ""}>{item.label}</span>
-                    </Link>
-                  );
-                })}
-              </nav>
-            </div>
+                <Link
+                  href="/"
+                  className="brand-heading shrink-0 whitespace-nowrap text-[1.35rem] font-semibold leading-none tracking-[-0.05em] text-[var(--ink)] sm:text-[1.45rem]"
+                >
+                  Golf Course Ranks
+                </Link>
+                <nav className="hidden items-center gap-2 lg:flex">
+                  {desktopNav.map((item) => {
+                    const active = isDesktopNavActive(item.href);
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={`inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition ${
+                          active
+                            ? "bg-[var(--ink)] shadow-[0_10px_25px_rgba(24,37,43,0.12)]"
+                            : "text-[var(--muted)] hover:bg-white/70"
+                        }`}
+                        style={active ? { color: "#ffffff" } : undefined}
+                      >
+                        <span style={active ? { color: "#ffffff" } : undefined}>{item.label}</span>
+                      </Link>
+                    );
+                  })}
+                </nav>
+              </div>
 
-            <div className="flex items-center gap-2">
-              <Link
-                href={feedbackHref}
-                className="hidden min-h-11 items-center justify-center whitespace-nowrap rounded-full border border-[var(--line)] bg-[var(--pine-soft)] px-4 py-2 text-sm font-semibold text-[var(--pine)] sm:inline-flex"
-              >
-                Feedback
-              </Link>
-
-              {viewer.signedIn ? (
-                <>
-                  {viewer.isAdmin ? (
-                    <Link
-                      href="/admin/feedback"
-                      className="hidden min-h-11 items-center justify-center whitespace-nowrap rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--ink)] xl:inline-flex"
-                    >
-                      Admin
-                    </Link>
-                  ) : null}
+              <div className="flex items-center gap-2">
+                <Link
+                  href={profileHref}
+                  className="hidden min-h-11 items-center justify-center whitespace-nowrap rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--ink)] lg:inline-flex"
+                >
+                  Profile
+                </Link>
+                <Link
+                  href={feedbackHref}
+                  className="hidden min-h-11 items-center justify-center whitespace-nowrap rounded-full border border-[var(--line)] bg-[var(--pine-soft)] px-4 py-2 text-sm font-semibold text-[var(--pine)] lg:inline-flex"
+                >
+                  Feedback
+                </Link>
+                {viewer.signedIn && viewer.isAdmin ? (
+                  <Link
+                    href="/admin/feedback"
+                    className="hidden min-h-11 items-center justify-center whitespace-nowrap rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--ink)] xl:inline-flex"
+                  >
+                    Admin
+                  </Link>
+                ) : null}
+                {viewer.signedIn ? (
                   <form action={signOut}>
                     <button
                       type="submit"
@@ -143,50 +144,48 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                       Sign out
                     </button>
                   </form>
-                </>
-              ) : (
-                <Link
-                  href={`/sign-in?next=${encodeURIComponent(currentUrl)}`}
-                  className="solid-button min-h-11 whitespace-nowrap px-4 text-[rgb(255,255,255)]"
-                >
-                  Sign in
-                </Link>
-              )}
-            </div>
-          </div>
-
-            <div className="hidden items-center gap-2 lg:flex">
-              <span
-                className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${
-                  inCourseSection ? "bg-[var(--pine-soft)] text-[var(--pine)]" : "text-[var(--muted)]"
-                }`}
-              >
-                Courses
-              </span>
-              <div className="flex min-w-0 items-center gap-2 overflow-x-auto">
-                {courseSubnav.map((item) => {
-                  const href =
-                    item.href === "/feedback?topic=course-addition"
-                      ? requestCourseHref
-                      : item.href;
-                  const active = isCourseSubnavActive(item.href);
-
-                  return (
-                    <Link
-                      key={item.label}
-                      href={href}
-                      className={`inline-flex min-h-10 items-center justify-center whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition ${
-                        active
-                          ? "border-[rgba(49,107,83,0.18)] bg-[var(--pine-soft)] text-[var(--pine)]"
-                          : "border-[var(--line)] bg-white/72 text-[var(--muted)] hover:bg-white"
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  );
-                })}
+                ) : (
+                  <Link
+                    href={`/sign-in?next=${encodeURIComponent(currentUrl)}`}
+                    className="solid-button min-h-11 whitespace-nowrap px-4 text-[rgb(255,255,255)]"
+                  >
+                    Sign in
+                  </Link>
+                )}
               </div>
             </div>
+
+            {inCourseSection ? (
+              <div className="hidden items-center gap-2 lg:flex">
+                <span className="rounded-full bg-[var(--pine-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--pine)]">
+                  Courses
+                </span>
+                <div className="flex min-w-0 items-center gap-2 overflow-x-auto">
+                  {courseSubnav.map((item) => {
+                    const href =
+                      item.href === "/feedback?topic=course-addition"
+                        ? requestCourseHref
+                        : item.href;
+                    const active = item.href === "/feedback?topic=course-addition" ? false : isCourseSubnavActive(item.href);
+
+                    return (
+                      <Link
+                        key={item.label}
+                        href={href}
+                        className={`inline-flex min-h-10 items-center justify-center whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                          active
+                            ? "border-[rgba(24,37,43,0.08)] bg-[var(--ink)] shadow-[0_10px_25px_rgba(24,37,43,0.1)]"
+                            : "border-[var(--line)] bg-white/72 text-[var(--muted)] hover:bg-white"
+                        }`}
+                        style={active ? { color: "#ffffff" } : undefined}
+                      >
+                        <span style={active ? { color: "#ffffff" } : undefined}>{item.label}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
           </div>
         </header>
 

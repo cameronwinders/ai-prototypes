@@ -2,14 +2,20 @@ import Link from "next/link";
 
 import { getAllCourses, getAppOverviewStats, getLeaderboardCourses } from "@/lib/data";
 import { formatLocation, pluralize } from "@/lib/ranking";
-import { HANDICAP_OPTIONS } from "@/lib/types";
+import { EDITORIAL_LISTS, HANDICAP_OPTIONS } from "@/lib/types";
 
 const SORT_OPTIONS = [
-  { value: "rank", label: "Leaderboard rank" },
-  { value: "score", label: "Highest score" },
+  { value: "rank", label: "Crowd rank" },
+  { value: "golf-digest-public", label: "Golf Digest" },
+  { value: "golf-top-100", label: "GOLF" },
+  { value: "golfweek-you-can-play", label: "Golfweek" },
   { value: "most-played", label: "Most golfers" },
   { value: "most-compared", label: "Most comparisons" }
 ] as const;
+
+function formatEditorialPosition(position?: number) {
+  return position ? `#${position}` : "—";
+}
 
 export default async function LeaderboardPage({
   searchParams
@@ -43,22 +49,25 @@ export default async function LeaderboardPage({
     getAllCourses()
   ]);
 
-  const states = Array.from(new Set(allCourses.map((course) => course.state))).sort((left, right) => left.localeCompare(right));
-  const crowdCourses = courses.filter((course) => !course.isEarly);
-  const earlyCourses = courses.filter((course) => course.isEarly);
+  const states = Array.from(new Set(allCourses.map((course) => course.state))).sort((left, right) =>
+    left.localeCompare(right)
+  );
 
   return (
-    <div className="space-y-6">
-      <section className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
-        <div className="shell-panel rounded-[2.4rem] p-6 sm:p-8">
-          <p className="section-label">National leaderboard</p>
-          <h1 className="brand-heading mt-4 text-5xl font-semibold tracking-[-0.05em] text-[var(--ink)] sm:text-[5rem]">
-            Public courses ranked by golfers, not by star ratings.
-          </h1>
-          <p className="mt-5 max-w-3xl text-lg leading-8 text-[var(--muted)]">
-            Every list on Golf Course Ranks comes from golfers ordering the public courses they have actually played. The result is a cleaner, more useful board for trip planning, bucket lists, and golf-group debates.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
+    <section className="shell-panel rounded-[2.4rem] p-6 sm:p-8">
+      <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-4xl">
+            <p className="section-label">National leaderboard</p>
+            <h1 className="brand-heading mt-4 text-4xl font-semibold tracking-[-0.05em] text-[var(--ink)] sm:text-5xl">
+              Crowd-ranked public courses with the editorial lists right beside them.
+            </h1>
+            <p className="mt-4 max-w-3xl text-base leading-7 text-[var(--muted)] sm:text-lg sm:leading-8">
+              The board defaults to golfer rankings. The editorial columns show where each course sits inside the seeded Golf Digest, GOLF, and Golfweek public-course lineups that helped start the network.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
             <span className="rounded-full bg-[var(--pine-soft)] px-4 py-2 text-sm font-semibold text-[var(--pine)]">
               {pluralize(stats.golferCount, "golfer")}
             </span>
@@ -66,196 +75,163 @@ export default async function LeaderboardPage({
               {pluralize(stats.signalCount, "comparison")}
             </span>
             <span className="rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--muted)]">
-              Scores rise when more golfers keep a course near the top of their own list
+              {pluralize(stats.courseCount, "public course")}
             </span>
           </div>
         </div>
 
-        <section className="shell-panel rounded-[2rem] p-6">
-          <form className="grid gap-4" action="/leaderboard">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label className="text-sm font-semibold text-[var(--ink)]">Handicap band</label>
-                <select
-                  name="band"
-                  defaultValue={band ?? ""}
-                  className="mt-2 min-h-11 w-full rounded-[1.2rem] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none"
-                >
-                  <option value="">All golfers</option>
-                  {HANDICAP_OPTIONS.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="text-sm font-semibold text-[var(--ink)]">State</label>
-                <select
-                  name="state"
-                  defaultValue={selectedState}
-                  className="mt-2 min-h-11 w-full rounded-[1.2rem] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none"
-                >
-                  <option value="">All states</option>
-                  {states.map((state) => (
-                    <option key={state} value={state}>
-                      {state}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label className="text-sm font-semibold text-[var(--ink)]">Sort by</label>
-                <select
-                  name="sort"
-                  defaultValue={sort}
-                  className="mt-2 min-h-11 w-full rounded-[1.2rem] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none"
-                >
-                  {SORT_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="text-sm font-semibold text-[var(--ink)]">Minimum comparisons</label>
-                <input
-                  type="range"
-                  min="0"
-                  max="20"
-                  step="1"
-                  name="minSignals"
-                  defaultValue={String(minSignals)}
-                  className="mt-3 w-full"
-                />
-                <p className="mt-2 text-sm text-[var(--muted)]">Showing courses with at least {minSignals} comparisons.</p>
-              </div>
-            </div>
-
-            <button type="submit" className="solid-button min-h-11 justify-center">
-              Apply filters
-            </button>
-          </form>
-        </section>
-      </section>
-
-      <section className="shell-panel rounded-[2rem] p-5 sm:p-6">
-        <div className="flex items-center justify-between gap-3">
+        <form action="/leaderboard" className="grid gap-4 rounded-[1.9rem] border border-[var(--line)] bg-white/72 p-4 lg:grid-cols-[1fr_1fr_1fr_1.2fr_auto] lg:items-end">
           <div>
-            <p className="section-label">Live board</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
-              Crowd-ranked public courses
-            </h2>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--muted)]">
-              Live rows below come from saved golfer orderings. Courses still building enough participation appear separately as editorial starting points.
-            </p>
+            <label className="text-sm font-semibold text-[var(--ink)]">Handicap band</label>
+            <select
+              name="band"
+              defaultValue={band ?? ""}
+              className="mt-2 min-h-11 w-full rounded-[1.2rem] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none"
+            >
+              <option value="">All golfers</option>
+              {HANDICAP_OPTIONS.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
           </div>
-          <Link href="/courses" className="ghost-button min-h-11">
-            Add played courses
+
+          <div>
+            <label className="text-sm font-semibold text-[var(--ink)]">State</label>
+            <select
+              name="state"
+              defaultValue={selectedState}
+              className="mt-2 min-h-11 w-full rounded-[1.2rem] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none"
+            >
+              <option value="">All states</option>
+              {states.map((state) => (
+                <option key={state} value={state}>
+                  {state}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="text-sm font-semibold text-[var(--ink)]">Sort by</label>
+            <select
+              name="sort"
+              defaultValue={sort}
+              className="mt-2 min-h-11 w-full rounded-[1.2rem] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none"
+            >
+              {SORT_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="text-sm font-semibold text-[var(--ink)]">Minimum comparisons</label>
+            <input
+              type="range"
+              min="0"
+              max="20"
+              step="1"
+              name="minSignals"
+              defaultValue={String(minSignals)}
+              className="mt-3 w-full"
+            />
+            <p className="mt-2 text-sm text-[var(--muted)]">Showing courses with at least {minSignals} comparisons.</p>
+          </div>
+
+          <button type="submit" className="solid-button min-h-11 justify-center whitespace-nowrap">
+            Apply
+          </button>
+        </form>
+
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm leading-6 text-[var(--muted)]">
+            Crowd score reflects how often golfers keep a course near the top of their own list. Editorial columns show where the same course appeared in the seeded publication lineups.
+          </p>
+          <Link href="/me/courses" className="ghost-button min-h-11">
+            Add your courses
           </Link>
         </div>
 
         {courses.length === 0 ? (
-          <div className="mt-6 rounded-[1.8rem] border border-dashed border-[var(--line)] px-5 py-10 text-sm leading-6 text-[var(--muted)]">
+          <div className="rounded-[1.8rem] border border-dashed border-[var(--line)] px-5 py-10 text-sm leading-6 text-[var(--muted)]">
             No courses match that filter combination yet. Try another state, lower the comparison threshold, or switch back to all golfers.
           </div>
         ) : (
-          <div className="mt-6 space-y-6">
-            {crowdCourses.length > 0 ? (
-              <div className="overflow-hidden rounded-[1.8rem] border border-[var(--line)]">
-                <div className="hidden grid-cols-[78px_1.8fr_1fr_1fr] gap-4 bg-[rgba(255,255,255,0.78)] px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)] md:grid">
-                  <div>Rank</div>
-                  <div>Course</div>
-                  <div>Activity</div>
-                  <div>Score</div>
-                </div>
-                <div className="divide-y divide-[var(--line)]">
-                  {crowdCourses.map((course) => (
-                    <Link
-                      key={course.id}
-                      href={`/courses/${course.id}`}
-                      className="grid gap-3 bg-white/90 px-5 py-4 transition hover:bg-white md:grid-cols-[78px_1.8fr_1fr_1fr] md:items-center"
-                    >
-                      <div className="text-3xl font-semibold tracking-[-0.05em] text-[var(--ink)]">#{course.leaderboardRank}</div>
-                      <div>
-                        <h3 className="text-xl font-semibold tracking-[-0.04em] text-[var(--ink)]">{course.name}</h3>
-                        <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
-                      </div>
-                      <div className="text-sm text-[var(--muted)]">
-                        <div className="flex flex-wrap gap-2">
-                          <span className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
-                            {pluralize(course.numUniqueGolfers, "golfer")}
-                          </span>
-                          <span className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
-                            {pluralize(course.numSignals, "comparison")}
-                          </span>
-                        </div>
-                      </div>
-                      <div>
-                        <div className="inline-flex rounded-full bg-[var(--pine-soft)] px-3 py-2 text-sm font-semibold text-[var(--pine)]">
-                          Crowd score {course.normalizedScore.toFixed(1)}
-                        </div>
-                        <p className="mt-2 text-xs text-[var(--muted)]">
-                          Built from saved golfer orderings across the network.
-                        </p>
-                      </div>
-                    </Link>
+          <div className="overflow-hidden rounded-[1.9rem] border border-[var(--line)] bg-white/86">
+            <div className="overflow-x-auto">
+              <table className="min-w-[980px] w-full">
+                <thead>
+                  <tr className="border-b border-[var(--line)] bg-[rgba(255,255,255,0.88)] text-left text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+                    <th className="px-5 py-4">Crowd</th>
+                    <th className="px-5 py-4">Course</th>
+                    <th className="px-5 py-4">Golfers</th>
+                    {EDITORIAL_LISTS.map((editorial) => (
+                      <th key={editorial.key} className="px-5 py-4">
+                        {editorial.label}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {courses.map((course) => (
+                    <tr key={course.id} className="border-b border-[var(--line)] last:border-b-0">
+                      <td className="px-5 py-5 align-top">
+                        <Link href={`/courses/${course.id}`} className="block min-w-[110px]">
+                          <div className="text-3xl font-semibold tracking-[-0.05em] text-[var(--ink)]">
+                            #{course.leaderboardRank}
+                          </div>
+                          <div className="mt-2 inline-flex rounded-full bg-[var(--pine-soft)] px-3 py-2 text-sm font-semibold text-[var(--pine)]">
+                            Crowd score {course.normalizedScore.toFixed(1)}
+                          </div>
+                          <p className="mt-2 text-xs leading-5 text-[var(--muted)]">
+                            {course.isEarly
+                              ? "Still leaning on the editorial starting order while more golfers rank it."
+                              : "Fully in the live crowd board."}
+                          </p>
+                        </Link>
+                      </td>
+                      <td className="px-5 py-5 align-top">
+                        <Link href={`/courses/${course.id}`} className="block">
+                          <h2 className="text-xl font-semibold tracking-[-0.04em] text-[var(--ink)]">{course.name}</h2>
+                          <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {course.isEarly ? (
+                              <span className="rounded-full bg-[rgba(217,191,141,0.18)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[rgb(120,88,38)]">
+                                Editorial start still helping
+                              </span>
+                            ) : null}
+                            <span className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
+                              {pluralize(course.numSignals, "comparison")}
+                            </span>
+                          </div>
+                        </Link>
+                      </td>
+                      <td className="px-5 py-5 align-top text-sm text-[var(--muted)]">
+                        <div className="font-semibold text-[var(--ink)]">{pluralize(course.numUniqueGolfers, "golfer")}</div>
+                        <div className="mt-2">{pluralize(course.numSignals, "comparison")}</div>
+                      </td>
+                      {EDITORIAL_LISTS.map((editorial) => (
+                        <td key={editorial.key} className="px-5 py-5 align-top text-sm text-[var(--muted)]">
+                          <div className="text-base font-semibold text-[var(--ink)]">
+                            {formatEditorialPosition(course.editorialRanks?.[editorial.key])}
+                          </div>
+                          <div className="mt-2 text-xs uppercase tracking-[0.14em] text-[var(--muted)]">
+                            {course.editorialRanks?.[editorial.key] ? editorial.label : "Not listed"}
+                          </div>
+                        </td>
+                      ))}
+                    </tr>
                   ))}
-                </div>
-              </div>
-            ) : (
-              <div className="rounded-[1.8rem] border border-dashed border-[var(--line)] px-5 py-8 text-sm leading-6 text-[var(--muted)]">
-                No courses have cleared the live-crowd threshold for this filter combination yet. The editorial watchlist below keeps the board useful while more golfers add rankings.
-              </div>
-            )}
-
-            {earlyCourses.length > 0 ? (
-              <div className="rounded-[1.8rem] border border-[var(--line)] bg-[rgba(255,255,255,0.76)] p-5">
-                <div>
-                  <p className="section-label">Editorial watchlist</p>
-                  <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
-                    Strong public courses still building enough golfer signal
-                  </h3>
-                </div>
-                <div className="mt-5 grid gap-3">
-                  {earlyCourses.map((course) => (
-                    <Link
-                      key={course.id}
-                      href={`/courses/${course.id}`}
-                      className="grid gap-3 rounded-[1.5rem] border border-[var(--line)] bg-white/90 px-4 py-4 transition hover:bg-white md:grid-cols-[78px_1.6fr_1fr_1fr] md:items-center"
-                    >
-                      <div className="text-3xl font-semibold tracking-[-0.05em] text-[var(--ink)]">#{course.leaderboardRank}</div>
-                      <div>
-                        <h3 className="text-lg font-semibold tracking-[-0.03em] text-[var(--ink)]">{course.name}</h3>
-                        <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
-                      </div>
-                      <div className="flex flex-wrap gap-2 text-sm text-[var(--muted)]">
-                        <span className="rounded-full bg-[rgba(217,191,141,0.18)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[rgb(120,88,38)]">
-                          Editorial starting point
-                        </span>
-                        <span>{pluralize(course.numUniqueGolfers, "golfer")}</span>
-                        <span>{pluralize(course.numSignals, "comparison")}</span>
-                      </div>
-                      <div>
-                        <div className="inline-flex rounded-full border border-[rgba(217,191,141,0.4)] bg-[rgba(255,248,236,0.95)] px-3 py-2 text-sm font-semibold text-[rgb(120,88,38)]">
-                          Starting score {course.normalizedScore.toFixed(1)}
-                        </div>
-                        <p className="mt-2 text-xs text-[var(--muted)]">
-                          Editorial lift only until more golfers rank this course.
-                        </p>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ) : null}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }

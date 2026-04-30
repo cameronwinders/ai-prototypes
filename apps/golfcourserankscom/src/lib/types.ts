@@ -1,10 +1,16 @@
 export const HANDICAP_OPTIONS = ["0-5", "6-10", "11-18", "19+"] as const;
 export const FEEDBACK_TYPES = ["bug", "feature", "general", "course-addition"] as const;
 export const FRIENDSHIP_STATUSES = ["pending", "accepted"] as const;
+export const EDITORIAL_LISTS = [
+  { key: "golf-digest-public", label: "Golf Digest", sourceName: "Golf Digest Public" },
+  { key: "golf-top-100", label: "GOLF", sourceName: "GOLF Top 100" },
+  { key: "golfweek-you-can-play", label: "Golfweek", sourceName: "Golfweek You Can Play" }
+] as const;
 
 export type HandicapBand = (typeof HANDICAP_OPTIONS)[number];
 export type FeedbackType = (typeof FEEDBACK_TYPES)[number];
 export type FriendshipStatus = (typeof FRIENDSHIP_STATUSES)[number];
+export type EditorialKey = (typeof EDITORIAL_LISTS)[number]["key"];
 
 export type UserProfile = {
   id: string;
@@ -34,6 +40,8 @@ export type CourseRecord = {
     seed_tier?: string;
     [key: string]: unknown;
   } | null;
+  editorialLists?: string[];
+  editorialRanks?: Partial<Record<EditorialKey, number>>;
   leaderboard_rank?: number | null;
   is_early?: boolean | null;
   created_at?: string;

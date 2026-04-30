@@ -11,6 +11,7 @@ import {
 } from "@/lib/ranking";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getServerSupabaseEnv } from "@/lib/supabase/env";
+import { EDITORIAL_LISTS } from "@/lib/types";
 import type {
   CompareOverview,
   CourseAggregateRecord,
@@ -20,6 +21,7 @@ import type {
   FriendCard,
   FriendshipRecord,
   FriendsPageData,
+  EditorialKey,
   HandicapBand,
   LeaderboardCourse,
   PendingFriendRequest,
@@ -28,6 +30,15 @@ import type {
   RankedCourse,
   UserProfile
 } from "@/lib/types";
+
+type LeaderboardSort =
+  | "rank"
+  | "score"
+  | "most-played"
+  | "most-compared"
+  | "golf-digest-public"
+  | "golf-top-100"
+  | "golfweek-you-can-play";
 
 function ensureConfigured() {
   const env = getServerSupabaseEnv();
@@ -65,6 +76,34 @@ type RankRow = {
   course_id: string;
   rank_position: number;
 };
+
+function getCourseLists(course: CourseRecord) {
+  return Array.isArray(course.seed_source?.lists)
+    ? course.seed_source?.lists ?? []
+    : [];
+}
+
+function attachEditorialRanks(courses: CourseRecord[]) {
+  const ranksByCourse = new Map<string, Partial<Record<EditorialKey, number>>>();
+
+  for (const editorial of EDITORIAL_LISTS) {
+    const matchingCourses = [...courses]
+      .filter((course) => getCourseLists(course).includes(editorial.sourceName))
+      .sort((left, right) => left.seed_rank - right.seed_rank);
+
+    matchingCourses.forEach((course, index) => {
+      const existing = ranksByCourse.get(course.id) ?? {};
+      existing[editorial.key] = index + 1;
+      ranksByCourse.set(course.id, existing);
+    });
+  }
+
+  return courses.map((course) => ({
+    ...course,
+    editorialLists: getCourseLists(course),
+    editorialRanks: ranksByCourse.get(course.id) ?? {}
+  }));
+}
 
 async function getCoursesByIds(courseIds: string[]) {
   if (courseIds.length === 0) {
@@ -219,7 +258,8 @@ export async function getAllCourses() {
     ])
   );
 
-  return ((data ?? []) as CourseRecord[])
+  return attachEditorialRanks(
+    ((data ?? []) as CourseRecord[])
     .map((course) => {
       const aggregate = aggregateByCourse.get(course.id);
       return {
@@ -238,7 +278,8 @@ export async function getAllCourses() {
       }
 
       return left.seed_rank - right.seed_rank;
-    });
+    })
+  );
 }
 
 export async function getPlayedCoursesForUser(userId: string) {
@@ -373,7 +414,7 @@ async function buildFilteredLeaderboard(handicapBand: HandicapBand, minSignals: 
 
 function sortLeaderboardRows(
   courses: LeaderboardCourse[],
-  sort: "rank" | "score" | "most-played" | "most-compared"
+  sort: LeaderboardSort
 ) {
   const ranked = [...courses];
 
@@ -389,6 +430,13 @@ function sortLeaderboardRows(
     } else if (sort === "most-compared") {
       if (right.numSignals !== left.numSignals) {
         return right.numSignals - left.numSignals;
+      }
+    } else if (sort !== "rank") {
+      const leftEditorialRank = left.editorialRanks?.[sort as EditorialKey] ?? Number.MAX_SAFE_INTEGER;
+      const rightEditorialRank = right.editorialRanks?.[sort as EditorialKey] ?? Number.MAX_SAFE_INTEGER;
+
+      if (leftEditorialRank !== rightEditorialRank) {
+        return leftEditorialRank - rightEditorialRank;
       }
     } else if (left.leaderboardRank !== right.leaderboardRank) {
       return left.leaderboardRank - right.leaderboardRank;
@@ -411,7 +459,7 @@ export async function getLeaderboardCourses(options?: {
   handicapBand?: HandicapBand | null;
   minSignals?: number;
   state?: string | null;
-  sort?: "rank" | "score" | "most-played" | "most-compared";
+  sort?: LeaderboardSort;
   limit?: number;
 }) {
   const { configured } = ensureConfigured();
