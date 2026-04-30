@@ -14,7 +14,7 @@ const SORT_OPTIONS = [
 ] as const;
 
 function formatEditorialPosition(position?: number) {
-  return position ? `#${position}` : "—";
+  return position ? `#${position}` : "-";
 }
 
 export default async function LeaderboardPage({
