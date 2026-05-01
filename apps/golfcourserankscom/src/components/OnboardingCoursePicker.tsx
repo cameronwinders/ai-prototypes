@@ -18,10 +18,7 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
   const [stateFilter, setStateFilter] = useState("ALL");
 
   const states = useMemo(
-    () =>
-      Array.from(new Set(courses.map((course) => course.state))).sort((left, right) =>
-        left.localeCompare(right)
-      ),
+    () => Array.from(new Set(courses.map((course) => course.state))).sort((left, right) => left.localeCompare(right)),
     [courses]
   );
 
@@ -59,7 +56,7 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
             Pick the public courses you have already played.
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--muted)]">
-            Pick 5–15 to get the most out of ranking. We will drop them into your played list first, then you can drag your favorites into order.
+            Pick 5-15 to get the most out of ranking. We will drop them into your played list first, then you can drag your favorites into order.
           </p>
         </div>
 
@@ -125,13 +122,13 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
                   Rank #{badgeValue}
                 </span>
                 <span
-                  className={`inline-flex h-7 w-7 items-center justify-center rounded-full border text-sm font-semibold ${
+                  className={`inline-flex h-7 w-7 items-center justify-center rounded-full border text-[11px] font-semibold ${
                     selected
                       ? "border-[rgba(49,107,83,0.65)] bg-[var(--pine)] text-white"
                       : "border-[var(--line)] bg-white text-[var(--muted)]"
                   }`}
                 >
-                  {selected ? "✓" : "+"}
+                  {selected ? "YES" : "+"}
                 </span>
               </div>
               <h3 className="mt-4 text-lg font-semibold tracking-[-0.03em] text-[var(--ink)]">{course.name}</h3>
@@ -145,9 +142,9 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-semibold text-[var(--ink)]">
-              Continue with {selectedIds.length} {selectedIds.length === 1 ? "course" : "courses"} →
+              Continue with {selectedIds.length} {selectedIds.length === 1 ? "course" : "courses"} {"->"}
             </p>
-            <p className="mt-1 text-sm text-[var(--muted)]">Rank your first 5–15 courses in under a minute.</p>
+            <p className="mt-1 text-sm text-[var(--muted)]">Rank your first 5-15 courses in under a minute.</p>
           </div>
           <button
             type="submit"
