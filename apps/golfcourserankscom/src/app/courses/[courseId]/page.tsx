@@ -26,7 +26,7 @@ export default async function CourseDetailPage({
   const courseUrl = `/courses/${course.id}`;
   const siteUrl = getSiteUrl();
   const isEditorialOnly = (aggregate?.num_unique_golfers ?? 0) === 0;
-  const scoreLabel = isEditorialOnly ? "Starting score" : "Leaderboard score";
+  const scoreLabel = isEditorialOnly ? "Starting score" : "Crowd score";
   const scoreContext = isEditorialOnly
     ? "This is the editorial starting point until more golfers add the course to their rankings."
     : "This score reflects where golfers currently keep the course on their personal lists.";

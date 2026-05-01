@@ -7,7 +7,7 @@ import { EDITORIAL_LISTS, HANDICAP_OPTIONS } from "@/lib/types";
 const SORT_OPTIONS = [
   { value: "rank", label: "Crowd rank" },
   { value: "golf-digest-public", label: "Golf Digest" },
-  { value: "golf-top-100", label: "GOLF" },
+  { value: "golf-top-100", label: "GOLF.com" },
   { value: "golfweek-you-can-play", label: "Golfweek" },
   { value: "most-played", label: "Most golfers" },
   { value: "most-compared", label: "Most comparisons" }
@@ -63,7 +63,7 @@ export default async function LeaderboardPage({
               Crowd-ranked public courses with the editorial lists right beside them.
             </h1>
             <p className="mt-4 max-w-3xl text-base leading-7 text-[var(--muted)] sm:text-lg sm:leading-8">
-              The board defaults to golfer rankings. The editorial columns show where each course sits inside the seeded Golf Digest, GOLF, and Golfweek public-course lineups that helped start the network.
+              The board defaults to golfer rankings. The editorial columns show where each course sits inside the seeded Golf Digest, GOLF.com, and Golfweek public-course lineups that helped start the network.
             </p>
           </div>
 
@@ -184,8 +184,15 @@ export default async function LeaderboardPage({
                           <div className="text-3xl font-semibold tracking-[-0.05em] text-[var(--ink)]">
                             #{course.leaderboardRank}
                           </div>
-                          <div className="mt-2 inline-flex rounded-full bg-[var(--pine-soft)] px-3 py-2 text-sm font-semibold text-[var(--pine)]">
-                            Crowd score {course.normalizedScore.toFixed(1)}
+                          <div
+                            className={`mt-2 inline-flex rounded-full px-3 py-2 text-sm font-semibold ${
+                              course.numUniqueGolfers === 0
+                                ? "border border-[rgba(217,191,141,0.4)] bg-[rgba(255,248,236,0.95)] text-[rgb(120,88,38)]"
+                                : "bg-[var(--pine-soft)] text-[var(--pine)]"
+                            }`}
+                          >
+                            {course.numUniqueGolfers === 0 ? "Starting score" : "Crowd score"}{" "}
+                            {course.normalizedScore.toFixed(1)}
                           </div>
                           <p className="mt-2 text-xs leading-5 text-[var(--muted)]">
                             {course.isEarly

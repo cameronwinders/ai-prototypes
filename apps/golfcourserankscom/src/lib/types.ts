@@ -3,7 +3,7 @@ export const FEEDBACK_TYPES = ["bug", "feature", "general", "course-addition"] a
 export const FRIENDSHIP_STATUSES = ["pending", "accepted"] as const;
 export const EDITORIAL_LISTS = [
   { key: "golf-digest-public", label: "Golf Digest", sourceName: "Golf Digest Public" },
-  { key: "golf-top-100", label: "GOLF", sourceName: "GOLF Top 100" },
+  { key: "golf-top-100", label: "GOLF.com", sourceName: "GOLF Top 100" },
   { key: "golfweek-you-can-play", label: "Golfweek", sourceName: "Golfweek You Can Play" }
 ] as const;
 
@@ -36,6 +36,7 @@ export type CourseRecord = {
   seed_score: number;
   seed_source: {
     lists?: string[];
+    editorial_ranks?: Partial<Record<EditorialKey, number>>;
     notes?: string;
     seed_tier?: string;
     [key: string]: unknown;

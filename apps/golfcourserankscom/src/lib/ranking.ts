@@ -62,6 +62,13 @@ export function formatLocation(course: Pick<CourseRecord, "city" | "state">) {
   return `${course.city}, ${course.state}`;
 }
 
+export function slugifyCourseName(name: string) {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export function getPriceBandLabel(value: number | null) {
   if (!value) {
     return "Flexible pricing";

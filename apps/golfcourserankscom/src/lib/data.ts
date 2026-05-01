@@ -6,12 +6,12 @@ import {
   buildAiCourseStory,
   compareRankings,
   computeCourseScore,
+  slugifyCourseName,
   normalizeLeaderboard,
   toLeaderboardCourse
 } from "@/lib/ranking";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getServerSupabaseEnv } from "@/lib/supabase/env";
-import { EDITORIAL_LISTS } from "@/lib/types";
 import type {
   CompareOverview,
   CourseAggregateRecord,
@@ -58,6 +58,10 @@ function sanitizeHandle(value: string) {
   return cleaned.length >= 2 ? cleaned : "golfer";
 }
 
+function isUuidLike(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
 function displayNameFromEmail(email: string | null | undefined) {
   if (!email) {
     return "GolfCourseRanks member";
@@ -84,24 +88,10 @@ function getCourseLists(course: CourseRecord) {
 }
 
 function attachEditorialRanks(courses: CourseRecord[]) {
-  const ranksByCourse = new Map<string, Partial<Record<EditorialKey, number>>>();
-
-  for (const editorial of EDITORIAL_LISTS) {
-    const matchingCourses = [...courses]
-      .filter((course) => getCourseLists(course).includes(editorial.sourceName))
-      .sort((left, right) => left.seed_rank - right.seed_rank);
-
-    matchingCourses.forEach((course, index) => {
-      const existing = ranksByCourse.get(course.id) ?? {};
-      existing[editorial.key] = index + 1;
-      ranksByCourse.set(course.id, existing);
-    });
-  }
-
   return courses.map((course) => ({
     ...course,
     editorialLists: getCourseLists(course),
-    editorialRanks: ranksByCourse.get(course.id) ?? {}
+    editorialRanks: (course.seed_source?.editorial_ranks as Partial<Record<EditorialKey, number>> | undefined) ?? {}
   }));
 }
 
@@ -515,21 +505,31 @@ export async function getCourseDetail(
     return null;
   }
 
+  let resolvedCourseId = courseId;
+  if (!isUuidLike(courseId)) {
+    const allCourses = await getAllCourses();
+    const matchingCourse = allCourses.find((course) => slugifyCourseName(course.name) === courseId);
+    if (!matchingCourse) {
+      return null;
+    }
+    resolvedCourseId = matchingCourse.id;
+  }
+
   const admin = createAdminClient();
   const [courseRes, aggregateRes, noteRows, viewerPlayedRows, viewerRankRows] = await Promise.all([
-    admin.from("courses").select("*").eq("id", courseId).maybeSingle<CourseRecord>(),
-    admin.from("course_aggregates").select("*").eq("course_id", courseId).maybeSingle<CourseAggregateRecord>(),
+    admin.from("courses").select("*").eq("id", resolvedCourseId).maybeSingle<CourseRecord>(),
+    admin.from("course_aggregates").select("*").eq("course_id", resolvedCourseId).maybeSingle<CourseAggregateRecord>(),
     admin
       .from("played_courses")
       .select("note")
-      .eq("course_id", courseId)
+      .eq("course_id", resolvedCourseId)
       .not("note", "is", null)
       .limit(18),
     viewerId
-      ? admin.from("played_courses").select("*").eq("user_id", viewerId).eq("course_id", courseId)
+      ? admin.from("played_courses").select("*").eq("user_id", viewerId).eq("course_id", resolvedCourseId)
       : Promise.resolve({ data: [], error: null }),
     viewerId
-      ? admin.from("user_course_ranks").select("*").eq("user_id", viewerId).eq("course_id", courseId)
+      ? admin.from("user_course_ranks").select("*").eq("user_id", viewerId).eq("course_id", resolvedCourseId)
       : Promise.resolve({ data: [], error: null })
   ]);
 

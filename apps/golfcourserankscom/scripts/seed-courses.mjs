@@ -44,7 +44,10 @@ const records = rows.map((row) => {
     priceBand,
     sourceLists,
     seedTier,
-    sourceNotes
+    sourceNotes,
+    golfDigestRank,
+    golfComRank,
+    golfweekRank
   ] = parseCsvLine(row);
 
   const numericSeedRank = Number(seedRank);
@@ -62,6 +65,11 @@ const records = rows.map((row) => {
     seed_score: seedScore,
     seed_source: {
       lists: sourceLists.split("|").map((value) => value.trim()).filter(Boolean),
+      editorial_ranks: {
+        ...(golfDigestRank ? { "golf-digest-public": Number(golfDigestRank) } : {}),
+        ...(golfComRank ? { "golf-top-100": Number(golfComRank) } : {}),
+        ...(golfweekRank ? { "golfweek-you-can-play": Number(golfweekRank) } : {})
+      },
       seed_tier: seedTier,
       notes: sourceNotes
     }
