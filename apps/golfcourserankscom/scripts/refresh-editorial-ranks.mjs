@@ -83,6 +83,9 @@ const COURSE_ALIASES = {
     "golfweek-you-can-play": ["Kohler Whistling Straits (Straits)"],
     "golf-digest-public": ["Whistling Straits: Straits Course"]
   },
+  "Blackwolf Run River Course": {
+    "golf-digest-public": ["Blackwolf Run: River"]
+  },
   "Bandon Trails": {
     "golfweek-you-can-play": ["Bandon Dunes Golf Resort (Bandon Trails)"]
   },
@@ -131,6 +134,10 @@ const COURSE_ALIASES = {
     "golf-top-100": ["The Park"],
     "golfweek-you-can-play": ["The Park West Palm"],
     "golf-digest-public": ["The Park at West Palm Beach"]
+  },
+  "The Park": {
+    "golf-digest-public": ["The Park at West Palm Beach"],
+    "golfweek-you-can-play": ["The Park at West Palm Beach"]
   },
   "Southern Pines Golf Club": {
     "golf-top-100": ["Southern Pines"],
@@ -358,11 +365,169 @@ const COURSE_ALIASES = {
   },
   "The Lido at Sand Valley": {
     "golf-top-100": ["Sand Valley (The Lido)"],
-    "golfweek-you-can-play": ["Sand Valley (Lido)"]
+    "golfweek-you-can-play": ["Sand Valley (Lido)"],
+    "golf-digest-public": ["Sand Valley: The Lido"]
   },
   "Forest Dunes The Loop": {
     "golf-top-100": ["Forest Dunes (Loop)"],
     "golfweek-you-can-play": ["Forest Dunes (The Loop Red & Black)"]
+  },
+  "Mid Pines Inn and Golf Club": {
+    "golf-top-100": ["Mid Pines"],
+    "golfweek-you-can-play": ["Mid Pines"]
+  },
+  "Black Desert Resort": {
+    "golf-top-100": ["Black Desert Resort Golf Course"]
+  }
+};
+
+const COURSE_METADATA_OVERRIDES = {
+  "Blackwolf Run: River": {
+    name: "Blackwolf Run River Course"
+  },
+  "Sand Valley: The Lido": {
+    name: "The Lido at Sand Valley"
+  },
+  "Harbour Town Golf Links": {
+    par: "71",
+    slope: "146",
+    rating: "75.5",
+    price_band: "5"
+  },
+  Landmand: {
+    par: "73",
+    slope: "135",
+    rating: "74.7",
+    price_band: "5"
+  },
+  "Sweetens Cove": {
+    par: "36",
+    slope: "123",
+    rating: "37.5",
+    price_band: "3"
+  },
+  "Mid Pines Inn and Golf Club": {
+    city: "Southern Pines",
+    par: "72",
+    slope: "136",
+    rating: "73.8",
+    price_band: "4"
+  },
+  "Yale Golf Course": {
+    par: "70",
+    slope: "135",
+    rating: "72.9",
+    price_band: "4"
+  },
+  "Sea Island: Seaside": {
+    name: "Sea Island Seaside Course",
+    city: "St. Simons Island",
+    par: "70",
+    slope: "141",
+    rating: "73.8",
+    price_band: "5"
+  },
+  "The Omni Homestead Resort: Cascades Course": {
+    name: "Omni Homestead Cascades Course",
+    par: "71",
+    slope: "137",
+    rating: "73.0",
+    price_band: "5"
+  },
+  "Mid Pines": {
+    name: "Mid Pines Inn and Golf Club"
+  },
+  "The Park": {
+    name: "The Park at West Palm Beach",
+    par: "72",
+    slope: "139",
+    rating: "74.2",
+    price_band: "3"
+  },
+  "The Highland Course At Primland": {
+    name: "Primland Highland Course",
+    par: "72",
+    slope: "150",
+    rating: "75.1",
+    price_band: "5"
+  },
+  "American Dunes": {
+    name: "American Dunes Golf Club",
+    par: "72",
+    slope: "134",
+    rating: "73.4",
+    price_band: "4"
+  },
+  "Mossy Oak Golf Club": {
+    par: "72",
+    slope: "135",
+    rating: "74.5",
+    price_band: "4"
+  },
+  "Black Mesa Golf Club": {
+    par: "72",
+    slope: "141",
+    rating: "73.9",
+    price_band: "4"
+  },
+  "Paako Ridge Golf Club": {
+    par: "72",
+    slope: "145",
+    rating: "76.0",
+    price_band: "4"
+  },
+  "The Links At Spanish Bay": {
+    name: "The Links at Spanish Bay",
+    par: "72",
+    slope: "143",
+    rating: "73.8",
+    price_band: "5"
+  },
+  "The Dunes": {
+    name: "The Dunes Golf and Beach Club",
+    city: "Myrtle Beach",
+    par: "72",
+    slope: "148",
+    rating: "76.1",
+    price_band: "4"
+  },
+  "Firestone Country Club: South": {
+    name: "Firestone South Course",
+    par: "70",
+    slope: "132",
+    rating: "76.1",
+    price_band: "5"
+  },
+  "Karsten Creek": {
+    name: "Karsten Creek Golf Club",
+    par: "72",
+    slope: "142",
+    rating: "76.1",
+    price_band: "5"
+  },
+  "Ozarks National": {
+    name: "Ozarks National Golf Course",
+    par: "71",
+    slope: "131",
+    rating: "73.9",
+    price_band: "5"
+  },
+  "Bay Hill Club and Lodge": {
+    city: "Orlando",
+    state: "FL",
+    par: "72",
+    slope: "138",
+    rating: "75.2",
+    price_band: "5"
+  },
+  "Tetherow Golf Club": {
+    par: "72",
+    slope: "141",
+    rating: "75.4",
+    price_band: "4"
+  },
+  "Black Desert Resort Golf Course": {
+    name: "Black Desert Resort"
   }
 };
 
@@ -463,6 +628,68 @@ function displayNameForNewRow(sourceName) {
     .replace(/\bNo\.\s*(\d+)/gi, "No $1")
     .replace(/\s+&\s+/g, " & ")
     .trim();
+}
+
+function applyCourseOverride(record) {
+  const override = COURSE_METADATA_OVERRIDES[record.name];
+  if (!override) {
+    return;
+  }
+
+  if (override.name) {
+    record.name = override.name;
+  }
+  if (override.city) {
+    record.city = override.city;
+  }
+  if (override.state) {
+    record.state = override.state;
+  }
+  if (override.par) {
+    record.par = override.par;
+  }
+  if (override.slope) {
+    record.slope = override.slope;
+  }
+  if (override.rating) {
+    record.rating = override.rating;
+  }
+  if (override.price_band) {
+    record.price_band = override.price_band;
+  }
+}
+
+function mergeDuplicateRecords(recordRows) {
+  const byIdentity = new Map();
+  const merged = [];
+
+  for (const row of recordRows) {
+    applyCourseOverride(row);
+    const identity = `${row.name}::${row.city}::${row.state}`.toLowerCase();
+    const existing = byIdentity.get(identity);
+
+    if (!existing) {
+      byIdentity.set(identity, row);
+      merged.push(row);
+      continue;
+    }
+
+    for (const key of ["par", "slope", "rating", "price_band", "golf_digest_rank", "golf_com_rank", "golfweek_rank"]) {
+      if (!existing[key] && row[key]) {
+        existing[key] = row[key];
+      }
+    }
+
+    if ((!existing.source_notes || existing.source_notes === "Added from refreshed editorial source coverage") && row.source_notes) {
+      existing.source_notes = row.source_notes;
+    }
+
+    if (existing.seed_tier === "Tier C" && row.seed_tier && row.seed_tier !== "Tier C") {
+      existing.seed_tier = row.seed_tier;
+    }
+  }
+
+  recordRows.splice(0, recordRows.length, ...merged);
 }
 
 async function fetchHtml(url) {
@@ -683,6 +910,7 @@ function findExistingMatch(recordRows, sourceKey, sourceColumn, sourceRow, assig
 function ensureCourseRecord(recordRows, sourceKey, sourceColumn, sourceRow, assignedRows) {
   const match = findExistingMatch(recordRows, sourceKey, sourceColumn, sourceRow, assignedRows);
   if (match) {
+    applyCourseOverride(match);
     assignedRows.add(match);
     return match;
   }
@@ -705,6 +933,7 @@ function ensureCourseRecord(recordRows, sourceKey, sourceColumn, sourceRow, assi
   };
 
   recordRows.push(created);
+  applyCourseOverride(created);
   assignedRows.add(created);
   return created;
 }
@@ -785,6 +1014,7 @@ function serializeRows(recordRows) {
 
 const csvLines = readFileSync(csvPath, "utf8").trim().split(/\r?\n/);
 const records = parseExistingRows(csvLines);
+mergeDuplicateRecords(records);
 const golfComHtml = await fetchHtml(GOLF_COM_URL);
 const golfweekHtml = await fetchHtml(GOLFWEEK_URL);
 const [golfComRows, golfweekRows, golfDigestRows] = await Promise.all([
@@ -817,6 +1047,7 @@ for (const row of golfweekRows) {
   record.golfweek_rank = String(row.rank);
 }
 
+mergeDuplicateRecords(records);
 recomputeSeedOrder(records);
 
 writeFileSync(csvPath, serializeRows(records), "utf8");
