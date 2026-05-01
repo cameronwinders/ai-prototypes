@@ -165,7 +165,7 @@ export function CoursesBrowser({
                     <h3 className="mt-3 text-xl font-semibold leading-tight tracking-[-0.03em] text-[var(--ink)]">{course.name}</h3>
                     <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
                     <p className="mt-3 text-sm text-[var(--muted)]">
-                      Par {course.par ?? "-"} • Slope {course.slope ?? "-"} • Rating {course.rating ?? "-"}
+                      Par {course.par ?? "-"} / Slope {course.slope ?? "-"} / Rating {course.rating ?? "-"}
                     </p>
                   </div>
 

@@ -248,7 +248,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                   className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[var(--line)] bg-white text-lg text-[var(--ink)]"
                   aria-label="Close menu"
                 >
-                  ×
+                  x
                 </button>
               </div>
 
