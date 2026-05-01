@@ -120,11 +120,11 @@ export function CoursesBrowser({
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-2xl">
           <p className="section-label">Course directory</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
+          <h2 className="mt-3 text-[2rem] font-semibold leading-tight tracking-[-0.04em] text-[var(--ink)] sm:text-3xl">
             Search notable public courses across the country.
           </h2>
           <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-            Courses are ordered by the current national board first, with editorial starting order used only as a fallback while the network keeps growing.
+            Courses follow the live national board first, with the editorial lists acting as an opening reference while more golfers add rankings.
           </p>
         </div>
 
@@ -147,74 +147,64 @@ export function CoursesBrowser({
 
       {status ? <p className="text-sm text-[var(--muted)]">{status}</p> : null}
 
-      <div className="grid gap-3">
-        {filteredCourses.map((course) => {
-          const isPlayed = playedIds.has(course.id);
+        <div className="grid gap-3">
+          {filteredCourses.map((course) => {
+            const isPlayed = playedIds.has(course.id);
 
-          return (
-            <div key={course.id} data-testid={`course-card-${course.id}`} className="rounded-[1.7rem] border border-[var(--line)] bg-white/90 p-4">
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    {course.leaderboard_rank ? (
-                      <span className="rounded-full bg-[var(--pine-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pine)]">
-                        National rank #{course.leaderboard_rank}
-                      </span>
-                    ) : null}
-                    <span className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
-                      Editorial start #{course.seed_rank}
-                    </span>
-                    {course.seed_source?.lists?.[0] ?? course.seed_source?.seed_tier ? (
-                      <span className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
-                        {course.seed_source?.lists?.[0] ?? course.seed_source?.seed_tier}
-                      </span>
-                    ) : null}
+            return (
+              <div key={course.id} data-testid={`course-card-${course.id}`} className="rounded-[1.7rem] border border-[var(--line)] bg-white/90 p-4">
+                <div className="flex flex-col gap-4">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {course.leaderboard_rank ? (
+                        <span className="rounded-full bg-[var(--pine-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pine)]">
+                          National rank #{course.leaderboard_rank}
+                        </span>
+                      ) : null}
+                    </div>
+                    <h3 className="mt-3 text-xl font-semibold leading-tight tracking-[-0.03em] text-[var(--ink)]">{course.name}</h3>
+                    <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
+                    <p className="mt-3 text-sm text-[var(--muted)]">
+                      Par {course.par ?? "-"} • Slope {course.slope ?? "-"} • Rating {course.rating ?? "-"}
+                    </p>
                   </div>
-                  <h3 className="mt-3 text-xl font-semibold tracking-[-0.03em] text-[var(--ink)]">{course.name}</h3>
-                  <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
-                  <div className="mt-3 flex flex-wrap gap-3 text-sm text-[var(--muted)]">
-                    <span>Par {course.par ?? "-"}</span>
-                    <span>Slope {course.slope ?? "-"}</span>
-                    <span>Rating {course.rating ?? "-"}</span>
-                  </div>
-                </div>
 
-                <div className="flex flex-wrap items-center gap-2">
-                  <Link href={`/courses/${course.id}`} className="ghost-button min-h-11">
-                    View detail
-                  </Link>
-                  {viewerSignedIn ? (
-                    viewerNeedsOnboarding ? (
-                      <Link
-                        href={`/onboarding?next=${encodeURIComponent(`/courses/${course.id}`)}`}
-                        className="solid-button min-h-11"
-                      >
-                        Finish profile
-                      </Link>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => handleToggle(course.id, !isPlayed)}
-                        disabled={busyCourseId === course.id}
-                        data-testid={`course-play-toggle-${course.id}`}
-                        className={`min-h-11 rounded-full px-4 py-2 text-sm font-semibold ${
-                          isPlayed ? "border border-[var(--line)] bg-white text-[var(--ink)]" : "bg-[var(--ink)] text-[rgb(255,255,255)]"
-                        }`}
-                      >
-                        {busyCourseId === course.id ? "Saving..." : isPlayed ? "Played" : "Mark played"}
-                      </button>
-                    )
-                  ) : (
-                    <Link href={`/sign-in?next=${encodeURIComponent(`/courses/${course.id}`)}`} className="ghost-button min-h-11">
-                      Sign in to save
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <Link href={`/courses/${course.id}`} className="ghost-button min-h-11 justify-center">
+                      View detail
                     </Link>
-                  )}
+                    {viewerSignedIn ? (
+                      viewerNeedsOnboarding ? (
+                        <Link
+                          href={`/onboarding?next=${encodeURIComponent(`/courses/${course.id}`)}`}
+                          className="solid-button min-h-11 justify-center"
+                        >
+                          Finish profile
+                        </Link>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleToggle(course.id, !isPlayed)}
+                          disabled={busyCourseId === course.id}
+                          data-testid={`course-play-toggle-${course.id}`}
+                          className={`min-h-11 rounded-full px-4 py-2 text-sm font-semibold ${
+                            isPlayed ? "border border-[var(--line)] bg-white text-[var(--ink)]" : "bg-[var(--ink)] text-[rgb(255,255,255)]"
+                          }`}
+                        >
+                          {busyCourseId === course.id ? "Saving..." : isPlayed ? "Played" : "Mark played"}
+                        </button>
+                      )
+                    ) : (
+                      <Link href={`/sign-in?next=${encodeURIComponent(`/courses/${course.id}`)}`} className="ghost-button min-h-11 justify-center">
+                        Sign in to save
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
     </div>
   );
 }

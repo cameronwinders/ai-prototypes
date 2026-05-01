@@ -1,6 +1,6 @@
 import "./globals.css";
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Public_Sans } from "next/font/google";
 
 import { AppChrome } from "@/components/AppChrome";
@@ -22,6 +22,11 @@ export const metadata: Metadata = {
   title: "Golf Course Ranks",
   description:
     "Crowd-ranked leaderboard for U.S. public golf courses, powered by real golfers dragging their played lists into order."
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1
 };
 
 export const dynamic = "force-dynamic";

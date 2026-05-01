@@ -272,28 +272,28 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl }: 
         {announcement}
       </div>
 
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-            <div className="max-w-4xl">
-              <p className="section-label">My courses</p>
-              <h1 className="brand-heading mt-4 text-4xl font-semibold tracking-[-0.05em] text-[var(--ink)] sm:text-5xl">
-                Your public-course stack.
-              </h1>
-              <p className="mt-4 max-w-3xl text-base leading-7 text-[var(--muted)] sm:text-lg sm:leading-8">
-                Keep the list honest. Played courses can stay below the line until you are ready, and every saved reorder helps shape the national leaderboard.
-              </p>
+        <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-4xl">
+                <p className="section-label">My courses</p>
+                <h1 className="brand-heading mt-4 text-[2.35rem] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--ink)] sm:text-5xl">
+                  Your public-course stack.
+                </h1>
+                <p className="mt-4 max-w-3xl text-sm leading-6 text-[var(--muted)] sm:text-lg sm:leading-8">
+                  Keep the list honest. Played courses can stay below the line until you are ready, and every saved reorder helps shape the national leaderboard.
+                </p>
+              </div>
+
+              <div className="rounded-[1.2rem] border border-[var(--line)] bg-white/85 px-4 py-3 text-sm font-medium text-[var(--muted)]">
+                {status} {lastSavedAt ? `| Last saved ${formatUpdatedAt(lastSavedAt)}` : ""}
+              </div>
             </div>
 
-            <div className="rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-medium text-[var(--muted)]">
-              {status} {lastSavedAt ? `| Last saved ${formatUpdatedAt(lastSavedAt)}` : ""}
-            </div>
-          </div>
-
-          <div className="grid gap-3 lg:grid-cols-[repeat(3,minmax(0,1fr))_auto_auto_auto] lg:items-center">
-            {[
-              { label: "Played", value: playedCourses.length },
-              { label: "Ranked", value: ranked.length },
+            <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-[repeat(3,minmax(0,1fr))_auto_auto_auto] xl:items-center">
+              {[
+                { label: "Played", value: playedCourses.length },
+                { label: "Ranked", value: ranked.length },
               { label: "Waiting below", value: unranked.length }
             ].map((item) => (
               <div key={item.label} className="rounded-[1.5rem] bg-white/82 px-4 py-4">
@@ -320,6 +320,26 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl }: 
         {saveError ? (
           <div className="rounded-[1.4rem] border border-[rgba(126,58,58,0.14)] bg-[rgba(126,58,58,0.08)] px-4 py-3 text-sm text-[var(--ink)]">
             {saveError}
+          </div>
+        ) : null}
+
+        {playedCourses.length === 0 ? (
+          <div className="rounded-[1.9rem] border border-dashed border-[var(--line)] bg-white/86 px-5 py-10 text-center">
+            <p className="section-label">Start your list</p>
+            <h2 className="mt-4 text-2xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
+              Add your first course.
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+              Mark the public courses you have already played, then drag the best ones into your ranking.
+            </p>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              <Link href="/courses" className="solid-button min-h-11 justify-center">
+                Browse courses
+              </Link>
+              <Link href="/leaderboard" className="ghost-button min-h-11 justify-center">
+                See the leaderboard
+              </Link>
+            </div>
           </div>
         ) : null}
 
@@ -355,7 +375,9 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl }: 
                 onDrop={() => commitRankDrop(null)}
                 className="mt-5 rounded-[1.7rem] border border-dashed border-[var(--line)] px-5 py-8 text-sm leading-6 text-[var(--muted)]"
               >
-                Drag a played course here once you know where it belongs. Your first drop becomes rank #1.
+                {playedCourses.length === 0
+                  ? "Once you add a course you have played, drag it here to start your ranking."
+                  : "Drag a played course here once you know where it belongs. Your first drop becomes rank #1."}
               </div>
             ) : (
               <div className="mt-5 grid gap-3">

@@ -55,17 +55,17 @@ export default async function LeaderboardPage({
 
   return (
     <section className="shell-panel rounded-[2.4rem] p-6 sm:p-8">
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-4xl">
-            <p className="section-label">National leaderboard</p>
-            <h1 className="brand-heading mt-4 text-4xl font-semibold tracking-[-0.05em] text-[var(--ink)] sm:text-5xl">
-              Crowd-ranked public courses with the editorial lists right beside them.
-            </h1>
-            <p className="mt-4 max-w-3xl text-base leading-7 text-[var(--muted)] sm:text-lg sm:leading-8">
-              The board defaults to golfer rankings. The editorial columns show where each course sits inside the seeded Golf Digest, GOLF.com, and Golfweek public-course lineups that helped start the network.
-            </p>
-          </div>
+        <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-4xl">
+              <p className="section-label">National leaderboard</p>
+              <h1 className="brand-heading mt-4 text-[2.35rem] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--ink)] sm:text-5xl">
+                Crowd-ranked public courses with the editorial lists right beside them.
+              </h1>
+              <p className="mt-4 max-w-3xl text-sm leading-6 text-[var(--muted)] sm:text-lg sm:leading-8">
+                The board defaults to golfer rankings. The editorial columns show where each course sits inside the seeded Golf Digest, GOLF.com, and Golfweek public-course lineups that helped start the network.
+              </p>
+            </div>
 
           <div className="flex flex-wrap gap-3">
             <span className="rounded-full bg-[var(--pine-soft)] px-4 py-2 text-sm font-semibold text-[var(--pine)]">
@@ -161,8 +161,66 @@ export default async function LeaderboardPage({
             No courses match that filter combination yet. Try another state, lower the comparison threshold, or switch back to all golfers.
           </div>
         ) : (
-          <div className="overflow-hidden rounded-[1.9rem] border border-[var(--line)] bg-white/86">
-            <div className="overflow-x-auto">
+          <>
+            <div className="grid gap-4 lg:hidden">
+              {courses.map((course) => (
+                <Link
+                  key={course.id}
+                  href={`/courses/${course.id}`}
+                  className="rounded-[1.7rem] border border-[var(--line)] bg-white/92 p-4 shadow-[0_10px_28px_rgba(24,37,43,0.06)]"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--pine)]">
+                        #{course.leaderboardRank}
+                      </p>
+                      <h2 className="mt-2 text-xl font-semibold leading-tight tracking-[-0.04em] text-[var(--ink)]">
+                        {course.name}
+                      </h2>
+                      <p className="mt-2 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
+                    </div>
+                    <span
+                      className={`shrink-0 rounded-full px-3 py-2 text-sm font-semibold ${
+                        course.numUniqueGolfers === 0
+                          ? "border border-[rgba(217,191,141,0.4)] bg-[rgba(255,248,236,0.95)] text-[rgb(120,88,38)]"
+                          : "bg-[var(--pine-soft)] text-[var(--pine)]"
+                      }`}
+                    >
+                      {course.numUniqueGolfers === 0 ? "Starting score" : "Crowd score"} {course.normalizedScore.toFixed(1)}
+                    </span>
+                  </div>
+
+                  <div className="mt-4 flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
+                    <span className="rounded-full border border-[var(--line)] px-3 py-1">
+                      {pluralize(course.numUniqueGolfers, "golfer")}
+                    </span>
+                    <span className="rounded-full border border-[var(--line)] px-3 py-1">
+                      {pluralize(course.numSignals, "comparison")}
+                    </span>
+                  </div>
+
+                  <div className="mt-4 grid grid-cols-3 gap-2 text-sm">
+                    {EDITORIAL_LISTS.map((editorial) => (
+                      <div key={editorial.key} className="rounded-[1.1rem] bg-[rgba(246,243,236,0.92)] px-3 py-3">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
+                          {editorial.label}
+                        </p>
+                        <p className="mt-2 text-base font-semibold text-[var(--ink)]">
+                          {formatEditorialPosition(course.editorialRanks?.[editorial.key])}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-4 inline-flex min-h-11 items-center rounded-full border border-[var(--line)] px-4 py-2 text-sm font-semibold text-[var(--ink)]">
+                    View detail
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            <div className="hidden overflow-hidden rounded-[1.9rem] border border-[var(--line)] bg-white/86 lg:block">
+              <div className="overflow-x-auto">
               <table className="min-w-[980px] w-full">
                 <thead>
                   <tr className="border-b border-[var(--line)] bg-[rgba(255,255,255,0.88)] text-left text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
@@ -196,8 +254,8 @@ export default async function LeaderboardPage({
                           </div>
                           <p className="mt-2 text-xs leading-5 text-[var(--muted)]">
                             {course.isEarly
-                              ? "Still leaning on the editorial starting order while more golfers rank it."
-                              : "Fully in the live crowd board."}
+                              ? "Still building toward a fuller crowd ranking."
+                              : "Crowd-backed by ranked golfer lists."}
                           </p>
                         </Link>
                       </td>
@@ -208,7 +266,7 @@ export default async function LeaderboardPage({
                           <div className="mt-3 flex flex-wrap gap-2">
                             {course.isEarly ? (
                               <span className="rounded-full bg-[rgba(217,191,141,0.18)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[rgb(120,88,38)]">
-                                Editorial start still helping
+                                Building more golfer input
                               </span>
                             ) : null}
                             <span className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
@@ -236,7 +294,8 @@ export default async function LeaderboardPage({
                 </tbody>
               </table>
             </div>
-          </div>
+            </div>
+          </>
         )}
       </div>
     </section>
