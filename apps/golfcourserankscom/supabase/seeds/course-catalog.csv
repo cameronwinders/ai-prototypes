@@ -2,200 +2,270 @@ seed_rank,name,city,state,par,slope,rating,price_band,source_lists,seed_tier,sou
 1,Pebble Beach Golf Links,Pebble Beach,CA,72,145,75.5,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Flagship public seed,1,1,1
 2,Pacific Dunes,Bandon,OR,71,138,74.0,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Core destination public,2,3,2
 3,Pinehurst No 2,Pinehurst,NC,72,143,75.2,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Anchor resort public,6,2,3
-4,Bandon Dunes,Bandon,OR,72,137,73.9,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Core destination public,9,9,7
+4,Whistling Straits,Sheboygan,WI,72,152,77.2,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Major venue public,4,10,4
 5,Bethpage Black,Farmingdale,NY,71,152,77.5,3,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Major venue public,7,5,8
-6,Whistling Straits,Sheboygan,WI,72,152,77.2,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Major venue public,4,10,4
-7,Spyglass Hill Golf Course,Pebble Beach,CA,72,145,75.6,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Monterey elite public,13,23,13
-8,Streamsong Blue,Bowling Green,FL,72,136,74.1,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Modern destination public,26,19,26
-9,Kiawah Island Ocean Course,Kiawah Island,SC,72,155,79.1,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Major venue public,5,6,10
-10,Pinehurst No 10,Pinehurst,NC,70,139,73.8,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,New Sandhills prestige,30,15,23
-11,Sheep Ranch,Bandon,OR,72,131,72.4,5,GOLF Top 100|Golfweek You Can Play,Tier A,Destination cliffside public,,24,15
-12,Old Macdonald,Bandon,OR,72,136,73.8,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Bandon core seed,14,13,6
-13,The Lido at Sand Valley,Nekoosa,WI,72,135,73.6,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,New build prestige,12,4,12
-14,Cabot Citrus Farms Karoo,Brooksville,FL,72,138,74.4,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Modern resort public,50,32,57
-15,Pasatiempo Golf Club,Santa Cruz,CA,70,141,74.7,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Historic public access,15,11,11
-16,Sand Valley Golf Resort,Sand Valley,WI,72,136,73.9,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Destination sandbelt public,21,20,20
-17,The Loop Red,Forest Dunes,MI,70,130,72.3,5,Golf Digest Public,Tier A,Reversible course seed,68,,
-18,The Loop Black,Forest Dunes,MI,70,131,72.5,5,Golf Digest Public,Tier A,Reversible course seed,63,,
-19,Erin Hills,Hartford,WI,72,145,77.8,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Major venue public,10,21,27
-20,Arcadia Bluffs Bluffs Course,Arcadia,MI,72,141,75.2,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Great Lakes destination,16,57,32
-21,Mammoth Dunes,Nekoosa,WI,73,128,73.0,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Playable sand valley seed,25,26,20
-22,Ballyneal Golf Club,Holyoke,CO,72,140,74.8,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Remote links style public,,,
-23,Blackwolf Run River Course,Kohler,WI,72,144,75.6,5,Golf Digest Public|GOLF Top 100,Tier A,Kohler river seed,17,29,
-24,Bandon Trails,Bandon,OR,71,136,73.7,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Forest and dunes mix,11,7,5
-25,Tobacco Road Golf Club,Sanford,NC,71,146,75.5,4,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Cult favorite public,44,27,75
-26,The Quarry at Giants Ridge,Biwabik,MN,72,140,74.9,4,Golf Digest Public,Tier A,Upper Midwest destination,58,,
-27,Lawsonia Links,Green Lake,WI,72,137,74.6,3,GOLF Top 100|Golfweek You Can Play,Tier A,Classic public access,,16,28
-28,Forest Dunes,Roscommon,MI,72,145,76.3,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Northern Michigan destination,37,30,50
-29,French Lick Resort Pete Dye Course,French Lick,IN,72,148,77.8,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Major event capable public,18,42,60
-30,Greywalls at Marquette Golf Club,Marquette,MI,72,142,75.1,4,Golf Digest Public|GOLF Top 100,Tier A,Distinctive northern public,55,62,
-31,SentryWorld,Stevens Point,WI,72,136,74.0,4,Golf Digest Public|GOLF Top 100,Tier A,Championship public access,49,81,
-32,Wolf Creek Golf Club,Mesquite,NV,72,154,75.4,4,Golf Digest Public,Tier A,Desert drama seed,59,,
-33,Pinehurst No 4,Pinehurst,NC,72,138,74.0,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Resort companion seed,32,25,35
-34,Paynes Valley Golf Course,Hollister,MO,72,139,73.9,5,Golf Digest Public,Tier A,Ozarks destination public,81,,
-35,Black Desert Resort,Ivins,UT,72,142,75.2,5,Golf Digest Public|Golfweek You Can Play,Tier A,New desert prestige,35,,34
-36,The Dunes Course at Prairie Club,Valentine,NE,73,137,74.3,4,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Sandhills destination,36,28,42
-37,The Pines Course at Prairie Club,Valentine,NE,72,134,73.5,4,Golf Digest Public,Tier A,Sandhills destination,90,,
-38,Whistling Straits Irish Course,Sheboygan,WI,72,146,76.2,5,Golf Digest Public,Tier A,Kohler links companion,65,,
-39,Sand Hollow Championship Course,Hurricane,UT,72,146,75.5,4,GOLF Top 100|Golfweek You Can Play,Tier A,Utah red rock seed,,54,58
-40,TPC Scottsdale Stadium Course,Scottsdale,AZ,71,142,74.4,4,Golf Digest Public|Golfweek You Can Play,Tier A,Tour venue public,,,
-41,Torrey Pines South,La Jolla,CA,72,144,78.0,3,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Major venue municipal,40,43,44
-42,Golden Horseshoe Gold Course,Williamsburg,VA,71,136,72.9,4,Golf Digest Public|Golfweek You Can Play,Tier B,Historic resort public,75,,70
-43,Pronghorn Nicklaus Course,Bend,OR,72,139,74.1,5,GOLF Top 100,Tier A,High desert resort public,,95,
-44,TPC Sawgrass Stadium Course,Ponte Vedra Beach,FL,72,155,76.8,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Iconic tournament public,8,8,14
-45,OMNI Barton Creek Fazio Canyons,Austin,TX,72,140,74.1,4,Golfweek You Can Play,Tier A,Texas hill country seed,,,99
-46,OMNI Barton Creek Coore Crenshaw,Austin,TX,71,135,72.8,4,Golf Digest Public|Golfweek You Can Play,Tier A,Texas hill country seed,,,
-47,Mauna Kea Golf Course,Kamuela,HI,72,143,75.4,5,GOLF Top 100|Golfweek You Can Play,Tier A,Hawaii resort prestige,,49,61
-48,Manele Golf Course,Lanai City,HI,72,136,74.2,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Hawaii resort prestige,22,47,16
-49,Hanalei Golf Course,Princeville,HI,72,137,74.0,5,Golfweek You Can Play,Tier A,Kauai resort seed,,,41
-50,Ko Olina Golf Club,Kapolei,HI,72,135,73.8,4,Golfweek You Can Play|Travel + Leisure,Tier B,Hawaii accessible resort,,,
-51,Streamsong Red,Bowling Green,FL,72,144,75.8,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Destination public,20,17,19
-52,Streamsong Black,Bowling Green,FL,73,139,74.6,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Destination public,33,37,31
-53,Arcadia Bluffs South Course,Arcadia,MI,72,138,73.7,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Great Lakes companion,53,50,84
-54,The Links Quarry at Bay Harbor,Bay Harbor,MI,72,138,73.8,5,Golf Digest Public,Tier B,Northern Michigan resort seed,100,,
-55,Mid Pines Inn and Golf Club,Southern Pines,NC,72,136,73.8,4,Golf Digest Public,Tier A,Sandhills classic,88,,
-56,Pine Needles Lodge and Golf Club,Southern Pines,NC,71,141,74.5,4,Golf Digest Public,Tier A,Sandhills classic,60,,
-57,No 6 at Pinehurst,Pinehurst,NC,72,139,74.0,4,Golfweek You Can Play,Tier B,Pinehurst depth seed,,,
-58,Tot Hill Farm Golf Club,Ashboro,NC,72,145,76.1,3,GOLF Top 100,Tier A,Mike Strantz cult seed,,48,
-59,Mid South Club,Southern Pines,NC,71,140,74.4,4,Golfweek You Can Play,Tier B,Sandhills depth seed,,,
-60,Dormie Club Public Access,West End,NC,71,139,74.3,5,Golfweek You Can Play,Tier B,Sandhills prestige seed,,,
-61,The Straits at Journeyman Resort,Three Oaks,MI,72,138,74.1,4,Golfweek You Can Play|Golf Digest Public,Tier B,Midwest new build,,,
-62,The Field Club at Frisco Fields Ranch West,Frisco,TX,72,141,75.1,4,Golf Digest Public,Tier B,Frisco destination seed,77,,
-63,PGA Frisco East,Frisco,TX,72,139,74.5,4,Golfweek You Can Play,Tier B,Frisco championship seed,,,
-64,The Wilderness at Fortune Bay,Tower,MN,72,143,75.2,4,Golf Digest Public,Tier B,Northern destination seed,72,,
-65,Gamble Sands Brewster Course,Brewster,WA,72,135,73.4,5,GOLF Top 100|Golfweek You Can Play,Tier A,High desert public,,18,24
-66,Gamble Sands Scarecrow,Brewster,WA,72,136,73.6,5,Golfweek You Can Play,Tier A,New course destination,,,
-67,Chambers Bay,University Place,WA,72,139,76.0,4,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Major venue public,19,31,17
-68,Gold Mountain Olympic Course,Bremerton,WA,72,140,74.6,3,Golfweek You Can Play,Tier B,Value championship public,,,
-69,Suncadia Rope Rider,Cle Elum,WA,70,133,72.5,4,Golfweek You Can Play,Tier B,Mountain resort seed,,,
-70,Pronghorn Fazio Course,Bend,OR,72,138,74.0,5,GOLF Top 100,Tier B,High desert resort depth,,72,
-71,Crosswater Club Public Access,Sunriver,OR,72,143,75.8,5,Golfweek You Can Play,Tier B,Central Oregon prestige,,,
-72,Sunriver Resort Meadows,Sunriver,OR,71,134,72.8,4,Golfweek You Can Play,Tier C,Central Oregon resort depth,,,
-73,Sunriver Resort Woodlands,Sunriver,OR,72,132,72.2,4,Golfweek You Can Play,Tier C,Central Oregon resort depth,,,
-74,Widgi Creek Golf Club,Bend,OR,72,135,73.3,3,Golfweek You Can Play,Tier C,Bend value public,,,
-75,Torrey Pines North,La Jolla,CA,72,134,74.0,3,Golf Digest Public|Golfweek You Can Play,Tier B,Iconic municipal companion,,,
-76,Pasadera Country Club Public Access,Monterey,CA,72,141,74.9,4,Golfweek You Can Play,Tier C,Monterey depth seed,,,
-77,Poppy Hills Golf Course,Pebble Beach,CA,72,136,73.7,4,Golf Digest Public|Golfweek You Can Play,Tier B,Monterey depth seed,,,
-78,Bayonet Golf Course,Seaside,CA,72,145,75.6,4,Golfweek You Can Play,Tier B,Peninsula challenge seed,,,
-79,Black Horse Golf Course,Seaside,CA,72,138,73.9,4,Golfweek You Can Play,Tier B,Peninsula challenge seed,,,
-80,Half Moon Bay Ocean Course,Half Moon Bay,CA,72,139,74.8,4,Golfweek You Can Play,Tier B,Coastal resort public,,,
-81,Rustic Canyon Golf Course,Moorpark,CA,72,136,73.4,2,GOLF Top 100|Golfweek You Can Play,Tier A,Value architecture seed,,45,52
-82,Maderas Golf Club,Poway,CA,72,145,75.8,4,Golfweek You Can Play,Tier B,SoCal upscale public,,,
-83,Aviara Golf Club,Carlsbad,CA,72,144,75.5,5,Golfweek You Can Play,Tier B,Resort prestige seed,,,
-84,Omni La Costa North Course,Carlsbad,CA,72,141,75.0,5,Golfweek You Can Play,Tier B,Tour venue resort,,,
-85,PGA West Stadium Course,La Quinta,CA,72,148,76.1,4,Golf Digest Public,Tier A,Desert event seed,62,,
-86,PGA West Pete Dye Mountain,La Quinta,CA,72,139,74.2,4,GOLF Top 100,Tier B,Desert resort depth,,78,
-87,Silverado North Course,Napa,CA,72,140,74.3,4,Golfweek You Can Play,Tier B,Wine country tour venue,,,
-88,Yocha Dehe Golf Club,Brooks,CA,72,138,73.9,4,Golfweek You Can Play,Tier B,NorCal resort quality,,,
-89,TPC Harding Park,San Francisco,CA,72,143,75.1,3,GOLF Top 100,Tier A,Urban major venue,,66,
-90,Presidio Golf Course,San Francisco,CA,72,137,73.2,2,Golfweek You Can Play,Tier C,Historic city public,,,
-91,Coyote Springs Golf Club,Coyote Springs,NV,72,141,75.1,4,Golfweek You Can Play,Tier B,Remote desert public,,,
-92,Cascata Golf Club,Boulder City,NV,72,143,75.4,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier B,Premium desert public,74,86,76
-93,Paiute Wolf Course,Las Vegas,NV,72,149,76.3,4,Golfweek You Can Play,Tier B,Vegas challenge seed,,,
-94,Paiute Snow Mountain,Las Vegas,NV,72,137,73.5,4,Golfweek You Can Play,Tier B,Vegas resort depth,,,
-95,Shadow Creek Public Access,North Las Vegas,NV,72,145,75.9,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Rare public access prestige,3,14,9
-96,TPC Summerlin,Las Vegas,NV,72,139,73.8,4,Golfweek You Can Play,Tier B,Tour venue public windows,,,
-97,We Ko Pa Saguaro,Fort McDowell,AZ,71,140,74.4,4,GOLF Top 100|Golfweek You Can Play,Tier A,Desert architecture seed,,61,92
-98,We Ko Pa Cholla,Fort McDowell,AZ,72,144,75.2,4,Golfweek You Can Play,Tier B,Desert challenge companion,,,
-99,Quintero Golf Club,Peoria,AZ,72,148,76.1,4,Golf Digest Public,Tier A,Arizona destination public,93,,
-100,Ak Chin Southern Dunes,Maricopa,AZ,72,145,75.3,4,Golf Digest Public|Golfweek You Can Play,Tier A,Arizona value prestige,,,
-101,Wickenburg Ranch Big Wick,Wickenburg,AZ,72,138,73.9,4,Golfweek You Can Play,Tier B,Arizona modern public,,,
-102,Troon North Monument,Scottsdale,AZ,72,143,75.8,4,Golfweek You Can Play,Tier B,Scottsdale staple,,,
-103,Troon North Pinnacle,Scottsdale,AZ,72,141,75.0,4,Golfweek You Can Play,Tier B,Scottsdale staple,,,
-104,Grayhawk Raptor,Scottsdale,AZ,72,140,74.8,4,Golfweek You Can Play,Tier B,Tour adjacent public,,,
-105,Grayhawk Talon,Scottsdale,AZ,72,138,73.9,4,Golfweek You Can Play,Tier B,Scottsdale staple,,,
-106,Dinosaur Mountain Gold Canyon,Gold Canyon,AZ,72,142,75.4,4,Golfweek You Can Play,Tier B,Desert views seed,,,
-107,The Phoenician Golf Club,Scottsdale,AZ,71,133,72.4,4,Golfweek You Can Play,Tier C,Resort public depth,,,
-108,Sewailo Golf Club,Tucson,AZ,71,140,74.2,3,Golfweek You Can Play,Tier C,Arizona casino resort seed,,,
-109,The Gallery South,Tucson,AZ,72,144,75.7,4,Golfweek You Can Play,Tier B,Tucson destination public,,,
-110,Ventana Canyon Mountain,Tucson,AZ,72,138,74.0,4,Golfweek You Can Play,Tier C,Tucson scenic resort,,,
-111,Sand Hollow Links Nine,Hurricane,UT,36,132,35.5,3,Golfweek You Can Play,Tier C,Utah short companion,,,
-112,Coral Canyon Golf Course,Washington,UT,72,140,74.1,3,Golfweek You Can Play,Tier C,Southern Utah public,,,
-113,Entrada at Snow Canyon Public Access,Ivins,UT,72,139,74.7,4,Golfweek You Can Play,Tier B,Red rock prestige,,,
-114,Soldier Hollow Gold Course,Midway,UT,72,138,74.3,3,Golfweek You Can Play,Tier C,Mountain public value,,,
-115,Soldier Hollow Silver Course,Midway,UT,72,135,73.0,3,Golfweek You Can Play,Tier C,Mountain public value,,,
-116,Tabernash Golf Club,Tabernash,CO,72,137,73.8,3,Golfweek You Can Play,Tier C,Rocky Mountain public,,,
-117,Fossil Trace Golf Club,Golden,CO,72,142,74.8,3,Golfweek You Can Play,Tier B,Front Range public,,,
-118,Red Sky Norman Course,Wolcott,CO,72,140,74.5,5,Golf Digest Public,Tier B,Colorado resort prestige,87,,
-119,Red Sky Fazio Course,Wolcott,CO,72,138,73.9,5,Golf Digest Public,Tier B,Colorado resort prestige,71,,
-120,The Broadmoor Mountain Course,Colorado Springs,CO,72,139,74.2,5,Golfweek You Can Play,Tier B,Historic resort public windows,,,
-121,The Broadmoor East Course,Colorado Springs,CO,72,142,75.0,5,Golf Digest Public|Golfweek You Can Play,Tier B,Historic resort public windows,47,,99
-122,TPC Colorado,Berthoud,CO,72,146,76.1,4,Golfweek You Can Play,Tier B,Tour venue public,,,
-123,Raven Golf Club at Three Peaks,Silverthorne,CO,72,138,74.0,3,Golfweek You Can Play,Tier C,Mountain destination value,,,
-124,The Golf Club at Redlands Mesa,Grand Junction,CO,71,139,74.5,4,Golfweek You Can Play,Tier B,Cliffside western slope,,,
-125,The Rawls Course,Lubbock,TX,72,138,74.2,3,Golfweek You Can Play,Tier C,College public quality,,,
-126,Memorial Park Golf Course,Houston,TX,70,143,75.5,2,GOLF Top 100,Tier A,Urban muni prestige,,88,
-127,Omni PGA Frisco Fields Ranch East,Frisco,TX,72,138,74.4,4,GOLF Top 100|Golfweek You Can Play,Tier B,Frisco resort depth,,67,67
-128,TPC San Antonio Oaks Course,San Antonio,TX,72,145,75.9,4,Golf Digest Public,Tier B,Texas tour venue,95,,
-129,Lajitas Black Jack Crossing,Lajitas,TX,72,139,74.1,4,Golfweek You Can Play,Tier B,Remote desert resort,,,
-130,Omni Barton Creek Fazio Foothills,Austin,TX,72,138,73.8,4,Golfweek You Can Play,Tier B,Texas hill country depth,,,
-131,Dallas Cowboys Golf Club,Grapevine,TX,72,145,75.7,4,Golfweek You Can Play,Tier C,Metroplex upscale public,,,
-132,Texas Rangers Golf Club,Arlington,TX,72,137,73.9,3,Golfweek You Can Play,Tier C,Modern muni upscale,,,
-133,Tanglewood New Course,Pottsboro,TX,72,136,73.6,3,Golfweek You Can Play,Tier C,Regional public seed,,,
-134,The Wilderness at Lake Jackson,Lake Jackson,TX,72,134,72.8,3,Golfweek You Can Play,Tier C,Value public seed,,,
-135,Kapalua Plantation Course,Lahaina,HI,73,140,73.6,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Maui prestige public,23,33,22
-136,Kapalua Bay Course,Lahaina,HI,72,133,72.2,5,Golfweek You Can Play,Tier B,Maui resort depth,,,
-137,Poipu Bay Golf Course,Koloa,HI,72,137,73.8,5,Golfweek You Can Play,Tier B,Kauai oceanfront seed,,,
-138,Wailea Gold Course,Kihei,HI,72,138,74.0,5,Golfweek You Can Play,Tier B,Maui resort depth,,,
-139,Hokuala Ocean Course,Lihue,HI,72,139,74.1,5,Golfweek You Can Play,Tier B,Kauai resort seed,,,
-140,Robert Trent Jones Grand National Lake Course,Opelika,AL,72,144,75.6,3,Golfweek You Can Play,Tier B,RTJ Trail prestige,,,
-141,Robert Trent Jones Grand National Links,Opelika,AL,72,141,74.8,3,Golfweek You Can Play,Tier B,RTJ Trail prestige,,,
-142,Robert Trent Jones Ross Bridge,Hoover,AL,72,148,77.0,4,Golf Digest Public|Golfweek You Can Play,Tier A,RTJ Trail flagship,,,
-143,Robert Trent Jones Capitol Hill Judge,Prattville,AL,72,147,76.4,3,Golf Digest Public|Golfweek You Can Play,Tier A,RTJ Trail flagship,,,
-144,Robert Trent Jones Capitol Hill Senator,Prattville,AL,72,143,75.1,3,Golfweek You Can Play,Tier B,RTJ Trail prestige,,,
-145,Robert Trent Jones Capitol Hill Legislator,Prattville,AL,72,138,73.9,3,Golfweek You Can Play,Tier B,RTJ Trail prestige,,,
-146,Robert Trent Jones Oxmoor Valley Ridge,Hoover,AL,72,142,74.8,3,Golfweek You Can Play,Tier B,RTJ Trail depth,,,
-147,Robert Trent Jones Oxmoor Valley Valley,Hoover,AL,72,140,74.0,3,Golfweek You Can Play,Tier B,RTJ Trail depth,,,
-148,Robert Trent Jones Silver Lakes Heartbreaker,Glencoe,AL,72,139,74.1,3,Golfweek You Can Play,Tier C,RTJ Trail depth,,,
-149,Robert Trent Jones Silver Lakes Mindbreaker,Glencoe,AL,72,140,74.3,3,Golfweek You Can Play,Tier C,RTJ Trail depth,,,
-150,Robert Trent Jones Silver Lakes Backbreaker,Glencoe,AL,72,137,73.5,3,Golfweek You Can Play,Tier C,RTJ Trail depth,,,
-151,Black Desert Resort Golf Course,Ivins,UT,72,138,74.3,5,Golf Digest Public|Golfweek You Can Play,Tier B,Modern desert destination,35,,34
-152,Entrada at Snow Canyon Country Club,Ivins,UT,71,141,74.8,4,Golfweek You Can Play,Tier B,Red rock desert destination,,,
-153,Wasatch Mountain Mountain Course,Midway,UT,72,136,73.1,3,Golfweek You Can Play,Tier C,State park mountain golf,,,
-154,Wasatch Mountain Lake Course,Midway,UT,72,135,72.8,3,Golfweek You Can Play,Tier C,State park mountain golf,,,
-155,Conestoga Golf Club,Mesquite,NV,72,143,74.9,3,Golfweek You Can Play,Tier B,Mesquite desert favorite,,,
-156,Paiute Snow Mountain Course,Las Vegas,NV,72,142,75.1,3,Golfweek You Can Play,Tier B,Desert resort depth,,,
-157,Paiute Sun Mountain Course,Las Vegas,NV,72,140,74.4,3,Golfweek You Can Play,Tier B,Desert resort depth,,,
-158,Genoa Lakes Ranch Course,Genoa,NV,72,139,74.3,3,Golfweek You Can Play,Tier C,Tahoe area ranchland public,,,
-159,Bali Hai Golf Club,Las Vegas,NV,71,131,71.3,4,Golfweek You Can Play,Tier C,Las Vegas strip-adjacent public,,,
-160,TPC Las Vegas,Las Vegas,NV,71,137,73.8,4,Golfweek You Can Play,Tier B,Las Vegas tour-branded public,,,
-161,Edgewood Tahoe Golf Course,Stateline,NV,72,142,75.0,5,Golf Digest Public,Tier B,Tahoe lakefront prestige,83,,
-162,Reflection Bay Golf Club,Henderson,NV,72,143,75.3,4,Golfweek You Can Play,Tier B,Lake Las Vegas public,,,
-163,We-Ko-Pa Saguaro Course,Fort McDowell,AZ,71,137,72.7,4,GOLF Top 100|Golfweek You Can Play,Tier A,Minimalist desert standout,,61,92
-164,We-Ko-Pa Cholla Course,Fort McDowell,AZ,72,144,75.0,4,Golfweek You Can Play,Tier B,Scottsdale area destination,,,
-165,Ak-Chin Southern Dunes,Maricopa,AZ,72,144,75.2,3,Golf Digest Public|Golfweek You Can Play,Tier A,Core desert ranking seed,,,
-166,Verrado Founders Course,Buckeye,AZ,72,138,73.7,3,Golfweek You Can Play,Tier C,West Valley desert public,,,
-167,Troon North Pinnacle Course,Scottsdale,AZ,72,144,75.7,4,Golfweek You Can Play,Tier B,Scottsdale prestige public,,,
-168,Troon North Monument Course,Scottsdale,AZ,72,147,76.1,4,Golfweek You Can Play,Tier B,Scottsdale prestige public,,,
-169,Rancho Manana Golf Club,Cave Creek,AZ,70,133,71.7,3,Golfweek You Can Play,Tier C,Compact desert foothills favorite,,,
-170,TPC Scottsdale Champions Course,Scottsdale,AZ,71,139,73.8,4,Golfweek You Can Play,Tier B,Tour venue companion,,,
-171,The Boulders South Course,Carefree,AZ,71,140,74.3,4,Golfweek You Can Play,Tier B,Granite boulder desert resort,,,
-172,The Boulders North Course,Carefree,AZ,72,137,73.0,4,Golfweek You Can Play,Tier B,Granite boulder desert resort,,,
-173,Talking Stick Oodham Course,Scottsdale,AZ,71,134,72.1,3,Golfweek You Can Play,Tier C,Walkable desert value,,,
-174,Talking Stick Piipaash Course,Scottsdale,AZ,72,138,73.8,3,Golfweek You Can Play,Tier C,Walkable desert value,,,
-175,Grayhawk Raptor Course,Scottsdale,AZ,72,145,75.9,4,Golfweek You Can Play,Tier B,Scottsdale tournament feel,,,
-176,Grayhawk Talon Course,Scottsdale,AZ,72,140,74.3,4,Golfweek You Can Play,Tier B,Scottsdale resort depth,,,
-177,Las Sendas Golf Club,Mesa,AZ,71,141,74.0,3,Golfweek You Can Play,Tier C,Big view desert daily fee,,,
-178,Tubac Golf Resort Anza Course,Tubac,AZ,72,136,72.8,4,Golfweek You Can Play,Tier C,Historic Arizona resort public,,,
-179,Ventana Canyon Mountain Course,Tucson,AZ,72,143,75.6,4,Golfweek You Can Play,Tier B,Tucson resort mountain golf,,,
-180,Ventana Canyon Canyon Course,Tucson,AZ,72,139,74.1,4,Golfweek You Can Play,Tier B,Tucson resort mountain golf,,,
-181,Starr Pass Rattler Course,Tucson,AZ,72,138,73.4,4,Golfweek You Can Play,Tier C,Desert resort trio,,,
-182,Starr Pass Coyote Course,Tucson,AZ,72,136,72.9,4,Golfweek You Can Play,Tier C,Desert resort trio,,,
-183,Omni Tucson National Catalina Course,Tucson,AZ,72,142,75.7,4,Golf Digest Public|Golfweek You Can Play,Tier A,Historic tour venue public,,,
-184,Omni Tucson National Sonoran Course,Tucson,AZ,72,136,73.1,4,Golfweek You Can Play,Tier B,Historic tour venue companion,,,
-185,The Crossings at Carlsbad,Carlsbad,CA,72,139,73.9,3,Golfweek You Can Play,Tier C,North County public value,,,
-186,Industry Hills Ike Course,City of Industry,CA,72,147,76.0,3,Golfweek You Can Play,Tier B,Big municipal championship feel,,,
-187,Industry Hills Babe Course,City of Industry,CA,72,140,74.0,3,Golfweek You Can Play,Tier C,Big municipal companion,,,
-188,Sandpiper Golf Club,Santa Barbara,CA,72,140,74.0,4,Golfweek You Can Play,Tier B,Oceanfront California muni feel,,,
-189,Pelican Hill South Course,Newport Coast,CA,70,137,72.6,5,Golfweek You Can Play,Tier B,Orange County resort prestige,,,
-190,Monarch Beach Golf Links,Dana Point,CA,70,137,73.0,5,Golfweek You Can Play,Tier B,Ocean-adjacent resort public,,,
-191,Oak Quarry Golf Club,Riverside,CA,72,141,74.7,3,Golfweek You Can Play,Tier B,Inland Empire quarry layout,,,
-192,Journey at Pechanga,Temecula,CA,72,145,75.5,4,Golfweek You Can Play,Tier B,SoCal resort casino public,,,
-193,Rams Hill Golf Club,Borrego Springs,CA,72,143,74.9,4,GOLF Top 100|Golfweek You Can Play,Tier B,Remote desert sleeper,,93,78
-194,Sunriver Resort Meadows Course,Sunriver,OR,72,136,72.8,4,Golfweek You Can Play,Tier C,Central Oregon resort depth,,,
-195,Sunriver Resort Woodlands Course,Sunriver,OR,72,134,72.2,4,Golfweek You Can Play,Tier C,Central Oregon resort depth,,,
-196,Wildhorse Resort Golf Course,Pendleton,OR,72,144,75.6,3,Golfweek You Can Play,Tier B,Eastern Oregon value standout,,,
-197,Pumpkin Ridge Ghost Creek,North Plains,OR,72,143,75.0,4,Golfweek You Can Play,Tier B,Portland area public prestige,,,81
-198,Bear Dance Golf Club,Larkspur,CO,72,148,76.3,4,Golf Digest Public|Golfweek You Can Play,Tier A,Colorado mountain foothills favorite,,,
-199,Arrowhead Golf Club,Littleton,CO,70,141,73.9,4,Golfweek You Can Play,Tier B,Red rock foothills public,,,
-200,Red Sky Ranch Norman Course,Wolcott,CO,72,145,76.4,5,Golfweek You Can Play,Tier B,High-country resort access,,,
+6,Kiawah Island Ocean Course,Kiawah Island,SC,72,155,79.1,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Major venue public,5,6,10
+7,Bandon Trails,Bandon,OR,71,136,73.7,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Forest and dunes mix,11,7,5
+8,Bandon Dunes,Bandon,OR,72,137,73.9,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Core destination public,9,9,7
+9,Shadow Creek Public Access,North Las Vegas,NV,72,145,75.9,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Rare public access prestige,3,14,9
+10,TPC Sawgrass Stadium Course,Ponte Vedra Beach,FL,72,155,76.8,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Iconic tournament public,8,8,14
+11,Old Macdonald,Bandon,OR,72,136,73.8,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Bandon core seed,14,13,6
+12,Pasatiempo Golf Club,Santa Cruz,CA,70,141,74.7,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Historic public access,15,11,11
+13,Spyglass Hill Golf Course,Pebble Beach,CA,72,145,75.6,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Monterey elite public,13,23,13
+14,Blackwolf Run: River,Kohler,WI,,,,,Golf Digest Public,Tier C,Added from refreshed editorial source coverage,17,,
+15,Streamsong Red,Bowling Green,FL,72,144,75.8,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Destination public,20,17,19
+16,Erin Hills,Hartford,WI,72,145,77.8,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Major venue public,10,21,27
+17,Sand Valley: The Lido,Nekoosa,WI,,,,,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,12,22,25
+18,Sand Valley Golf Resort,Sand Valley,WI,72,136,73.9,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Destination sandbelt public,21,20,20
+19,Sheep Ranch,Bandon,OR,72,131,72.4,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Destination cliffside public,27,24,15
+20,The Lido at Sand Valley,Nekoosa,WI,72,135,73.6,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,New build prestige,51,4,12
+21,Chambers Bay,University Place,WA,72,139,76.0,4,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Major venue public,19,31,17
+22,Pinehurst No 10,Pinehurst,NC,70,139,73.8,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,New Sandhills prestige,30,15,23
+23,Harbour Town Golf Links,Hilton Head Island,SC,,,,,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,28,12,29
+24,Streamsong Blue,Bowling Green,FL,72,136,74.1,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Modern destination public,26,19,26
+25,Mammoth Dunes,Nekoosa,WI,73,128,73.0,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Playable sand valley seed,25,26,20
+26,Gamble Sands Brewster Course,Brewster,WA,72,135,73.4,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,High desert public,31,18,24
+27,Kapalua Plantation Course,Lahaina,HI,73,140,73.6,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Maui prestige public,23,33,22
+28,Manele Golf Course,Lanai City,HI,72,136,74.2,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Hawaii resort prestige,22,47,16
+29,Landmand,Homer,NE,,,,,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,24,46,18
+30,Pinehurst No 4,Pinehurst,NC,72,138,74.0,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Resort companion seed,32,25,35
+31,Streamsong Black,Bowling Green,FL,73,139,74.6,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Destination public,33,37,31
+32,PGA Frisco East,Frisco,TX,72,139,74.5,4,Golf Digest Public,Tier B,Frisco championship seed,34,,
+33,Black Desert Resort,Ivins,UT,72,142,75.2,5,Golf Digest Public|Golfweek You Can Play,Tier A,New desert prestige,35,,34
+34,Arcadia Bluffs Bluffs Course,Arcadia,MI,72,141,75.2,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Great Lakes destination,16,57,32
+35,The Dunes Course at Prairie Club,Valentine,NE,73,137,74.3,4,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Sandhills destination,36,28,42
+36,The Park,West Palm Beach,FL,,,,,GOLF Top 100,Tier C,Added from refreshed editorial source coverage,,36,
+37,Lawsonia Links,Green Lake,WI,72,137,74.6,3,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Classic public access,66,16,28
+38,The Omni Homestead Resort: Cascades Course,Hot Springs,VA,,,,,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,42,35,37
+39,Sweetens Cove,South Pittsburg,TN,,,,,Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,,38
+40,Yale Golf Course,New Haven,CT,,,,,Golf Digest Public,Tier C,Added from refreshed editorial source coverage,38,,
+41,Sea Island: Seaside,Saint Simons Island,GA,,,,,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,45,41,30
+42,Forest Dunes,Roscommon,MI,72,145,76.3,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Northern Michigan destination,37,30,50
+43,French Lick Resort Pete Dye Course,French Lick,IN,72,148,77.8,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Major event capable public,18,42,60
+44,Fallen Oak,Saucier,MS,,,,,Golf Digest Public|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,48,,35
+45,Torrey Pines South,La Jolla,CA,72,144,78.0,3,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Major venue municipal,40,43,44
+46,Mystic Creek,El Dorado,AR,,,,,Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,,44
+47,Mid Pines,Pinehurst,NC,,,,,GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,34,56
+48,Cabot Citrus Farms Karoo,Brooksville,FL,72,138,74.4,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Modern resort public,50,32,57
+49,Tot Hill Farm Golf Club,Ashboro,NC,72,145,76.1,3,GOLF Top 100,Tier A,Mike Strantz cult seed,,48,
+50,Rustic Canyon Golf Course,Moorpark,CA,72,136,73.4,2,GOLF Top 100|Golfweek You Can Play,Tier A,Value architecture seed,,45,52
+51,Tobacco Road Golf Club,Sanford,NC,71,146,75.5,4,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Cult favorite public,44,27,75
+52,Lajitas Black Jack Crossing,Lajitas,TX,72,139,74.1,4,Golfweek You Can Play,Tier B,Remote desert resort,,,49
+53,Ozarks National,Hollister,MO,,,,,Golf Digest Public|GOLF Top 100,Tier C,Added from refreshed editorial source coverage,46,55,
+54,Mauna Kea Golf Course,Kamuela,HI,72,143,75.4,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Hawaii resort prestige,43,49,61
+55,American Dunes,Grand Haven,MI,,,,,GOLF Top 100,Tier C,Added from refreshed editorial source coverage,,51,
+56,The Greenbrier: Old White,White Sulphur Springs,WV,,,,,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,39,52,63
+57,The Highland Course At Primland,Meadows of Dan,VA,,,,,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,29,87,40
+58,Yocha Dehe Golf Club,Brooks,CA,72,138,73.9,4,Golfweek You Can Play,Tier B,NorCal resort quality,,,52
+59,The Quarry at Giants Ridge,Biwabik,MN,72,140,74.9,4,Golf Digest Public|Golfweek You Can Play,Tier A,Upper Midwest destination,58,,47
+60,Karsten Creek,Stillwater,OK,,,,,GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,74,33
+61,Pine Needles Lodge and Golf Club,Southern Pines,NC,71,141,74.5,4,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Sandhills classic,60,39,62
+62,Greywalls at Marquette Golf Club,Marquette,MI,72,142,75.1,4,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Distinctive northern public,55,62,46
+63,Sand Hollow Championship Course,Hurricane,UT,72,146,75.5,4,GOLF Top 100|Golfweek You Can Play,Tier A,Utah red rock seed,,54,58
+64,Wild Horse Golf Club,Gothenburg,NE,,,,,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,84,44,43
+65,Hanalei Golf Course,Princeville,HI,72,137,74.0,5,Golf Digest Public|Golfweek You Can Play,Tier A,Kauai resort seed,73,,41
+66,Blackwolf Run River Course,Kohler,WI,72,144,75.6,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Kohler river seed,92,29,52
+67,Palmetto Bluff (May River),Bluffton,SC,,,,,GOLF Top 100,Tier C,Added from refreshed editorial source coverage,,58,
+68,PGA West Stadium Course,La Quinta,CA,72,148,76.1,4,Golf Digest Public|GOLF Top 100,Tier A,Desert event seed,62,56,
+69,Wolf Creek Golf Club,Mesquite,NV,72,154,75.4,4,Golf Digest Public,Tier A,Desert drama seed,59,,
+70,The Links At Spanish Bay,Pebble Beach,CA,,,,,Golf Digest Public|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,54,,65
+71,The Dunes,Mrytle Beach,SC,,,,,GOLF Top 100,Tier C,Added from refreshed editorial source coverage,,60,
+72,Tetherow Golf Club,Bend,OR,,,,,Golf Digest Public,Tier C,Added from refreshed editorial source coverage,61,,
+73,Silvies Valley Ranch (Craddock/Hankins),Seneca,OR,,,,,GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,59,64
+74,Arcadia Bluffs South Course,Arcadia,MI,72,138,73.7,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Great Lakes companion,53,50,84
+75,Wilderness Club,Eureka,MT,,,,,Golf Digest Public|GOLF Top 100,Tier C,Added from refreshed editorial source coverage,57,68,
+76,Cape Arundel,Kennebunkport,ME,,,,,GOLF Top 100,Tier C,Added from refreshed editorial source coverage,,63,
+77,The Loop Black,Forest Dunes,MI,70,131,72.5,5,Golf Digest Public,Tier A,Reversible course seed,63,,
+78,The Park at West Palm Beach,West Palm Beach,FL,,,,,Golf Digest Public|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,89,,38
+79,Nemacolin: Mystic Rock,Farmington,PA,,,,,Golf Digest Public,Tier C,Added from refreshed editorial source coverage,64,,
+80,SentryWorld,Stevens Point,WI,72,136,74.0,4,Golf Digest Public|GOLF Top 100,Tier A,Championship public access,49,81,
+81,Bethpage (Red),Farmingdale,NY,,,,,GOLF Top 100,Tier C,Added from refreshed editorial source coverage,,65,
+82,Paako Ridge Golf Club,Sandia Park,NM,,,,,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,56,91,51
+83,TPC Harding Park,San Francisco,CA,72,143,75.1,3,GOLF Top 100,Tier A,Urban major venue,,66,
+84,Omni PGA Frisco Fields Ranch East,Frisco,TX,72,138,74.4,4,GOLF Top 100|Golfweek You Can Play,Tier B,Frisco resort depth,,67,67
+85,Wynn Golf Club,Las Vegas,NV,,,,,Golf Digest Public,Tier C,Added from refreshed editorial source coverage,67,,
+86,Mossy Oak Golf Club,West Point,MS,,,,,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,82,75,47
+87,Southern Pines Golf Club,Southern Pines,NC,,,,,Golf Digest Public|GOLF Top 100,Tier C,Added from refreshed editorial source coverage,98,38,
+88,Pronghorn Nicklaus Course,Bend,OR,72,139,74.1,5,Golf Digest Public|GOLF Top 100,Tier A,High desert resort public,41,95,
+89,The Loop Red,Forest Dunes,MI,70,130,72.3,5,Golf Digest Public,Tier A,Reversible course seed,68,,
+90,Big Cedar Lodge (Buffalo Ridge),Hollister,MO,,,,,Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,,69
+91,Innisbrook Resort (Copperhead),Palm Harbor,FL,,,,,GOLF Top 100,Tier C,Added from refreshed editorial source coverage,,69,
+92,Belvedere,Charlevoix,MI,,,,,GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,40,99
+93,George Wright,Boston,MA,,,,,GOLF Top 100,Tier C,Added from refreshed editorial source coverage,,70,
+94,Tullymore Golf Resort,Stanwood,MI,,,,,Golf Digest Public,Tier C,Added from refreshed editorial source coverage,70,,
+95,Firestone Country Club: South,Akron,OH,,,,,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,91,53,67
+96,CordeValle Golf Club,San Martin,CA,,,,,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,52,83,78
+97,Forest Dunes (Weiskopf),Roscommon,MI,,,,,GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,64,78
+98,Red Sky Fazio Course,Wolcott,CO,72,138,73.9,5,Golf Digest Public,Tier B,Colorado resort prestige,71,,
+99,The Dunes Golf & Beach Club,Myrtle Beach,SC,,,,,Golf Digest Public|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,79,,65
+100,Links of North Dakota,Ray,ND,,,,,Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,,72
+101,Minot Country Club,Minot,ND,,,,,Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,,72
+102,Pronghorn Fazio Course,Bend,OR,72,138,74.0,5,GOLF Top 100,Tier B,High desert resort depth,,72,
+103,The Wilderness at Fortune Bay,Tower,MN,72,143,75.2,4,Golf Digest Public,Tier B,Northern destination seed,72,,
+104,Golden Horseshoe Gold Course,Williamsburg,VA,71,136,72.9,4,Golf Digest Public|Golfweek You Can Play,Tier B,Historic resort public,75,,70
+105,Crosswater Club Public Access,Sunriver,OR,72,143,75.8,5,Golf Digest Public|Golfweek You Can Play,Tier B,Central Oregon prestige,69,,77
+106,Caledonia,Pawleys Island,SC,,,,,GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,76,70
+107,Taconic Golf Club,Williamstown,MA,,,,,Golf Digest Public|GOLF Top 100,Tier C,Added from refreshed editorial source coverage,78,73,
+108,Big Cedar Lodge: Buffalo Ridge,Hollister,MO,,,,,Golf Digest Public|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,94,,58
+109,Whistling Straits Irish Course,Sheboygan,WI,72,146,76.2,5,Golf Digest Public|Golfweek You Can Play,Tier A,Kohler links companion,65,,87
+110,Bay Hill Club and Lodge,Unknown City,NA,,,,,GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,71,81
+111,We Ko Pa Saguaro,Fort McDowell,AZ,71,140,74.4,4,GOLF Top 100|Golfweek You Can Play,Tier A,Desert architecture seed,,61,92
+112,The Field Club at Frisco Fields Ranch West,Frisco,TX,72,141,75.1,4,Golf Digest Public,Tier B,Frisco destination seed,77,,
+113,PGA West Pete Dye Mountain,La Quinta,CA,72,139,74.2,4,GOLF Top 100,Tier B,Desert resort depth,,78,
+114,Cascata Golf Club,Boulder City,NV,72,143,75.4,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier B,Premium desert public,74,86,76
+115,The Broadmoor East Course,Colorado Springs,CO,72,142,75.0,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier B,Historic resort public windows,47,97,99
+116,Paynes Valley Golf Course,Hollister,MO,72,139,73.9,5,Golf Digest Public,Tier A,Ozarks destination public,81,,
+117,Pumpkin Ridge Ghost Creek,North Plains,OR,72,143,75.0,4,Golfweek You Can Play,Tier B,Portland area public prestige,,,81
+118,Trump National Doral: Blue Monster,Miami,FL,,,,,Golf Digest Public|GOLF Top 100,Tier C,Added from refreshed editorial source coverage,86,77,
+119,Black Mesa Golf Club,Espanola,NM,,,,,Golf Digest Public|GOLF Top 100,Tier C,Added from refreshed editorial source coverage,85,79,
+120,No 6 at Pinehurst,Pinehurst,NC,72,139,74.0,4,GOLF Top 100,Tier B,Pinehurst depth seed,,82,
+121,Keswick Hall (Full Cry),Keswick,VA,,,,,GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,94,72
+122,Edgewood Tahoe Golf Course,Stateline,NV,72,142,75.0,5,Golf Digest Public,Tier B,Tahoe lakefront prestige,83,,
+123,Wine Valley Golf Club,Walla Walla,WA,,,,,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,96,100,55
+124,Four Seasons Resort Hualalai,Kailua-Kona,HI,,,,,Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,,84
+125,French Lick (Dye Course),French Lick,IN,,,,,GOLF Top 100,Tier C,Added from refreshed editorial source coverage,,84,
+126,Hawktree,Bismarck,ND,,,,,Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,,84
+127,Warren Course (Notre Dame),Notre Dame,IN,,,,,GOLF Top 100,Tier C,Added from refreshed editorial source coverage,,85,
+128,Rams Hill Golf Club,Borrego Springs,CA,72,143,74.9,4,GOLF Top 100|Golfweek You Can Play,Tier B,Remote desert sleeper,,93,78
+129,The Pines Course at Prairie Club,Valentine,NE,72,134,73.5,4,Golf Digest Public|Golfweek You Can Play,Tier A,Sandhills destination,90,,81
+130,Cog Hill Golf & Country Club: Dubsdread (Course #4),Lemont,IL,,,,,Golf Digest Public|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,76,,96
+131,Payne&#039;s Valley,Hollister,MO,,,,,GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,80,92
+132,Hideout,Monticello,UT,,,,,Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,,87
+133,Leatherstocking,Cooperstown,NY,,,,,Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,,87
+134,Old Waverly,West Point,MS,,,,,Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,,87
+135,Red Sky Ranch Norman Course,Wolcott,CO,72,145,76.4,5,Golf Digest Public,Tier B,High-country resort access,87,,
+136,Silvies Valley Ranch (Craddock),Seneca,OR,,,,,Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,,87
+137,Memorial Park Golf Course,Houston,TX,70,143,75.5,2,GOLF Top 100,Tier A,Urban muni prestige,,88,
+138,Mid Pines Inn and Golf Club,Southern Pines,NC,72,136,73.8,4,Golf Digest Public,Tier A,Sandhills classic,88,,
+139,Omni La Costa North Course,Carlsbad,CA,72,141,75.0,5,GOLF Top 100,Tier B,Tour venue resort,,89,
+140,Madden's on Gull Lake: The Classic at Madden's,Brainerd,MN,,,,,Golf Digest Public|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,80,,99
+141,Breezy Point Resort (Deacon’s Lodge),Brainerd,MN,,,,,Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,,92
+142,Stoatin Brae,Augusta,MI,,,,,GOLF Top 100,Tier C,Added from refreshed editorial source coverage,,92,
+143,Quintero Golf Club,Peoria,AZ,72,148,76.1,4,Golf Digest Public,Tier A,Arizona destination public,93,,
+144,The Pfau Course At Indiana University,Bloomington,IN,,,,,Golf Digest Public|GOLF Top 100,Tier C,Added from refreshed editorial source coverage,97,90,
+145,TPC San Antonio Oaks Course,San Antonio,TX,72,145,75.9,4,Golf Digest Public,Tier B,Texas tour venue,95,,
+146,Reynolds Lake Oconee: Great Waters,Eatonton,GA,,,,,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,99,96,92
+147,Cape Cod National,Brewster,MA,,,,,Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,,96
+148,Omni Bedford Springs (Old),Bedford,PA,,,,,Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,,96
+149,Robert Trent Jones Grand National Links,Opelika,AL,72,141,74.8,3,GOLF Top 100,Tier B,RTJ Trail prestige,,98,
+150,OMNI Barton Creek Fazio Canyons,Austin,TX,72,140,74.1,4,Golfweek You Can Play,Tier A,Texas hill country seed,,,99
+151,The McLemore Club (Highlands),Rising Fawn,GA,,,,,GOLF Top 100,Tier C,Added from refreshed editorial source coverage,,99,
+152,The Links Quarry at Bay Harbor,Bay Harbor,MI,72,138,73.8,5,Golf Digest Public,Tier B,Northern Michigan resort seed,100,,
+153,Ak Chin Southern Dunes,Maricopa,AZ,72,145,75.3,4,,Tier A,Arizona value prestige,,,
+154,Ak-Chin Southern Dunes,Maricopa,AZ,72,144,75.2,3,,Tier A,Core desert ranking seed,,,
+155,Arrowhead Golf Club,Littleton,CO,70,141,73.9,4,,Tier B,Red rock foothills public,,,
+156,Aviara Golf Club,Carlsbad,CA,72,144,75.5,5,,Tier B,Resort prestige seed,,,
+157,Bali Hai Golf Club,Las Vegas,NV,71,131,71.3,4,,Tier C,Las Vegas strip-adjacent public,,,
+158,Ballyneal Golf Club,Holyoke,CO,72,140,74.8,5,,Tier A,Remote links style public,,,
+159,Bay Hill,Orlando,FL,,,,,,Tier C,Added from refreshed editorial source coverage,,,
+160,Bayonet Golf Course,Seaside,CA,72,145,75.6,4,,Tier B,Peninsula challenge seed,,,
+161,Bear Dance Golf Club,Larkspur,CO,72,148,76.3,4,,Tier A,Colorado mountain foothills favorite,,,
+162,Black Desert Resort Golf Course,Ivins,UT,72,138,74.3,5,,Tier B,Modern desert destination,,,
+163,Black Horse Golf Course,Seaside,CA,72,138,73.9,4,,Tier B,Peninsula challenge seed,,,
+164,Conestoga Golf Club,Mesquite,NV,72,143,74.9,3,,Tier B,Mesquite desert favorite,,,
+165,Coral Canyon Golf Course,Washington,UT,72,140,74.1,3,,Tier C,Southern Utah public,,,
+166,Coyote Springs Golf Club,Coyote Springs,NV,72,141,75.1,4,,Tier B,Remote desert public,,,
+167,Dallas Cowboys Golf Club,Grapevine,TX,72,145,75.7,4,,Tier C,Metroplex upscale public,,,
+168,Dinosaur Mountain Gold Canyon,Gold Canyon,AZ,72,142,75.4,4,,Tier B,Desert views seed,,,
+169,Dormie Club Public Access,West End,NC,71,139,74.3,5,,Tier B,Sandhills prestige seed,,,
+170,Entrada at Snow Canyon Country Club,Ivins,UT,71,141,74.8,4,,Tier B,Red rock desert destination,,,
+171,Entrada at Snow Canyon Public Access,Ivins,UT,72,139,74.7,4,,Tier B,Red rock prestige,,,
+172,Fossil Trace Golf Club,Golden,CO,72,142,74.8,3,,Tier B,Front Range public,,,
+173,Gamble Sands Scarecrow,Brewster,WA,72,136,73.6,5,,Tier A,New course destination,,,
+174,Genoa Lakes Ranch Course,Genoa,NV,72,139,74.3,3,,Tier C,Tahoe area ranchland public,,,
+175,Gold Mountain Olympic Course,Bremerton,WA,72,140,74.6,3,,Tier B,Value championship public,,,
+176,Grayhawk Raptor,Scottsdale,AZ,72,140,74.8,4,,Tier B,Tour adjacent public,,,
+177,Grayhawk Raptor Course,Scottsdale,AZ,72,145,75.9,4,,Tier B,Scottsdale tournament feel,,,
+178,Grayhawk Talon,Scottsdale,AZ,72,138,73.9,4,,Tier B,Scottsdale staple,,,
+179,Grayhawk Talon Course,Scottsdale,AZ,72,140,74.3,4,,Tier B,Scottsdale resort depth,,,
+180,Half Moon Bay Ocean Course,Half Moon Bay,CA,72,139,74.8,4,,Tier B,Coastal resort public,,,
+181,Hokuala Ocean Course,Lihue,HI,72,139,74.1,5,,Tier B,Kauai resort seed,,,
+182,Industry Hills Babe Course,City of Industry,CA,72,140,74.0,3,,Tier C,Big municipal companion,,,
+183,Industry Hills Ike Course,City of Industry,CA,72,147,76.0,3,,Tier B,Big municipal championship feel,,,
+184,Journey at Pechanga,Temecula,CA,72,145,75.5,4,,Tier B,SoCal resort casino public,,,
+185,Kapalua Bay Course,Lahaina,HI,72,133,72.2,5,,Tier B,Maui resort depth,,,
+186,Ko Olina Golf Club,Kapolei,HI,72,135,73.8,4,,Tier B,Hawaii accessible resort,,,
+187,Las Sendas Golf Club,Mesa,AZ,71,141,74.0,3,,Tier C,Big view desert daily fee,,,
+188,Maderas Golf Club,Poway,CA,72,145,75.8,4,,Tier B,SoCal upscale public,,,
+189,Mid South Club,Southern Pines,NC,71,140,74.4,4,,Tier B,Sandhills depth seed,,,
+190,Monarch Beach Golf Links,Dana Point,CA,70,137,73.0,5,,Tier B,Ocean-adjacent resort public,,,
+191,Oak Quarry Golf Club,Riverside,CA,72,141,74.7,3,,Tier B,Inland Empire quarry layout,,,
+192,OMNI Barton Creek Coore Crenshaw,Austin,TX,71,135,72.8,4,,Tier A,Texas hill country seed,,,
+193,Omni Barton Creek Fazio Foothills,Austin,TX,72,138,73.8,4,,Tier B,Texas hill country depth,,,
+194,Omni Tucson National Catalina Course,Tucson,AZ,72,142,75.7,4,,Tier A,Historic tour venue public,,,
+195,Omni Tucson National Sonoran Course,Tucson,AZ,72,136,73.1,4,,Tier B,Historic tour venue companion,,,
+196,Paiute Snow Mountain,Las Vegas,NV,72,137,73.5,4,,Tier B,Vegas resort depth,,,
+197,Paiute Snow Mountain Course,Las Vegas,NV,72,142,75.1,3,,Tier B,Desert resort depth,,,
+198,Paiute Sun Mountain Course,Las Vegas,NV,72,140,74.4,3,,Tier B,Desert resort depth,,,
+199,Paiute Wolf Course,Las Vegas,NV,72,149,76.3,4,,Tier B,Vegas challenge seed,,,
+200,Pasadera Country Club Public Access,Monterey,CA,72,141,74.9,4,,Tier C,Monterey depth seed,,,
+201,Pelican Hill South Course,Newport Coast,CA,70,137,72.6,5,,Tier B,Orange County resort prestige,,,
+202,Poipu Bay Golf Course,Koloa,HI,72,137,73.8,5,,Tier B,Kauai oceanfront seed,,,
+203,Poppy Hills Golf Course,Pebble Beach,CA,72,136,73.7,4,,Tier B,Monterey depth seed,,,
+204,Presidio Golf Course,San Francisco,CA,72,137,73.2,2,,Tier C,Historic city public,,,
+205,Rancho Manana Golf Club,Cave Creek,AZ,70,133,71.7,3,,Tier C,Compact desert foothills favorite,,,
+206,Raven Golf Club at Three Peaks,Silverthorne,CO,72,138,74.0,3,,Tier C,Mountain destination value,,,
+207,Red Sky Norman Course,Wolcott,CO,72,140,74.5,5,,Tier B,Colorado resort prestige,,,
+208,Reflection Bay Golf Club,Henderson,NV,72,143,75.3,4,,Tier B,Lake Las Vegas public,,,
+209,Robert Trent Jones Capitol Hill Judge,Prattville,AL,72,147,76.4,3,,Tier A,RTJ Trail flagship,,,
+210,Robert Trent Jones Capitol Hill Legislator,Prattville,AL,72,138,73.9,3,,Tier B,RTJ Trail prestige,,,
+211,Robert Trent Jones Capitol Hill Senator,Prattville,AL,72,143,75.1,3,,Tier B,RTJ Trail prestige,,,
+212,Robert Trent Jones Grand National Lake Course,Opelika,AL,72,144,75.6,3,,Tier B,RTJ Trail prestige,,,
+213,Robert Trent Jones Oxmoor Valley Ridge,Hoover,AL,72,142,74.8,3,,Tier B,RTJ Trail depth,,,
+214,Robert Trent Jones Oxmoor Valley Valley,Hoover,AL,72,140,74.0,3,,Tier B,RTJ Trail depth,,,
+215,Robert Trent Jones Ross Bridge,Hoover,AL,72,148,77.0,4,,Tier A,RTJ Trail flagship,,,
+216,Robert Trent Jones Silver Lakes Backbreaker,Glencoe,AL,72,137,73.5,3,,Tier C,RTJ Trail depth,,,
+217,Robert Trent Jones Silver Lakes Heartbreaker,Glencoe,AL,72,139,74.1,3,,Tier C,RTJ Trail depth,,,
+218,Robert Trent Jones Silver Lakes Mindbreaker,Glencoe,AL,72,140,74.3,3,,Tier C,RTJ Trail depth,,,
+219,Sand Hollow Links Nine,Hurricane,UT,36,132,35.5,3,,Tier C,Utah short companion,,,
+220,Sandpiper Golf Club,Santa Barbara,CA,72,140,74.0,4,,Tier B,Oceanfront California muni feel,,,
+221,Sewailo Golf Club,Tucson,AZ,71,140,74.2,3,,Tier C,Arizona casino resort seed,,,
+222,Silverado North Course,Napa,CA,72,140,74.3,4,,Tier B,Wine country tour venue,,,
+223,Soldier Hollow Gold Course,Midway,UT,72,138,74.3,3,,Tier C,Mountain public value,,,
+224,Soldier Hollow Silver Course,Midway,UT,72,135,73.0,3,,Tier C,Mountain public value,,,
+225,Starr Pass Coyote Course,Tucson,AZ,72,136,72.9,4,,Tier C,Desert resort trio,,,
+226,Starr Pass Rattler Course,Tucson,AZ,72,138,73.4,4,,Tier C,Desert resort trio,,,
+227,Suncadia Rope Rider,Cle Elum,WA,70,133,72.5,4,,Tier B,Mountain resort seed,,,
+228,Sunriver Resort Meadows,Sunriver,OR,71,134,72.8,4,,Tier C,Central Oregon resort depth,,,
+229,Sunriver Resort Meadows Course,Sunriver,OR,72,136,72.8,4,,Tier C,Central Oregon resort depth,,,
+230,Sunriver Resort Woodlands,Sunriver,OR,72,132,72.2,4,,Tier C,Central Oregon resort depth,,,
+231,Sunriver Resort Woodlands Course,Sunriver,OR,72,134,72.2,4,,Tier C,Central Oregon resort depth,,,
+232,Tabernash Golf Club,Tabernash,CO,72,137,73.8,3,,Tier C,Rocky Mountain public,,,
+233,Talking Stick Oodham Course,Scottsdale,AZ,71,134,72.1,3,,Tier C,Walkable desert value,,,
+234,Talking Stick Piipaash Course,Scottsdale,AZ,72,138,73.8,3,,Tier C,Walkable desert value,,,
+235,Tanglewood New Course,Pottsboro,TX,72,136,73.6,3,,Tier C,Regional public seed,,,
+236,Texas Rangers Golf Club,Arlington,TX,72,137,73.9,3,,Tier C,Modern muni upscale,,,
+237,The Boulders North Course,Carefree,AZ,72,137,73.0,4,,Tier B,Granite boulder desert resort,,,
+238,The Boulders South Course,Carefree,AZ,71,140,74.3,4,,Tier B,Granite boulder desert resort,,,
+239,The Broadmoor Mountain Course,Colorado Springs,CO,72,139,74.2,5,,Tier B,Historic resort public windows,,,
+240,The Crossings at Carlsbad,Carlsbad,CA,72,139,73.9,3,,Tier C,North County public value,,,
+241,The Gallery South,Tucson,AZ,72,144,75.7,4,,Tier B,Tucson destination public,,,
+242,The Golf Club at Redlands Mesa,Grand Junction,CO,71,139,74.5,4,,Tier B,Cliffside western slope,,,
+243,The Phoenician Golf Club,Scottsdale,AZ,71,133,72.4,4,,Tier C,Resort public depth,,,
+244,The Rawls Course,Lubbock,TX,72,138,74.2,3,,Tier C,College public quality,,,
+245,The Straits at Journeyman Resort,Three Oaks,MI,72,138,74.1,4,,Tier B,Midwest new build,,,
+246,The Wilderness at Lake Jackson,Lake Jackson,TX,72,134,72.8,3,,Tier C,Value public seed,,,
+247,Torrey Pines North,La Jolla,CA,72,134,74.0,3,,Tier B,Iconic municipal companion,,,
+248,TPC Colorado,Berthoud,CO,72,146,76.1,4,,Tier B,Tour venue public,,,
+249,TPC Las Vegas,Las Vegas,NV,71,137,73.8,4,,Tier B,Las Vegas tour-branded public,,,
+250,TPC Scottsdale Champions Course,Scottsdale,AZ,71,139,73.8,4,,Tier B,Tour venue companion,,,
+251,TPC Scottsdale Stadium Course,Scottsdale,AZ,71,142,74.4,4,,Tier A,Tour venue public,,,
+252,TPC Summerlin,Las Vegas,NV,72,139,73.8,4,,Tier B,Tour venue public windows,,,
+253,Troon North Monument,Scottsdale,AZ,72,143,75.8,4,,Tier B,Scottsdale staple,,,
+254,Troon North Monument Course,Scottsdale,AZ,72,147,76.1,4,,Tier B,Scottsdale prestige public,,,
+255,Troon North Pinnacle,Scottsdale,AZ,72,141,75.0,4,,Tier B,Scottsdale staple,,,
+256,Troon North Pinnacle Course,Scottsdale,AZ,72,144,75.7,4,,Tier B,Scottsdale prestige public,,,
+257,Tubac Golf Resort Anza Course,Tubac,AZ,72,136,72.8,4,,Tier C,Historic Arizona resort public,,,
+258,Ventana Canyon Canyon Course,Tucson,AZ,72,139,74.1,4,,Tier B,Tucson resort mountain golf,,,
+259,Ventana Canyon Mountain,Tucson,AZ,72,138,74.0,4,,Tier C,Tucson scenic resort,,,
+260,Ventana Canyon Mountain Course,Tucson,AZ,72,143,75.6,4,,Tier B,Tucson resort mountain golf,,,
+261,Verrado Founders Course,Buckeye,AZ,72,138,73.7,3,,Tier C,West Valley desert public,,,
+262,Wailea Gold Course,Kihei,HI,72,138,74.0,5,,Tier B,Maui resort depth,,,
+263,Wasatch Mountain Lake Course,Midway,UT,72,135,72.8,3,,Tier C,State park mountain golf,,,
+264,Wasatch Mountain Mountain Course,Midway,UT,72,136,73.1,3,,Tier C,State park mountain golf,,,
+265,We Ko Pa Cholla,Fort McDowell,AZ,72,144,75.2,4,,Tier B,Desert challenge companion,,,
+266,We-Ko-Pa Cholla Course,Fort McDowell,AZ,72,144,75.0,4,,Tier B,Scottsdale area destination,,,
+267,We-Ko-Pa Saguaro Course,Fort McDowell,AZ,71,137,72.7,4,,Tier A,Minimalist desert standout,,,
+268,Wickenburg Ranch Big Wick,Wickenburg,AZ,72,138,73.9,4,,Tier B,Arizona modern public,,,
+269,Widgi Creek Golf Club,Bend,OR,72,135,73.3,3,,Tier C,Bend value public,,,
+270,Wildhorse Resort Golf Course,Pendleton,OR,72,144,75.6,3,,Tier B,Eastern Oregon value standout,,,

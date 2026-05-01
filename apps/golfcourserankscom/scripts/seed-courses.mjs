@@ -26,10 +26,22 @@ const supabase = createClient(url, serviceRoleKey, {
   }
 });
 
+function buildCourseIdentity(record) {
+  return `${record.name}::${record.city}::${record.state}`.toLowerCase();
+}
+
 function parseCsvLine(line) {
   return line
     .split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
     .map((value) => value.replace(/^"|"$/g, "").replace(/""/g, '"').trim());
+}
+
+function parseNullableInteger(value) {
+  return value ? Number(value) : null;
+}
+
+function parseNullableFloat(value) {
+  return value ? Number(value) : null;
 }
 
 const records = rows.map((row) => {
@@ -57,10 +69,10 @@ const records = rows.map((row) => {
     name,
     city,
     state,
-    par: Number(par),
-    slope: Number(slope),
-    rating: Number(rating),
-    price_band: Number(priceBand),
+    par: parseNullableInteger(par),
+    slope: parseNullableInteger(slope),
+    rating: parseNullableFloat(rating),
+    price_band: parseNullableInteger(priceBand),
     seed_rank: numericSeedRank,
     seed_score: seedScore,
     seed_source: {
@@ -90,6 +102,51 @@ const refresh = await supabase.rpc("refresh_course_aggregates");
 if (refresh.error) {
   console.error(refresh.error);
   process.exit(1);
+}
+
+const { data: existingCourses, error: existingCoursesError } = await supabase
+  .from("courses")
+  .select("id,name,city,state");
+
+if (existingCoursesError) {
+  console.error(existingCoursesError);
+  process.exit(1);
+}
+
+const validIdentities = new Set(records.map(buildCourseIdentity));
+const staleCourses = existingCourses.filter((course) => !validIdentities.has(buildCourseIdentity(course)));
+
+if (staleCourses.length > 0) {
+  const { data: playedRefs, error: playedRefsError } = await supabase
+    .from("played_courses")
+    .select("course_id")
+    .in(
+      "course_id",
+      staleCourses.map((course) => course.id)
+    );
+
+  if (playedRefsError) {
+    console.error(playedRefsError);
+    process.exit(1);
+  }
+
+  const referencedCourseIds = new Set(playedRefs.map((row) => row.course_id));
+  const removableCourses = staleCourses.filter((course) => !referencedCourseIds.has(course.id));
+
+  if (removableCourses.length > 0) {
+    const { error: deleteError } = await supabase
+      .from("courses")
+      .delete()
+      .in(
+        "id",
+        removableCourses.map((course) => course.id)
+      );
+
+    if (deleteError) {
+      console.error(deleteError);
+      process.exit(1);
+    }
+  }
 }
 
 console.log(`Seeded ${records.length} courses from ${csvPath}.`);

@@ -229,8 +229,8 @@ export async function getAllCourses() {
 
   const admin = createAdminClient();
   const [{ data, error }, { data: aggregateRows, error: aggregateError }] = await Promise.all([
-    admin.from("courses").select("*").limit(250),
-    admin.from("course_aggregates").select("course_id, rank, is_early").limit(250)
+    admin.from("courses").select("*").limit(400),
+    admin.from("course_aggregates").select("course_id, rank, is_early").limit(400)
   ]);
 
   if (error) {
@@ -475,7 +475,7 @@ export async function getLeaderboardCourses(options?: {
   const admin = createAdminClient();
   const [courses, aggregateRows] = await Promise.all([
     getAllCourses(),
-    admin.from("course_aggregates").select("*").order("rank", { ascending: true }).limit(250)
+    admin.from("course_aggregates").select("*").order("rank", { ascending: true }).limit(400)
   ]);
 
   if (aggregateRows.error) {

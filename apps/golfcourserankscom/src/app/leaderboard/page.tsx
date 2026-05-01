@@ -44,7 +44,7 @@ export default async function LeaderboardPage({
       minSignals,
       state: selectedState || null,
       sort,
-      limit: 200
+      limit: 400
     }),
     getAllCourses()
   ]);
