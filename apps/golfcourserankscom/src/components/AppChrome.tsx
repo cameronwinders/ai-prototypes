@@ -35,6 +35,11 @@ const mobileNav = [
   { href: "/profile", label: "Profile" }
 ];
 
+const activePillTextStyle = {
+  color: "#ffffff",
+  WebkitTextFillColor: "#ffffff"
+} as const;
+
 function toScreenName(pathname: string) {
   if (pathname.startsWith("/courses/")) {
     return "Course detail";
@@ -105,9 +110,9 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                             ? "bg-[var(--ink)] shadow-[0_10px_25px_rgba(24,37,43,0.12)]"
                             : "text-[var(--muted)] hover:bg-white/70"
                         }`}
-                        style={active ? { color: "#ffffff" } : undefined}
+                        style={active ? activePillTextStyle : undefined}
                       >
-                        <span style={active ? { color: "#ffffff" } : undefined}>{item.label}</span>
+                        <span style={active ? activePillTextStyle : undefined}>{item.label}</span>
                       </Link>
                     );
                   })}
@@ -140,6 +145,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                     <button
                       type="submit"
                       className="solid-button min-h-11 whitespace-nowrap px-4 text-[rgb(255,255,255)]"
+                      style={activePillTextStyle}
                     >
                       Sign out
                     </button>
@@ -148,6 +154,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                   <Link
                     href={`/sign-in?next=${encodeURIComponent(currentUrl)}`}
                     className="solid-button min-h-11 whitespace-nowrap px-4 text-[rgb(255,255,255)]"
+                    style={activePillTextStyle}
                   >
                     Sign in
                   </Link>
@@ -177,9 +184,9 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                             ? "border-[rgba(24,37,43,0.08)] bg-[var(--ink)] shadow-[0_10px_25px_rgba(24,37,43,0.1)]"
                             : "border-[var(--line)] bg-white/72 text-[var(--muted)] hover:bg-white"
                         }`}
-                        style={active ? { color: "#ffffff" } : undefined}
+                        style={active ? activePillTextStyle : undefined}
                       >
-                        <span style={active ? { color: "#ffffff" } : undefined}>{item.label}</span>
+                        <span style={active ? activePillTextStyle : undefined}>{item.label}</span>
                       </Link>
                     );
                   })}
@@ -201,8 +208,9 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                 className={`flex min-h-11 min-w-0 flex-1 items-center justify-center rounded-[1.2rem] px-2 py-3 text-xs font-semibold transition ${
                   active ? "bg-[var(--ink)] text-[rgb(255,255,255)]" : "text-[var(--muted)]"
                 }`}
+                style={active ? activePillTextStyle : undefined}
               >
-                {item.label}
+                <span style={active ? activePillTextStyle : undefined}>{item.label}</span>
               </Link>
             );
           })}
@@ -211,9 +219,10 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
         <Link
           href={feedbackHref}
           className="solid-button fixed bottom-[5.75rem] right-4 z-40 min-h-11 gap-2 whitespace-nowrap px-5 text-[rgb(255,255,255)] shadow-[0_20px_55px_rgba(22,38,34,0.28)] lg:bottom-6 lg:right-8"
+          style={activePillTextStyle}
         >
-          <span className="text-base leading-none">+</span>
-          <span>Feedback</span>
+          <span className="text-base leading-none" style={activePillTextStyle}>+</span>
+          <span style={activePillTextStyle}>Feedback</span>
         </Link>
       </div>
     </div>
