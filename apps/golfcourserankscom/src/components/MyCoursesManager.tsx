@@ -12,6 +12,7 @@ type MyCoursesManagerProps = {
   initialPlayedCourses: PlayedCourse[];
   allCourses: CourseRecord[];
   siteUrl: string;
+  viewerHandle: string;
 };
 
 type DragState = {
@@ -80,7 +81,7 @@ function mergePlayedCourses(current: PlayedCourse[], ranked: Array<{ id: string;
   }));
 }
 
-export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl }: MyCoursesManagerProps) {
+export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl, viewerHandle }: MyCoursesManagerProps) {
   const [playedCourses, setPlayedCourses] = useState(initialPlayedCourses);
   const [status, setStatus] = useState<string>("Drag a played course into the ranked section. Top means favorite.");
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(new Date().toISOString());
@@ -303,10 +304,11 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl }: 
             ))}
 
             <ShareButton
-              title="Share your ranking list"
-              text="See how I rank public golf courses on Golf Course Ranks."
-              url={`${siteUrl}/me/courses`}
+              title="Share my Top 10"
+              text="My top 10 public courses, ranked. Roast me."
+              url={`${siteUrl}/u/${viewerHandle}?utm_source=share&utm_medium=top10card&utm_campaign=user_share`}
               className="ghost-button min-h-11 justify-center whitespace-nowrap"
+              analyticsSurface="my-courses-top10"
             />
             <Link href="/courses" className="ghost-button min-h-11 justify-center whitespace-nowrap">
               Browse courses

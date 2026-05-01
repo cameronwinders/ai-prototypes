@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { CourseDetailActions } from "@/components/CourseDetailActions";
@@ -8,6 +9,44 @@ import { getCourseDetail } from "@/lib/data";
 import { formatLocation, pluralize } from "@/lib/ranking";
 import { getSiteUrl } from "@/lib/supabase/env";
 import { getViewerContext } from "@/lib/viewer";
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ courseId: string }>;
+}): Promise<Metadata> {
+  const { courseId } = await params;
+  const detail = await getCourseDetail(courseId, null, null);
+
+  if (!detail) {
+    return {
+      title: "Course not found | Golf Course Ranks"
+    };
+  }
+
+  const score = detail.aggregate?.normalized_score?.toFixed(1) ?? "0.0";
+  const title = `${detail.course.name} | Golf Course Ranks`;
+  const description = `${formatLocation(detail.course)} · Crowd score ${score} on Golf Course Ranks.`;
+  const url = `${getSiteUrl()}/courses/${detail.course.id}`;
+  const image = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Pebble_Beach_18th_hole.jpg/1280px-Pebble_Beach_18th_hole.jpg";
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url,
+      images: [image]
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image]
+    }
+  };
+}
 
 export default async function CourseDetailPage({
   params
@@ -154,8 +193,9 @@ export default async function CourseDetailPage({
               <ShareButton
                 title={`${course.name} | Golf Course Ranks`}
                 text={`Take a look at ${course.name} on Golf Course Ranks.`}
-                url={`${siteUrl}${courseUrl}`}
+                url={`${siteUrl}${courseUrl}?utm_source=share&utm_medium=course&utm_campaign=course_share`}
                 className="solid-button min-h-11 justify-center"
+                analyticsSurface="course-detail"
               />
               <Link href="/friends" className="ghost-button min-h-11 justify-center">
                 Compare with friends

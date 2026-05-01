@@ -13,10 +13,12 @@ import {
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getServerSupabaseEnv } from "@/lib/supabase/env";
 import type {
+  AnalyticsEventName,
   CompareOverview,
   CourseAggregateRecord,
   CourseDetail,
   CourseRecord,
+  DiscoverableProfile,
   FeedbackRecord,
   FriendCard,
   FriendshipRecord,
@@ -27,6 +29,8 @@ import type {
   PendingFriendRequest,
   PlayedCourse,
   PlayedCourseRecord,
+  ProfileVisibility,
+  PublicProfileOverview,
   RankedCourse,
   UserProfile
 } from "@/lib/types";
@@ -58,8 +62,37 @@ function sanitizeHandle(value: string) {
   return cleaned.length >= 2 ? cleaned : "golfer";
 }
 
+function sanitizeStateCode(value: string | null | undefined) {
+  if (!value) {
+    return null;
+  }
+
+  const trimmed = value.trim().toUpperCase();
+  return trimmed.length === 2 ? trimmed : null;
+}
+
 function isUuidLike(value: string) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
+function canViewerSeeProfile(
+  profile: UserProfile,
+  viewerId: string | null,
+  friendship: FriendshipRecord | null
+): PublicProfileOverview["visibilityState"] {
+  if (viewerId && viewerId === profile.id) {
+    return "visible";
+  }
+
+  if (profile.profile_visibility === "private") {
+    return "private";
+  }
+
+  if (profile.profile_visibility === "friends_only") {
+    return friendship?.status === "accepted" ? "visible" : "friends_only";
+  }
+
+  return "visible";
 }
 
 function displayNameFromEmail(email: string | null | undefined) {
@@ -212,6 +245,27 @@ export async function getProfileById(userId: string) {
 
   const admin = createAdminClient();
   const { data, error } = await admin.from("users").select("*").eq("id", userId).maybeSingle<UserProfile>();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data ?? null;
+}
+
+export async function getProfileByHandle(handle: string) {
+  const { configured } = ensureConfigured();
+
+  if (!configured) {
+    return null;
+  }
+
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("users")
+    .select("*")
+    .eq("handle", handle)
+    .maybeSingle<UserProfile>();
 
   if (error) {
     throw new Error(error.message);
@@ -593,6 +647,30 @@ export async function getFriendshipBetweenUsers(userA: string, userB: string) {
   return data ?? null;
 }
 
+export async function searchDiscoverableProfiles(query: string, viewerId?: string | null) {
+  const { configured } = ensureConfigured();
+
+  if (!configured || query.trim().length < 2) {
+    return [] as DiscoverableProfile[];
+  }
+
+  const admin = createAdminClient();
+  const escaped = query.trim().replace(/[%*,]/g, "");
+  const { data, error } = await admin
+    .from("users")
+    .select("id, handle, display_name, email, home_state, handicap_band")
+    .eq("discoverability_enabled", true)
+    .neq("profile_visibility", "private")
+    .or(`handle.ilike.%${escaped}%,display_name.ilike.%${escaped}%,email.ilike.%${escaped}%`)
+    .limit(12);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return ((data ?? []) as DiscoverableProfile[]).filter((profile) => profile.id !== viewerId);
+}
+
 export async function getFriendsPageData(viewerId: string): Promise<FriendsPageData> {
   const { configured } = ensureConfigured();
 
@@ -686,6 +764,66 @@ export async function getFriendsPageData(viewerId: string): Promise<FriendsPageD
   };
 }
 
+export async function getPublicProfileOverview(
+  handle: string,
+  viewerId: string | null = null
+): Promise<PublicProfileOverview | null> {
+  const profile = await getProfileByHandle(handle);
+
+  if (!profile) {
+    return null;
+  }
+
+  const friendship =
+    viewerId && viewerId !== profile.id ? await getFriendshipBetweenUsers(viewerId, profile.id) : null;
+  const visibilityState = canViewerSeeProfile(profile, viewerId, friendship);
+
+  if (visibilityState !== "visible") {
+    return {
+      profile,
+      stats: {
+        playedCount: 0,
+        rankedCount: 0,
+        comparisonsMade: 0,
+        topHundredPlayedCount: 0,
+        friendsCount: 0
+      },
+      topCourses: [],
+      canCompare: false,
+      visibilityState
+    };
+  }
+
+  const admin = createAdminClient();
+  const [played, ranked, friendsData, pairwiseCount] = await Promise.all([
+    getPlayedCoursesForUser(profile.id),
+    getRankedCoursesForUser(profile.id),
+    getFriendsPageData(profile.id),
+    admin
+      .from("pairwise_signals")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", profile.id)
+  ]);
+
+  if (pairwiseCount.error) {
+    throw new Error(pairwiseCount.error.message);
+  }
+
+  return {
+    profile,
+    stats: {
+      playedCount: played.length,
+      rankedCount: ranked.length,
+      comparisonsMade: pairwiseCount.count ?? 0,
+      topHundredPlayedCount: played.filter((course) => course.seed_rank <= 100).length,
+      friendsCount: friendsData.accepted.length
+    },
+    topCourses: ranked.slice(0, 10),
+    canCompare: Boolean(viewerId && viewerId !== profile.id && friendship?.status !== "accepted"),
+    visibilityState
+  };
+}
+
 export async function getCompareOverview(viewerId: string, friendUserId: string): Promise<CompareOverview | null> {
   const friendship = await getFriendshipBetweenUsers(viewerId, friendUserId);
 
@@ -753,6 +891,91 @@ export async function getProfileSummary(viewerId: string) {
     acceptedFriends: friends.accepted.length,
     incomingRequests: friends.incoming.length
   };
+}
+
+export async function logAnalyticsEvent(input: {
+  userId?: string | null;
+  eventName: AnalyticsEventName;
+  payload?: Record<string, unknown>;
+}) {
+  const { configured } = ensureConfigured();
+
+  if (!configured) {
+    return;
+  }
+
+  const admin = createAdminClient();
+  const result = await admin.from("analytics_events").insert({
+    user_id: input.userId ?? null,
+    event_name: input.eventName,
+    event_payload: input.payload ?? {}
+  });
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+}
+
+export async function upsertProfileSettings(input: {
+  userId: string;
+  displayName: string | null;
+  handle: string;
+  homeState: string | null;
+  profileVisibility: ProfileVisibility;
+  handicapVisibility: boolean;
+  discoverabilityEnabled: boolean;
+}) {
+  const admin = createAdminClient();
+  const currentProfile = await getProfileById(input.userId);
+
+  if (!currentProfile) {
+    throw new Error("Profile not found.");
+  }
+
+  const normalizedHandle = sanitizeHandle(input.handle);
+
+  if (normalizedHandle !== currentProfile.handle && currentProfile.free_handle_change_used_at) {
+    throw new Error("Your free handle change has already been used.");
+  }
+
+  const collision = await admin
+    .from("users")
+    .select("id")
+    .eq("handle", normalizedHandle)
+    .neq("id", input.userId)
+    .maybeSingle<{ id: string }>();
+
+  if (collision.error) {
+    throw new Error(collision.error.message);
+  }
+
+  if (collision.data) {
+    throw new Error("That handle is already taken.");
+  }
+
+  const result = await admin
+    .from("users")
+    .update({
+      display_name: input.displayName?.trim() || null,
+      handle: normalizedHandle,
+      home_state: sanitizeStateCode(input.homeState),
+      profile_visibility: input.profileVisibility,
+      handicap_visibility: input.handicapVisibility,
+      discoverability_enabled: input.discoverabilityEnabled,
+      free_handle_change_used_at:
+        normalizedHandle !== currentProfile.handle && !currentProfile.free_handle_change_used_at
+          ? new Date().toISOString()
+          : currentProfile.free_handle_change_used_at
+    })
+    .eq("id", input.userId)
+    .select("*")
+    .single<UserProfile>();
+
+  if (result.error) {
+    throw new Error(result.error.message);
+  }
+
+  return result.data;
 }
 
 export async function getAdminFeedbackEntries(limit = 100) {

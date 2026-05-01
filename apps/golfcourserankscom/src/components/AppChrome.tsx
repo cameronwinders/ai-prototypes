@@ -59,7 +59,7 @@ function toScreenName(pathname: string) {
     "/me/courses": "My Courses",
     "/friends": "Friends",
     "/feedback": "Feedback",
-    "/profile": "Me",
+    "/profile": "Profile",
     "/sign-in": "Sign In",
     "/onboarding": "Onboarding",
     "/admin/feedback": "Admin feedback"
@@ -75,7 +75,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
   const feedbackHref = `/feedback?screen=${encodeURIComponent(toScreenName(pathname))}&from=${encodeURIComponent(currentUrl)}`;
   const requestCourseHref = `/feedback?screen=${encodeURIComponent(toScreenName(pathname))}&from=${encodeURIComponent(currentUrl)}&topic=course-addition`;
   const inCourseSection = pathname === "/courses" || pathname === "/me/courses" || pathname.startsWith("/courses/");
-  const profileHref = viewer.signedIn && viewer.handle ? `/profile/${viewer.handle}` : "/profile";
+  const profileHref = "/profile";
 
   useEffect(() => {
     setMenuOpen(false);

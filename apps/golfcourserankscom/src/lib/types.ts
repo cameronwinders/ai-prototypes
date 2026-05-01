@@ -1,6 +1,7 @@
 export const HANDICAP_OPTIONS = ["0-5", "6-10", "11-18", "19+"] as const;
 export const FEEDBACK_TYPES = ["bug", "feature", "general", "course-addition"] as const;
 export const FRIENDSHIP_STATUSES = ["pending", "accepted"] as const;
+export const PROFILE_VISIBILITY_OPTIONS = ["public", "friends_only", "private"] as const;
 export const EDITORIAL_LISTS = [
   { key: "golf-digest-public", label: "Golf Digest", sourceName: "Golf Digest Public" },
   { key: "golf-top-100", label: "GOLF.com", sourceName: "GOLF Top 100" },
@@ -10,6 +11,7 @@ export const EDITORIAL_LISTS = [
 export type HandicapBand = (typeof HANDICAP_OPTIONS)[number];
 export type FeedbackType = (typeof FEEDBACK_TYPES)[number];
 export type FriendshipStatus = (typeof FRIENDSHIP_STATUSES)[number];
+export type ProfileVisibility = (typeof PROFILE_VISIBILITY_OPTIONS)[number];
 export type EditorialKey = (typeof EDITORIAL_LISTS)[number]["key"];
 
 export type UserProfile = {
@@ -18,7 +20,12 @@ export type UserProfile = {
   handle: string;
   display_name: string | null;
   handicap_band: HandicapBand | null;
+  home_state: string | null;
   onboarding_completed: boolean;
+  profile_visibility: ProfileVisibility;
+  handicap_visibility: boolean;
+  discoverability_enabled: boolean;
+  free_handle_change_used_at: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -146,6 +153,7 @@ export type PendingFriendRequest = {
 };
 
 export type FriendsPageData = {
+  inviteUrl?: string;
   accepted: FriendCard[];
   incoming: PendingFriendRequest[];
   outgoing: PendingFriendRequest[];
@@ -180,3 +188,35 @@ export type FeedbackRecord = {
   created_at: string;
   viewer_email?: string | null;
 };
+
+export type PublicProfileOverview = {
+  profile: UserProfile;
+  stats: {
+    playedCount: number;
+    rankedCount: number;
+    comparisonsMade: number;
+    topHundredPlayedCount: number;
+    friendsCount: number;
+  };
+  topCourses: RankedCourse[];
+  canCompare: boolean;
+  visibilityState: "visible" | "friends_only" | "private" | "not_found";
+};
+
+export type DiscoverableProfile = {
+  id: string;
+  handle: string;
+  display_name: string | null;
+  email: string | null;
+  home_state: string | null;
+  handicap_band: HandicapBand | null;
+};
+
+export type AnalyticsEventName =
+  | "signup_completed"
+  | "onboarding_grid_completed"
+  | "pairwise_demo_completed"
+  | "share_clicked"
+  | "invite_link_opened"
+  | "invite_completed"
+  | "profile_viewed";

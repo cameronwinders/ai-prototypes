@@ -5,10 +5,15 @@ import { redirect } from "next/navigation";
 
 import {
   ensureProfileForUser,
+  getAllCourses,
   getFriendshipBetweenUsers,
   getPlayedCoursesForUser,
+  getProfileByHandle,
   getProfileById,
-  getRankedCoursesForUser
+  getRankedCoursesForUser,
+  logAnalyticsEvent,
+  searchDiscoverableProfiles,
+  upsertProfileSettings
 } from "@/lib/data";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getSiteUrl } from "@/lib/supabase/env";
@@ -19,6 +24,7 @@ import {
   HANDICAP_OPTIONS,
   type FeedbackType,
   type PlayedCourse,
+  type ProfileVisibility,
   type RankedCourse
 } from "@/lib/types";
 import { getViewerContext, requireAdminViewer, requireOnboardedViewer, requireViewer } from "@/lib/viewer";
@@ -53,7 +59,7 @@ function appPaths(handle?: string | null) {
     "/feedback",
     "/profile",
     "/admin/feedback",
-    ...(handle ? [`/profile/${handle}`] : [])
+    ...(handle ? [`/u/${handle}`, `/invite/${handle}`] : [])
   ];
 }
 
@@ -147,14 +153,95 @@ export async function completeOnboarding(formData: FormData) {
     redirect(`/onboarding?next=${encodeURIComponent(next)}&error=${encodeURIComponent(result.error.message)}`);
   }
 
+  await logAnalyticsEvent({
+    userId: viewer.user!.id,
+    eventName: "signup_completed",
+    payload: {
+      handicap_band: handicapBandValue
+    }
+  });
   revalidateApp(viewer.profile?.handle);
-  redirect(next.startsWith("/") ? next : "/leaderboard");
+  redirect(`/onboarding?step=picker&next=${encodeURIComponent(next.startsWith("/") ? next : "/leaderboard")}`);
+}
+
+export async function completeOnboardingCourseSelection(formData: FormData) {
+  const next = typeof formData.get("next") === "string" ? String(formData.get("next")) : "/me/courses";
+  const selectedCourseIds = formData
+    .getAll("course_ids")
+    .map((value) => String(value))
+    .filter(Boolean);
+
+  const viewer = await requireViewer("/onboarding");
+
+  if (selectedCourseIds.length === 0) {
+    redirect(`/onboarding?step=picker&next=${encodeURIComponent(next)}&error=Pick+at+least+one+course`);
+  }
+
+  const allCourses = await getAllCourses();
+  const validIds = new Set(allCourses.map((course) => course.id));
+  const dedupedIds = Array.from(new Set(selectedCourseIds.filter((id) => validIds.has(id))));
+
+  if (dedupedIds.length === 0) {
+    redirect(`/onboarding?step=picker&next=${encodeURIComponent(next)}&error=Pick+at+least+one+course`);
+  }
+
+  const admin = createAdminClient();
+  const insert = await admin.from("played_courses").upsert(
+    dedupedIds.map((courseId) => ({
+      user_id: viewer.user!.id,
+      course_id: courseId
+    })),
+    {
+      onConflict: "user_id,course_id",
+      ignoreDuplicates: false
+    }
+  );
+
+  if (insert.error) {
+    redirect(`/onboarding?step=picker&next=${encodeURIComponent(next)}&error=${encodeURIComponent(insert.error.message)}`);
+  }
+
+  await logAnalyticsEvent({
+    userId: viewer.user!.id,
+    eventName: "onboarding_grid_completed",
+    payload: {
+      course_count: dedupedIds.length
+    }
+  });
+
+  revalidateApp(viewer.profile?.handle);
+  redirect(next.startsWith("/") ? next : "/me/courses");
 }
 
 export async function signOut() {
   const supabase = await createServerSupabaseClient();
   await supabase.auth.signOut();
   redirect("/sign-in?signed_out=1");
+}
+
+export async function updateProfileSettingsAction(formData: FormData) {
+  const viewer = await requireOnboardedViewer("/profile");
+  const next = typeof formData.get("next") === "string" ? String(formData.get("next")) : "/profile";
+  const profileVisibility = String(formData.get("profile_visibility") ?? "public") as ProfileVisibility;
+
+  try {
+    const updated = await upsertProfileSettings({
+      userId: viewer.user!.id,
+      displayName: String(formData.get("display_name") ?? "").trim() || null,
+      handle: String(formData.get("handle") ?? viewer.profile?.handle ?? "golfer"),
+      homeState: String(formData.get("home_state") ?? "").trim() || null,
+      profileVisibility,
+      handicapVisibility: formData.get("handicap_visibility") === "on",
+      discoverabilityEnabled: formData.get("discoverability_enabled") === "on"
+    });
+
+    revalidateApp(viewer.profile?.handle);
+    revalidateApp(updated.handle);
+    redirect(next.startsWith("/") ? `${next}?saved=1` : "/profile?saved=1");
+  } catch (caught) {
+    const message = caught instanceof Error ? caught.message : "We could not save your profile settings.";
+    redirect(`/profile?error=${encodeURIComponent(message)}`);
+  }
 }
 
 export async function requestSignInLink(input: {
@@ -578,6 +665,138 @@ export async function sendFriendRequest(email: string): Promise<ActionResult<nul
   return {
     ok: true,
     message: "Friend request sent."
+  };
+}
+
+export async function sendFriendRequestToUser(targetUserId: string): Promise<ActionResult<null>> {
+  const viewer = await requireOnboardedViewer("/friends");
+
+  if (targetUserId === viewer.user!.id) {
+    return {
+      ok: false,
+      message: "That is already your account."
+    };
+  }
+
+  const target = await getProfileById(targetUserId);
+
+  if (!target || !target.discoverability_enabled || target.profile_visibility === "private") {
+    return {
+      ok: false,
+      message: "That golfer is not available to connect right now."
+    };
+  }
+
+  const existing = await getFriendshipBetweenUsers(viewer.user!.id, targetUserId);
+
+  if (existing) {
+    return {
+      ok: false,
+      message: existing.status === "accepted" ? "You are already connected." : "That request is already pending."
+    };
+  }
+
+  const admin = createAdminClient();
+  const insert = await admin.from("friendships").insert({
+    requester_user_id: viewer.user!.id,
+    addressee_user_id: targetUserId,
+    status: "pending"
+  });
+
+  if (insert.error) {
+    return {
+      ok: false,
+      message: insert.error.message
+    };
+  }
+
+  revalidateApp(viewer.profile?.handle);
+  return {
+    ok: true,
+    message: `Request sent to ${target.display_name ?? target.handle}.`
+  };
+}
+
+export async function searchFriendProfilesAction(query: string) {
+  const viewer = await requireOnboardedViewer("/friends");
+  return searchDiscoverableProfiles(query, viewer.user!.id);
+}
+
+export async function acceptInviteFromHandle(handle: string): Promise<ActionResult<{ handle: string }>> {
+  const viewer = await requireOnboardedViewer(`/invite/${handle}`);
+  const inviter = await getProfileByHandle(handle);
+
+  if (!inviter) {
+    return {
+      ok: false,
+      message: "That invite link is no longer valid."
+    };
+  }
+
+  if (inviter.id === viewer.user!.id) {
+    return {
+      ok: true,
+      data: { handle: inviter.handle },
+      message: "This is your invite link."
+    };
+  }
+
+  const existing = await getFriendshipBetweenUsers(viewer.user!.id, inviter.id);
+  const admin = createAdminClient();
+
+  if (existing?.status === "accepted") {
+    return {
+      ok: true,
+      data: { handle: inviter.handle },
+      message: `You are already connected with ${inviter.display_name ?? inviter.handle}.`
+    };
+  }
+
+  if (existing) {
+    const update = await admin
+      .from("friendships")
+      .update({
+        status: "accepted",
+        responded_at: new Date().toISOString()
+      })
+      .eq("id", existing.id);
+
+    if (update.error) {
+      return {
+        ok: false,
+        message: update.error.message
+      };
+    }
+  } else {
+    const insert = await admin.from("friendships").insert({
+      requester_user_id: inviter.id,
+      addressee_user_id: viewer.user!.id,
+      status: "accepted",
+      responded_at: new Date().toISOString()
+    });
+
+    if (insert.error) {
+      return {
+        ok: false,
+        message: insert.error.message
+      };
+    }
+  }
+
+  await logAnalyticsEvent({
+    userId: viewer.user!.id,
+    eventName: "invite_completed",
+    payload: {
+      inviter_handle: inviter.handle
+    }
+  });
+
+  revalidateApp(viewer.profile?.handle);
+  revalidateApp(inviter.handle);
+  return {
+    ok: true,
+    data: { handle: inviter.handle },
+    message: `You are now connected with ${inviter.display_name ?? inviter.handle}.`
   };
 }
 

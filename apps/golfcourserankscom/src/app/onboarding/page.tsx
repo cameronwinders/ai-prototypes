@@ -1,7 +1,10 @@
+import { redirect } from "next/navigation";
+
 import { completeOnboarding } from "@/app/actions";
+import { OnboardingCoursePicker } from "@/components/OnboardingCoursePicker";
+import { getAllCourses, getPlayedCoursesForUser } from "@/lib/data";
 import { HANDICAP_OPTIONS } from "@/lib/types";
 import { requireViewer } from "@/lib/viewer";
-import { redirect } from "next/navigation";
 
 export default async function OnboardingPage({
   searchParams
@@ -11,12 +14,38 @@ export default async function OnboardingPage({
   const viewer = await requireViewer("/onboarding");
   const params = await searchParams;
   const nextParam = params.next;
+  const stepParam = params.step;
   const errorParam = params.error;
   const next = Array.isArray(nextParam) ? nextParam[0] : nextParam ?? "/leaderboard";
+  const step = Array.isArray(stepParam) ? stepParam[0] : stepParam ?? "handicap";
   const error = Array.isArray(errorParam) ? errorParam[0] : errorParam;
+  const playedCourses = viewer.user ? await getPlayedCoursesForUser(viewer.user.id) : [];
+  const hasHandicap = Boolean(viewer.profile?.onboarding_completed && viewer.profile?.handicap_band);
+  const shouldShowPicker = hasHandicap && playedCourses.length === 0;
 
-  if (viewer.profile?.onboarding_completed && viewer.profile.handicap_band) {
+  if (hasHandicap && playedCourses.length > 0) {
     redirect(next.startsWith("/") ? next : "/leaderboard");
+  }
+
+  if (shouldShowPicker || step === "picker") {
+    const courses = await getAllCourses();
+
+    return (
+      <div className="mx-auto max-w-6xl">
+        <section className="shell-panel rounded-[2.4rem] p-6 sm:p-8">
+          <p className="section-label">First ranking setup</p>
+          <h1 className="brand-heading mt-4 text-5xl font-semibold tracking-[-0.05em] text-[var(--ink)]">
+            Start with the courses you already know.
+          </h1>
+          <p className="mt-4 max-w-3xl text-lg leading-8 text-[var(--muted)]">
+            We will save these as played, then bring you straight into your ranking list so you can drag the best ones into order.
+          </p>
+          <div className="mt-8">
+            <OnboardingCoursePicker courses={courses} next="/me/courses" error={error} />
+          </div>
+        </section>
+      </div>
+    );
   }
 
   return (
@@ -27,7 +56,7 @@ export default async function OnboardingPage({
           One last detail before the leaderboard opens.
         </h1>
         <p className="mt-4 max-w-2xl text-lg leading-8 text-[var(--muted)]">
-          Choose the handicap band that best fits your game so the leaderboard can stay relevant from the start.
+          Choose the handicap band that best fits your game so the leaderboard stays relevant to how you play.
         </p>
 
         {error ? (
@@ -50,15 +79,15 @@ export default async function OnboardingPage({
                 key={option}
                 className="block cursor-pointer rounded-[1.7rem] border border-[rgba(24,37,43,0.08)] bg-white/90 p-5 transition hover:bg-white has-[:checked]:border-[rgba(49,107,83,0.55)] has-[:checked]:bg-[var(--pine-soft)] has-[:checked]:shadow-[0_0_0_2px_rgba(49,107,83,0.12)]"
               >
-                <input
-                  type="radio"
-                  name="handicap_band"
-                  value={option}
-                  defaultChecked={viewer.profile?.handicap_band === option}
-                  className="h-5 w-5 accent-[var(--pine)]"
-                />
-                <div className="mt-3 flex items-center justify-between gap-4">
-                  <div>
+                <div className="flex items-start gap-4">
+                  <input
+                    type="radio"
+                    name="handicap_band"
+                    value={option}
+                    defaultChecked={viewer.profile?.handicap_band === option}
+                    className="mt-1 h-5 w-5 accent-[var(--pine)]"
+                  />
+                  <div className="min-w-0">
                     <p className="text-3xl font-semibold tracking-[-0.05em] text-[var(--ink)]">{option}</p>
                     <p className="mt-2 text-sm text-[var(--muted)]">
                       {option === "0-5"
@@ -79,7 +108,7 @@ export default async function OnboardingPage({
             type="submit"
             className="rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-white"
           >
-            Save and enter leaderboard
+            Continue to played courses
           </button>
         </form>
       </section>

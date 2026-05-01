@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { FriendsManager } from "@/components/FriendsManager";
 import { getFriendsPageData } from "@/lib/data";
+import { getSiteUrl } from "@/lib/supabase/env";
 import { getViewerContext } from "@/lib/viewer";
 
 const comparisonPreview = [
@@ -22,7 +23,7 @@ export default async function FriendsPage() {
             Follow golf friends and compare the courses you both know.
           </h1>
           <p className="mt-4 max-w-3xl text-lg leading-8 text-[var(--muted)]">
-            Keep the social layer simple: connect by email, unlock overlap-only comparisons, and settle the group-chat debate with one clean side-by-side view.
+            Share an invite link, search by handle or email, unlock overlap-only comparisons, and settle the group-chat debate with one clean side-by-side view.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link href="/sign-in?next=/friends" className="solid-button min-h-11">
@@ -67,7 +68,7 @@ export default async function FriendsPage() {
               {[
                 "Spot where your friend values a course higher or lower than you do.",
                 "Keep friend comparisons limited to accepted connections and overlapping played lists.",
-                "Share a ranking list before a trip so the group can see where tastes line up."
+                "Share an invite link or public profile before the next golf trip gets booked."
               ].map((item) => (
                 <div key={item} className="rounded-[1.5rem] border border-[var(--line)] bg-white/88 px-4 py-4 text-sm leading-6 text-[var(--muted)]">
                   {item}
@@ -75,7 +76,7 @@ export default async function FriendsPage() {
               ))}
             </div>
             <div className="mt-5 rounded-[1.5rem] border border-dashed border-[var(--line)] px-4 py-4 text-sm leading-6 text-[var(--muted)]">
-              Once you sign in, you can send a friend request by email, accept on the other side, and open the compare view from either profile.
+              Once you sign in, you can share an invite link, search golfers directly, or still fall back to the older email request path.
             </div>
           </section>
         </section>
@@ -84,6 +85,8 @@ export default async function FriendsPage() {
   }
 
   const friends = await getFriendsPageData(viewer.user.id);
+  const siteUrl = getSiteUrl();
+  const inviteUrl = `${siteUrl}/invite/${viewer.profile?.handle ?? "golfer"}`;
 
   return (
     <div className="space-y-6">
@@ -93,11 +96,11 @@ export default async function FriendsPage() {
           Follow golf friends and compare your lists.
         </h1>
         <p className="mt-4 max-w-3xl text-lg leading-8 text-[var(--muted)]">
-          Keep the social side simple: connect by email, accept on the other side, and unlock clean side-by-side comparisons built from the courses you both know.
+          Keep the social side simple: share an invite link, find golfers by handle or email, and unlock clean side-by-side comparisons built from the courses you both know.
         </p>
       </section>
 
-      <FriendsManager initialData={friends} />
+      <FriendsManager initialData={friends} inviteUrl={inviteUrl} viewerHandle={viewer.profile?.handle ?? "golfer"} />
     </div>
   );
 }

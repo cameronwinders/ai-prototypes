@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { CoursesBrowser } from "@/components/CoursesBrowser";
+import { PairwiseDemo } from "@/components/PairwiseDemo";
 import { getAllCourses, getLeaderboardCourses, getPlayedCoursesForUser } from "@/lib/data";
 import { formatLocation, pluralize } from "@/lib/ranking";
 import { getViewerContext } from "@/lib/viewer";
@@ -21,20 +22,35 @@ export default async function HomePage() {
   return (
     <div className="space-y-6">
       <section className="shell-panel rounded-[2.6rem] p-6 sm:p-8 lg:p-10">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="rounded-full bg-[var(--pine-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--pine)]">
-            National leaderboard
-          </span>
-          <span className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
-            Real golfer comparisons
-          </span>
+        <div className="grid gap-8 xl:grid-cols-[1.15fr_0.85fr] xl:items-center">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full bg-[var(--pine-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--pine)]">
+                National leaderboard
+              </span>
+              <span className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+                Real golfer comparisons
+              </span>
+            </div>
+            <h1 className="brand-heading mt-5 max-w-5xl text-5xl font-semibold tracking-[-0.06em] text-[var(--ink)] sm:text-[5.4rem]">
+              The crowd-ranked list of U.S. public golf courses.
+            </h1>
+            <p className="mt-3 text-lg font-medium italic text-[var(--pine)]">
+              Editorial Top 100s rank what panelists think. We rank what real golfers actually played.
+            </p>
+            <p className="mt-5 max-w-4xl text-lg leading-8 text-[var(--muted)]">
+              Golf Course Ranks turns real golfer opinions into one clean national board. Crowd score = how golfers actually rank it. Browse the leaderboard, save the public courses you have played, compare your list with friends, and keep a running order of the rounds you would gladly book again.
+            </p>
+          </div>
+
+          <div className="overflow-hidden rounded-[2rem] border border-[var(--line)] bg-white/70">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Pebble_Beach_18th_hole.jpg/1280px-Pebble_Beach_18th_hole.jpg"
+              alt="Pebble Beach Golf Links shoreline finishing hole"
+              className="h-full min-h-[18rem] w-full object-cover"
+            />
+          </div>
         </div>
-        <h1 className="brand-heading mt-5 max-w-5xl text-5xl font-semibold tracking-[-0.06em] text-[var(--ink)] sm:text-[5.4rem]">
-          The crowd-ranked list of U.S. public golf courses.
-        </h1>
-        <p className="mt-5 max-w-4xl text-lg leading-8 text-[var(--muted)]">
-          Golf Course Ranks turns real golfer opinions into one clean national board. Browse the leaderboard, save the public courses you have played, compare your list with friends, and keep a running order of the rounds you would gladly book again.
-        </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <span className="rounded-full bg-[var(--pine-soft)] px-4 py-2 text-sm font-semibold text-[var(--pine)]">
             {pluralize(stats.golferCount, "golfer")} on the board
@@ -61,7 +77,12 @@ export default async function HomePage() {
             Follow friends and compare
           </Link>
         </div>
+        <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+          Rank your first 5 courses in under 2 minutes.
+        </p>
       </section>
+
+      <PairwiseDemo />
 
       <section className="grid gap-6 xl:grid-cols-[1fr_1fr]">
         <div className="shell-panel rounded-[2rem] p-6">
@@ -130,7 +151,7 @@ export default async function HomePage() {
               <Link href="/friends" className="solid-button min-h-11">
                 Open friends
               </Link>
-              <Link href="/profile" className="ghost-button min-h-11">
+              <Link href={viewer.profile?.handle ? `/u/${viewer.profile.handle}` : "/profile"} className="ghost-button min-h-11">
                 See my profile
               </Link>
             </div>

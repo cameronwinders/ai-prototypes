@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { LeaderboardFilterPanel } from "@/components/LeaderboardFilterPanel";
 import { getAllCourses, getAppOverviewStats, getLeaderboardCourses } from "@/lib/data";
 import { formatLocation, pluralize } from "@/lib/ranking";
 import { EDITORIAL_LISTS, HANDICAP_OPTIONS } from "@/lib/types";
@@ -80,72 +81,13 @@ export default async function LeaderboardPage({
           </div>
         </div>
 
-        <form action="/leaderboard" className="grid gap-4 rounded-[1.9rem] border border-[var(--line)] bg-white/72 p-4 lg:grid-cols-[1fr_1fr_1fr_1.2fr_auto] lg:items-end">
-          <div>
-            <label className="text-sm font-semibold text-[var(--ink)]">Handicap band</label>
-            <select
-              name="band"
-              defaultValue={band ?? ""}
-              className="mt-2 min-h-11 w-full rounded-[1.2rem] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none"
-            >
-              <option value="">All golfers</option>
-              {HANDICAP_OPTIONS.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="text-sm font-semibold text-[var(--ink)]">State</label>
-            <select
-              name="state"
-              defaultValue={selectedState}
-              className="mt-2 min-h-11 w-full rounded-[1.2rem] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none"
-            >
-              <option value="">All states</option>
-              {states.map((state) => (
-                <option key={state} value={state}>
-                  {state}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="text-sm font-semibold text-[var(--ink)]">Sort by</label>
-            <select
-              name="sort"
-              defaultValue={sort}
-              className="mt-2 min-h-11 w-full rounded-[1.2rem] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none"
-            >
-              {SORT_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="text-sm font-semibold text-[var(--ink)]">Minimum comparisons</label>
-            <input
-              type="range"
-              min="0"
-              max="20"
-              step="1"
-              name="minSignals"
-              defaultValue={String(minSignals)}
-              className="mt-3 w-full"
-            />
-            <p className="mt-2 text-sm text-[var(--muted)]">Showing courses with at least {minSignals} comparisons.</p>
-          </div>
-
-          <button type="submit" className="solid-button min-h-11 justify-center whitespace-nowrap">
-            Apply
-          </button>
-        </form>
+        <LeaderboardFilterPanel
+          band={band ?? ""}
+          selectedState={selectedState}
+          sort={sort}
+          minSignals={minSignals}
+          states={states}
+        />
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm leading-6 text-[var(--muted)]">
@@ -171,14 +113,17 @@ export default async function LeaderboardPage({
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--pine)]">
-                        #{course.leaderboardRank}
-                      </p>
-                      <h2 className="mt-2 text-xl font-semibold leading-tight tracking-[-0.04em] text-[var(--ink)]">
-                        {course.name}
-                      </h2>
+                      <div className="flex items-center gap-3">
+                        <span className="rounded-full bg-[var(--pine-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--pine)]">
+                          #{course.leaderboardRank}
+                        </span>
+                        <h2 className="text-xl font-semibold leading-tight tracking-[-0.04em] text-[var(--ink)]">
+                          {course.name}
+                        </h2>
+                      </div>
                       <p className="mt-2 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
                     </div>
+                    <span className="text-lg text-[var(--muted)]">›</span>
                     <span
                       className={`shrink-0 rounded-full px-3 py-2 text-sm font-semibold ${
                         course.numUniqueGolfers === 0
@@ -199,22 +144,23 @@ export default async function LeaderboardPage({
                     </span>
                   </div>
 
-                  <div className="mt-4 grid grid-cols-3 gap-2 text-sm">
-                    {EDITORIAL_LISTS.map((editorial) => (
-                      <div key={editorial.key} className="rounded-[1.1rem] bg-[rgba(246,243,236,0.92)] px-3 py-3">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
-                          {editorial.label}
-                        </p>
-                        <p className="mt-2 text-base font-semibold text-[var(--ink)]">
-                          {formatEditorialPosition(course.editorialRanks?.[editorial.key])}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-4 inline-flex min-h-11 items-center rounded-full border border-[var(--line)] px-4 py-2 text-sm font-semibold text-[var(--ink)]">
-                    View detail
-                  </div>
+                  <details className="mt-4 rounded-[1.2rem] border border-[var(--line)] bg-[rgba(255,255,255,0.84)] px-3 py-3">
+                    <summary className="cursor-pointer list-none text-sm font-semibold text-[var(--ink)]">
+                      Editorial positions
+                    </summary>
+                    <div className="mt-3 grid grid-cols-3 gap-2 text-sm">
+                      {EDITORIAL_LISTS.map((editorial) => (
+                        <div key={editorial.key} className="rounded-[1.1rem] bg-[rgba(246,243,236,0.92)] px-3 py-3">
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
+                            {editorial.label}
+                          </p>
+                          <p className="mt-2 text-base font-semibold text-[var(--ink)]">
+                            {formatEditorialPosition(course.editorialRanks?.[editorial.key])}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </details>
                 </Link>
               ))}
             </div>
