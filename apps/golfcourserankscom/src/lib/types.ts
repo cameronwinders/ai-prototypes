@@ -51,6 +51,9 @@ export type CourseRecord = {
   editorialLists?: string[];
   editorialRanks?: Partial<Record<EditorialKey, number>>;
   leaderboard_rank?: number | null;
+  normalized_score?: number | null;
+  num_unique_golfers?: number | null;
+  num_signals?: number | null;
   is_early?: boolean | null;
   created_at?: string;
   updated_at?: string;

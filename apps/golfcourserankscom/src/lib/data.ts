@@ -310,6 +310,9 @@ export async function getAllCourses() {
         ...course,
         name: course.name === "Whistling Straits Straits Course" ? "Whistling Straits" : course.name,
         leaderboard_rank: aggregate?.rank ?? null,
+        normalized_score: aggregate?.normalized_score ?? null,
+        num_unique_golfers: aggregate?.num_unique_golfers ?? null,
+        num_signals: aggregate?.num_signals ?? null,
         is_early: aggregate?.is_early ?? true
       };
     })

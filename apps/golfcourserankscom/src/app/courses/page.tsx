@@ -10,25 +10,13 @@ export default async function CoursesPage() {
   ]);
 
   return (
-    <div className="space-y-6">
-      <section className="shell-panel shell-panel-contrast rounded-[2.3rem] p-6 sm:p-8">
-        <p className="section-label">Browse courses</p>
-        <h1 className="brand-heading mt-4 text-5xl font-semibold tracking-[-0.05em] text-[var(--ink)]">
-          Explore standout public golf across the United States.
-        </h1>
-        <p className="mt-4 max-w-3xl text-lg leading-8 text-[var(--muted)]">
-          Search the national course lineup, mark the places you have played, and build a ranking list that reflects your real golf travel history.
-        </p>
-      </section>
-
-      <section className="shell-panel shell-panel-soft rounded-[2rem] p-6">
-        <CoursesBrowser
-          courses={courses}
-          initialPlayedCourses={playedCourses}
-          viewerSignedIn={Boolean(viewer.user)}
-          viewerNeedsOnboarding={Boolean(viewer.user && !viewer.profile?.onboarding_completed)}
-        />
-      </section>
-    </div>
+    <section className="shell-panel shell-panel-soft rounded-[2rem] p-6">
+      <CoursesBrowser
+        courses={courses}
+        initialPlayedCourses={playedCourses}
+        viewerSignedIn={Boolean(viewer.user)}
+        viewerNeedsOnboarding={Boolean(viewer.user && !viewer.profile?.onboarding_completed)}
+      />
+    </section>
   );
 }

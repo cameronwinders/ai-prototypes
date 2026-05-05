@@ -65,14 +65,10 @@ export function PairwiseDemo() {
   }
 
   return (
-    <section className="shell-panel rounded-[2rem] p-6">
-      <p className="section-label">Try it</p>
-      <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
+    <section className="shell-panel shell-panel-contrast rounded-[2rem] p-6">
+      <h2 className="text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
         Which would you rather play?
       </h2>
-      <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-        This is the same pairwise idea that powers the leaderboard, just compressed into a fast demo.
-      </p>
 
       {finished ? (
         <div className="mt-6 rounded-[1.7rem] border border-[var(--line)] bg-white/92 p-5">

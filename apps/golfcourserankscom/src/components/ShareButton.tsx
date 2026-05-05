@@ -8,9 +8,21 @@ type ShareButtonProps = {
   url: string;
   className?: string;
   analyticsSurface?: string;
+  buttonChildren?: React.ReactNode;
+  hideSecondaryLinks?: boolean;
+  hideStatus?: boolean;
 };
 
-export function ShareButton({ title, text, url, className, analyticsSurface }: ShareButtonProps) {
+export function ShareButton({
+  title,
+  text,
+  url,
+  className,
+  analyticsSurface,
+  buttonChildren,
+  hideSecondaryLinks = false,
+  hideStatus = false
+}: ShareButtonProps) {
   const [status, setStatus] = useState<string | null>(null);
   const shareMessage = text ? `${text}\n${url}` : url;
 
@@ -66,42 +78,44 @@ export function ShareButton({ title, text, url, className, analyticsSurface }: S
   return (
     <div className="flex flex-col gap-2">
       <button type="button" onClick={handleShare} className={className ?? "ghost-button min-h-11"}>
-        Share
+        {buttonChildren ?? "Share"}
       </button>
-      <div className="flex flex-wrap gap-2 text-sm">
-        <a
-          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}`}
-          target="_blank"
-          rel="noreferrer"
-          className="ghost-button min-h-11"
-          onClick={() => {
-            void trackShare("x");
-          }}
-        >
-          X
-        </a>
-        <a
-          href={`sms:&body=${encodeURIComponent(shareMessage)}`}
-          className="ghost-button min-h-11"
-          onClick={() => {
-            void trackShare("imessage");
-          }}
-        >
-          iMessage
-        </a>
-        <a
-          href={`https://wa.me/?text=${encodeURIComponent(shareMessage)}`}
-          target="_blank"
-          rel="noreferrer"
-          className="ghost-button min-h-11"
-          onClick={() => {
-            void trackShare("whatsapp");
-          }}
-        >
-          WhatsApp
-        </a>
-      </div>
-      {status ? <p className="text-sm text-[var(--muted)]">{status}</p> : null}
+      {hideSecondaryLinks ? null : (
+        <div className="flex flex-wrap gap-2 text-sm">
+          <a
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}`}
+            target="_blank"
+            rel="noreferrer"
+            className="ghost-button min-h-11"
+            onClick={() => {
+              void trackShare("x");
+            }}
+          >
+            X
+          </a>
+          <a
+            href={`sms:&body=${encodeURIComponent(shareMessage)}`}
+            className="ghost-button min-h-11"
+            onClick={() => {
+              void trackShare("imessage");
+            }}
+          >
+            iMessage
+          </a>
+          <a
+            href={`https://wa.me/?text=${encodeURIComponent(shareMessage)}`}
+            target="_blank"
+            rel="noreferrer"
+            className="ghost-button min-h-11"
+            onClick={() => {
+              void trackShare("whatsapp");
+            }}
+          >
+            WhatsApp
+          </a>
+        </div>
+      )}
+      {status && !hideStatus ? <p className="text-sm text-[var(--muted)]">{status}</p> : null}
     </div>
   );
 }

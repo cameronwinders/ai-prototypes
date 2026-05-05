@@ -66,12 +66,6 @@ export function CourseDetailActions({
           {pending ? "Saving..." : played ? "Marked played" : "Mark as played"}
         </button>
       )}
-      <Link href="/me/courses" className="ghost-button min-h-11 justify-center">
-        Open My Courses
-      </Link>
-      {viewerNeedsOnboarding ? (
-        <p className="text-sm text-[var(--muted)]">Add your handicap band first so your rankings show up in the right leaderboard view.</p>
-      ) : null}
       {status ? <p className="text-sm text-[var(--muted)]">{status}</p> : null}
     </div>
   );

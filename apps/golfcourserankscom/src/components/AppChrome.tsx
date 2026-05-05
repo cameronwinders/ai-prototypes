@@ -24,8 +24,7 @@ const desktopNav = [
 
 const courseSubnav = [
   { href: "/courses", label: "Browse courses" },
-  { href: "/me/courses", label: "My courses" },
-  { href: "/feedback?topic=course-addition", label: "Request a course" }
+  { href: "/me/courses", label: "My courses" }
 ];
 
 const mobileMenuItems = [
@@ -33,9 +32,7 @@ const mobileMenuItems = [
   { href: "/courses", label: "Courses" },
   { href: "/me/courses", label: "My Courses" },
   { href: "/friends", label: "Friends" },
-  { href: "/profile", label: "Profile" },
-  { href: "/feedback", label: "Feedback" },
-  { href: "/feedback?topic=course-addition", label: "Request a course" }
+  { href: "/profile", label: "Profile" }
 ];
 
 const activePillTextStyle = {
@@ -84,7 +81,6 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const currentUrl = pathname;
   const feedbackHref = `/feedback?screen=${encodeURIComponent(toScreenName(pathname))}&from=${encodeURIComponent(currentUrl)}`;
-  const requestCourseHref = `/feedback?screen=${encodeURIComponent(toScreenName(pathname))}&from=${encodeURIComponent(currentUrl)}&topic=course-addition`;
   const inCourseSection = pathname === "/courses" || pathname === "/me/courses" || pathname.startsWith("/courses/");
   const profileHref = "/profile";
   const myCoursesHref = viewer.signedIn
@@ -144,19 +140,15 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
               </div>
 
               <div className="hidden items-center gap-2 lg:flex">
-                <Link
-                  href={profileHref}
-                  className="hidden min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--ink)] lg:inline-flex"
-                >
-                  <ProfileIcon className="h-4 w-4" />
-                  Profile
-                </Link>
-                <Link
-                  href={feedbackHref}
-                  className="hidden min-h-11 items-center justify-center whitespace-nowrap rounded-full border border-[var(--line)] bg-[var(--pine-soft)] px-4 py-2 text-sm font-semibold text-[var(--pine)] lg:inline-flex"
-                >
-                  Feedback
-                </Link>
+                {viewer.signedIn ? (
+                  <Link
+                    href={profileHref}
+                    className="hidden min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--ink)] lg:inline-flex"
+                  >
+                    <ProfileIcon className="h-4 w-4" />
+                    Profile
+                  </Link>
+                ) : null}
                 {viewer.signedIn && viewer.isAdmin ? (
                   <Link
                     href="/admin/feedback"
@@ -220,12 +212,10 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                 <div className="flex min-w-0 items-center gap-2 overflow-x-auto">
                   {courseSubnav.map((item) => {
                     const href =
-                      item.href === "/feedback?topic=course-addition"
-                        ? requestCourseHref
-                        : item.href === "/me/courses"
+                      item.href === "/me/courses"
                           ? myCoursesHref
                         : item.href;
-                    const active = item.href === "/feedback?topic=course-addition" ? false : isCourseSubnavActive(item.href);
+                    const active = isCourseSubnavActive(item.href);
 
                     return (
                       <Link
@@ -287,19 +277,13 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
             <nav className="mt-6 grid gap-3">
               {mobileMenuItems.map((item) => {
                 const href =
-                  item.href === "/feedback"
-                    ? feedbackHref
-                    : item.href === "/feedback?topic=course-addition"
-                      ? requestCourseHref
-                      : item.href === "/me/courses"
+                    item.href === "/me/courses"
                         ? myCoursesHref
                         : item.href === "/profile"
                           ? profileHref
                           : item.href;
                 const active =
-                  item.href === "/feedback" || item.href === "/feedback?topic=course-addition"
-                    ? pathname.startsWith("/feedback")
-                    : item.href === "/profile"
+                  item.href === "/profile"
                       ? pathname === "/profile" || pathname.startsWith("/profile/") || pathname.startsWith("/u/")
                       : pathname === item.href || pathname.startsWith(`${item.href}/`);
 
@@ -377,7 +361,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
 
         <Link
           href={feedbackHref}
-          className="solid-button fixed bottom-6 right-8 z-40 hidden min-h-11 gap-2 whitespace-nowrap px-5 text-[rgb(255,255,255)] shadow-[0_20px_55px_rgba(22,38,34,0.28)] lg:inline-flex"
+          className="solid-button fixed bottom-4 right-4 z-40 min-h-11 gap-2 whitespace-nowrap px-4 text-[rgb(255,255,255)] shadow-[0_20px_55px_rgba(22,38,34,0.28)] lg:bottom-6 lg:right-8 lg:px-5"
           style={activePillTextStyle}
         >
           <span className="text-base leading-none" style={activePillTextStyle}>+</span>

@@ -68,18 +68,11 @@ export default async function LeaderboardPage({
 
   return (
     <section className="shell-panel shell-panel-contrast rounded-[2.4rem] p-6 sm:p-8">
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-4xl">
-            <p className="section-label">National leaderboard</p>
-            <h1 className="brand-heading mt-4 text-[2.35rem] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--ink)] sm:text-5xl">
-              Crowd-ranked public courses with the editorial lists right beside them.
-            </h1>
-            <p className="mt-4 max-w-3xl text-sm leading-6 text-[var(--muted)] sm:text-lg sm:leading-8">
-              The board defaults to golfer rankings. The editorial columns show where each course sits inside the seeded Golf Digest, GOLF.com, and Golfweek public-course lineups that helped start the network.
-            </p>
-          </div>
-
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
+          <h1 className="brand-heading text-[2.2rem] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--ink)] sm:text-5xl">
+            National Leaderboard
+          </h1>
           <div className="flex flex-wrap gap-3">
             <span className="rounded-full bg-[var(--pine-soft)] px-4 py-2 text-sm font-semibold text-[var(--pine)]">
               {pluralize(stats.golferCount, "golfer")}
@@ -100,15 +93,6 @@ export default async function LeaderboardPage({
           minSignals={minSignals}
           states={states}
         />
-
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm leading-6 text-[var(--muted)]">
-            Crowd score reflects how often golfers keep a course near the top of their own list. Editorial columns show where the same course appeared in the seeded publication lineups.
-          </p>
-          <Link href="/me/courses" className="ghost-button min-h-11">
-            Add your courses
-          </Link>
-        </div>
 
         {courses.length === 0 ? (
           <div className="rounded-[1.8rem] border border-dashed border-[var(--line)] px-5 py-10 text-sm leading-6 text-[var(--muted)]">
@@ -196,11 +180,15 @@ export default async function LeaderboardPage({
                 <table className="min-w-[980px] w-full">
                   <thead>
                     <tr className="border-b border-[var(--line)] bg-[rgba(255,255,255,0.88)] text-left text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
-                      <th className="px-5 py-4">Crowd</th>
+                      <th className="px-5 py-4" title="Crowd score = how golfers actually rank it.">Crowd</th>
                       <th className="px-5 py-4">Course</th>
                       <th className="px-5 py-4">Golfers</th>
                       {EDITORIAL_LISTS.map((editorial) => (
-                        <th key={editorial.key} className="px-5 py-4">
+                        <th
+                          key={editorial.key}
+                          className="px-5 py-4"
+                          title={`${editorial.label} position from the editorial starting lists.`}
+                        >
                           {editorial.label}
                         </th>
                       ))}
@@ -227,27 +215,22 @@ export default async function LeaderboardPage({
                                 {course.numUniqueGolfers === 0 ? "Starting score" : "Crowd score"}{" "}
                                 {course.normalizedScore.toFixed(1)}
                               </div>
-                              <p className="mt-2 text-xs leading-5 text-[var(--muted)]">
-                                {course.isEarly
-                                  ? "Still building toward a fuller crowd ranking."
-                                  : "Crowd-backed by ranked golfer lists."}
-                              </p>
+                              {earlySignalLabel ? (
+                                <p className="mt-2 text-xs leading-5 text-[rgb(120,88,38)]">{earlySignalLabel}</p>
+                              ) : null}
                             </Link>
                           </td>
                           <td className="px-5 py-5 align-top">
                             <Link href={`/courses/${course.id}`} className="block">
                               <h2 className="text-xl font-semibold tracking-[-0.04em] text-[var(--ink)]">{course.name}</h2>
                               <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
-                              <div className="mt-3 flex flex-wrap gap-2">
-                                {earlySignalLabel ? (
+                              {earlySignalLabel ? (
+                                <div className="mt-3 flex flex-wrap gap-2">
                                   <span className="rounded-full bg-[rgba(217,191,141,0.18)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[rgb(120,88,38)]">
                                     {earlySignalLabel}
                                   </span>
-                                ) : null}
-                                <span className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
-                                  {pluralize(course.numSignals, "comparison")}
-                                </span>
-                              </div>
+                                </div>
+                              ) : null}
                             </Link>
                           </td>
                           <td className="px-5 py-5 align-top text-sm text-[var(--muted)]">
