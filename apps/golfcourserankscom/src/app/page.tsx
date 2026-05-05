@@ -28,7 +28,7 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-6">
-      <section className="shell-panel rounded-[2.6rem] p-6 sm:p-8 lg:p-10">
+      <section className="shell-panel shell-panel-contrast rounded-[2.6rem] p-6 sm:p-8 lg:p-10">
         <div className="grid gap-8 xl:grid-cols-[1.15fr_0.85fr] xl:items-center">
           <div>
             <div className="flex flex-wrap items-center gap-2">
@@ -100,7 +100,7 @@ export default async function HomePage() {
       <PairwiseDemo />
 
       <section className="space-y-6">
-        <div className="shell-panel rounded-[2rem] p-6">
+        <div className="shell-panel shell-panel-contrast rounded-[2rem] p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="section-label">Live leaderboard preview</p>
@@ -154,7 +154,7 @@ export default async function HomePage() {
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-          <section className="shell-panel rounded-[2rem] p-6">
+          <section className="shell-panel shell-panel-soft rounded-[2rem] p-6">
             <p className="section-label">Social golf</p>
             <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
               Follow golfers you trust and compare lists course by course.
@@ -172,7 +172,7 @@ export default async function HomePage() {
             </div>
           </section>
 
-          <section className="shell-panel rounded-[2rem] p-6">
+          <section className="shell-panel shell-panel-contrast rounded-[2rem] p-6">
             <CoursesBrowser
               courses={courses}
               initialPlayedCourses={playedCourses}

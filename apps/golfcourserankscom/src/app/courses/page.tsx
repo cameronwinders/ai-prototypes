@@ -11,7 +11,7 @@ export default async function CoursesPage() {
 
   return (
     <div className="space-y-6">
-      <section className="shell-panel rounded-[2.3rem] p-6 sm:p-8">
+      <section className="shell-panel shell-panel-contrast rounded-[2.3rem] p-6 sm:p-8">
         <p className="section-label">Browse courses</p>
         <h1 className="brand-heading mt-4 text-5xl font-semibold tracking-[-0.05em] text-[var(--ink)]">
           Explore standout public golf across the United States.
@@ -21,7 +21,7 @@ export default async function CoursesPage() {
         </p>
       </section>
 
-      <section className="shell-panel rounded-[2rem] p-6">
+      <section className="shell-panel shell-panel-soft rounded-[2rem] p-6">
         <CoursesBrowser
           courses={courses}
           initialPlayedCourses={playedCourses}
