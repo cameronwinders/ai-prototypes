@@ -6,9 +6,9 @@ import { getSiteUrl } from "@/lib/supabase/env";
 import { getViewerContext } from "@/lib/viewer";
 
 const comparisonPreview = [
-  { course: "Pinehurst No 2", you: "#1", friend: "#3" },
-  { course: "Pebble Beach Golf Links", you: "#2", friend: "#1" },
-  { course: "Pacific Dunes", you: "#3", friend: "#2" }
+  { course: "Pinehurst No 2", you: "#1", friend: "#3", friendName: "Mike" },
+  { course: "Pebble Beach Golf Links", you: "#2", friend: "#1", friendName: "Mike" },
+  { course: "Pacific Dunes", you: "#3", friend: "#2", friendName: "Mike" }
 ];
 
 export default async function FriendsPage() {
@@ -55,7 +55,7 @@ export default async function FriendsPage() {
                     Your rank {row.you}
                   </div>
                   <div className="rounded-[1.1rem] border border-[var(--line)] px-3 py-3 text-sm font-semibold text-[var(--ink)]">
-                    Friend rank {row.friend}
+                    {row.friendName}'s rank {row.friend}
                   </div>
                 </div>
               ))}

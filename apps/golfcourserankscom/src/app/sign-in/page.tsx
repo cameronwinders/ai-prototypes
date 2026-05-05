@@ -6,7 +6,7 @@ export default function SignInPage() {
       <section className="shell-panel rounded-[2.3rem] p-6 sm:p-8">
         <p className="section-label">Sign in</p>
         <h1 className="brand-heading mt-4 text-5xl font-semibold tracking-[-0.05em] text-[var(--ink)]">
-          Start your personal public-course ranking.
+          The ranking list only real golfers can build.
         </h1>
         <p className="mt-5 max-w-2xl text-lg leading-8 text-[var(--muted)]">
           Sign in with your email, set your handicap band, and start ranking the public courses you know best.

@@ -39,7 +39,13 @@ export function FeedbackForm({ initialScreenName, initialUrl, initialFeedbackTyp
   const [status, setStatus] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [clientSubmissionId, setClientSubmissionId] = useState(makeSubmissionId);
-  const screenName = useMemo(() => initialScreenName || "App", [initialScreenName]);
+  const screenName = useMemo(() => {
+    if (!initialScreenName || initialScreenName === "App") {
+      return initialUrl === "/feedback" ? "Feedback" : "App";
+    }
+
+    return initialScreenName;
+  }, [initialScreenName, initialUrl]);
   const currentUrl = useMemo(() => initialUrl || "/feedback", [initialUrl]);
 
   return (
