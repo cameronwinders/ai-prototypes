@@ -76,7 +76,7 @@ async function sendAuthLinkEmail(input: {
   mode: AuthMode;
 }) {
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM_EMAIL ?? "Golf Course Ranks <hello@caretakingapp.com>";
+  const from = process.env.RESEND_FROM_EMAIL ?? "Golf Course Ranks <hello@golfcourseranks.com>";
   const replyTo = process.env.RESEND_REPLY_TO?.trim() || undefined;
 
   if (!apiKey) {
@@ -524,14 +524,21 @@ export async function saveCourseOrder(courseIds: string[]): Promise<ActionResult
   const viewer = await requireOnboardedViewer("/me/courses");
   const admin = createAdminClient();
   const userId = viewer.user!.id;
-  const existing = await getRankedCoursesForUser(userId);
-  const existingIds = existing.map((course) => course.id).sort();
-  const submittedIds = [...courseIds].sort();
+  const playedCourses = await getPlayedCoursesForUser(userId);
+  const playedIds = new Set(playedCourses.map((course) => course.id));
+  const submittedIds = courseIds.filter(Boolean);
 
-  if (existingIds.join("|") !== submittedIds.join("|")) {
+  if (new Set(submittedIds).size !== submittedIds.length) {
     return {
       ok: false,
-      message: "Your ranking changed in another tab. Refresh and try again."
+      message: "We found the same course twice in that ranking. Try again."
+    };
+  }
+
+  if (submittedIds.some((courseId) => !playedIds.has(courseId))) {
+    return {
+      ok: false,
+      message: "Only played courses can be added to your ranking."
     };
   }
 
@@ -544,9 +551,9 @@ export async function saveCourseOrder(courseIds: string[]): Promise<ActionResult
     };
   }
 
-  if (courseIds.length > 0) {
+  if (submittedIds.length > 0) {
     const insertResult = await admin.from("user_course_ranks").insert(
-      courseIds.map((courseId, index) => ({
+      submittedIds.map((courseId, index) => ({
         user_id: userId,
         course_id: courseId,
         rank_position: index

@@ -50,6 +50,7 @@ export default async function ProfilePage({
             url={publicProfileUrl}
             className="ghost-button min-h-11"
             analyticsSurface="account-profile"
+            buttonChildren="Copy profile link"
           />
           <Link href={`/u/${summary.profile?.handle ?? viewer.profile?.handle}`} className="solid-button min-h-11">
             View public profile

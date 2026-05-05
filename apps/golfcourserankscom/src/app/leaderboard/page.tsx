@@ -10,8 +10,7 @@ const SORT_OPTIONS = [
   { value: "golf-digest-public", label: "Golf Digest" },
   { value: "golf-top-100", label: "GOLF.com" },
   { value: "golfweek-you-can-play", label: "Golfweek" },
-  { value: "most-played", label: "Most golfers" },
-  { value: "most-compared", label: "Most comparisons" }
+  { value: "most-played", label: "Most golfers" }
 ] as const;
 
 function formatEditorialPosition(position?: number) {
@@ -78,9 +77,6 @@ export default async function LeaderboardPage({
               {pluralize(stats.golferCount, "golfer")}
             </span>
             <span className="rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--muted)]">
-              {pluralize(stats.signalCount, "comparison")}
-            </span>
-            <span className="rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--muted)]">
               {pluralize(stats.courseCount, "public course")}
             </span>
           </div>
@@ -95,9 +91,9 @@ export default async function LeaderboardPage({
         />
 
         {courses.length === 0 ? (
-          <div className="rounded-[1.8rem] border border-dashed border-[var(--line)] px-5 py-10 text-sm leading-6 text-[var(--muted)]">
-            No courses match that filter combination yet. Try another state, lower the comparison threshold, or switch back to all golfers.
-          </div>
+            <div className="rounded-[1.8rem] border border-dashed border-[var(--line)] px-5 py-10 text-sm leading-6 text-[var(--muted)]">
+              No courses match that filter combination yet. Try another state, another handicap band, or switch back to all golfers.
+            </div>
         ) : (
           <>
             <div className="grid gap-4 lg:hidden">
@@ -139,9 +135,6 @@ export default async function LeaderboardPage({
                       </span>
                       <span className="rounded-full border border-[var(--line)] px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
                         {pluralize(course.numUniqueGolfers, "golfer")}
-                      </span>
-                      <span className="rounded-full border border-[var(--line)] px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
-                        {pluralize(course.numSignals, "comparison")}
                       </span>
                     </div>
 
@@ -235,7 +228,6 @@ export default async function LeaderboardPage({
                           </td>
                           <td className="px-5 py-5 align-top text-sm text-[var(--muted)]">
                             <div className="font-semibold text-[var(--ink)]">{pluralize(course.numUniqueGolfers, "golfer")}</div>
-                            <div className="mt-2">{pluralize(course.numSignals, "comparison")}</div>
                           </td>
                           {EDITORIAL_LISTS.map((editorial) => (
                             <td key={editorial.key} className="px-5 py-5 align-top text-sm text-[var(--muted)]">

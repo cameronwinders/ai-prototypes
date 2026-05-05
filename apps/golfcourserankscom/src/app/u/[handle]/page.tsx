@@ -92,6 +92,7 @@ export default async function PublicProfilePage({
             url={profileUrl}
             className="solid-button min-h-11"
             analyticsSurface="public-profile"
+            buttonChildren="Copy profile link"
           />
           {overview.canCompare ? (
             <Link href={`/invite/${overview.profile.handle}`} className="ghost-button min-h-11">
@@ -121,11 +122,10 @@ export default async function PublicProfilePage({
         </section>
       ) : (
         <>
-          <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {[
               { label: "Courses played", value: overview.stats.playedCount },
               { label: "Courses ranked", value: overview.stats.rankedCount },
-              { label: "Comparisons made", value: overview.stats.comparisonsMade },
               { label: "Top-100 played", value: overview.stats.topHundredPlayedCount },
               { label: "Friends", value: overview.stats.friendsCount }
             ].map((item) => (

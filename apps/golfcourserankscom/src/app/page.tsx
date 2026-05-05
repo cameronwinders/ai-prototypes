@@ -20,7 +20,7 @@ export default async function HomePage() {
                 National leaderboard
               </span>
               <span className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
-                Real golfer comparisons
+                Real golfer rankings
               </span>
             </div>
             <h1 className="brand-heading mt-5 max-w-5xl text-5xl font-semibold tracking-[-0.06em] text-[var(--ink)] sm:text-[5.4rem]">
@@ -33,9 +33,6 @@ export default async function HomePage() {
             <div className="mt-6 flex flex-wrap gap-3">
               <span className="rounded-full bg-[var(--pine-soft)] px-4 py-2 text-sm font-semibold text-[var(--pine)]">
                 {pluralize(stats.golferCount, "golfer")} on the board
-              </span>
-              <span className="rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--muted)]">
-                {pluralize(stats.signalCount, "comparison")} saved so far
               </span>
               <span className="rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--muted)]">
                 {pluralize(stats.courseCount, "course")} in the national lineup
@@ -97,11 +94,7 @@ export default async function HomePage() {
                     Crowd score {course.normalizedScore.toFixed(1)}
                   </span>
                 </div>
-                <div className="text-sm text-[var(--muted)]">
-                  {pluralize(course.numUniqueGolfers, "golfer")}
-                  <br />
-                  {pluralize(course.numSignals, "comparison")}
-                </div>
+                <div className="text-sm text-[var(--muted)]">{pluralize(course.numUniqueGolfers, "golfer")}</div>
               </div>
             </Link>
           ))}

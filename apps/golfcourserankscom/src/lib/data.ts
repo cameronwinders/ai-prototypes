@@ -284,7 +284,7 @@ export async function getAllCourses() {
   const admin = createAdminClient();
   const [{ data, error }, { data: aggregateRows, error: aggregateError }] = await Promise.all([
     admin.from("courses").select("*").limit(400),
-    admin.from("course_aggregates").select("course_id, rank, is_early").limit(400)
+    admin.from("course_aggregates").select("course_id, rank, normalized_score, num_unique_golfers, num_signals, is_early").limit(400)
   ]);
 
   if (error) {
@@ -296,7 +296,7 @@ export async function getAllCourses() {
   }
 
   const aggregateByCourse = new Map(
-    ((aggregateRows ?? []) as Array<Pick<CourseAggregateRecord, "course_id" | "rank" | "is_early">>).map((row) => [
+    ((aggregateRows ?? []) as Array<Pick<CourseAggregateRecord, "course_id" | "rank" | "normalized_score" | "num_unique_golfers" | "num_signals" | "is_early">>).map((row) => [
       row.course_id,
       row
     ])

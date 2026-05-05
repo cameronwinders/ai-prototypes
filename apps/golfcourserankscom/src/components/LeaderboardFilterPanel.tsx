@@ -10,8 +10,7 @@ const SORT_OPTIONS = [
   { value: "golf-digest-public", label: "Golf Digest" },
   { value: "golf-top-100", label: "GOLF.com" },
   { value: "golfweek-you-can-play", label: "Golfweek" },
-  { value: "most-played", label: "Most golfers" },
-  { value: "most-compared", label: "Most comparisons" }
+  { value: "most-played", label: "Most golfers" }
 ] as const;
 
 type LeaderboardFilterPanelProps = {

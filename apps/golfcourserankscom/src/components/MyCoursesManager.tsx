@@ -309,6 +309,7 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl, vi
               url={`${siteUrl}/u/${viewerHandle}?utm_source=share&utm_medium=top10card&utm_campaign=user_share`}
               className="ghost-button min-h-11 justify-center whitespace-nowrap"
               analyticsSurface="my-courses-top10"
+              buttonChildren="Copy top 10 link"
             />
             <Link href="/courses" className="ghost-button min-h-11 justify-center whitespace-nowrap">
               Browse courses

@@ -77,7 +77,6 @@ export default async function CourseDetailPage({
   const crowdRank = aggregate?.rank ?? course.seed_rank;
   const crowdScore = aggregate ? aggregate.normalized_score.toFixed(1) : "0.0";
   const golfersCount = aggregate?.num_unique_golfers ?? 0;
-  const comparisonsCount = aggregate?.num_signals ?? 0;
   const editorialLine = buildEditorialLine(course);
 
   return (
@@ -96,19 +95,9 @@ export default async function CourseDetailPage({
                 url={`${siteUrl}${courseUrl}?utm_source=share&utm_medium=course&utm_campaign=course_share`}
                 className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[var(--line)] bg-white/88 text-[var(--ink)]"
                 analyticsSurface="course-detail"
+                buttonChildren="Copy link"
                 hideSecondaryLinks
                 hideStatus
-                buttonChildren={
-                  <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5" fill="none">
-                    <path
-                      d="M14.5 4.75h4.75V9.5m-9 9 9-9m-6.5-4.75H4.75v14.5h14.5v-8"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                }
               />
             </div>
 
@@ -120,8 +109,6 @@ export default async function CourseDetailPage({
               </span>
               <span aria-hidden="true" className="text-[var(--muted)]">|</span>
               <span>{pluralize(golfersCount, "golfer")}</span>
-              <span aria-hidden="true" className="text-[var(--muted)]">|</span>
-              <span>{pluralize(comparisonsCount, "comparison")}</span>
             </div>
 
             <p className="mt-3 text-sm leading-6 text-[var(--muted)]">

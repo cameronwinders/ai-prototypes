@@ -52,33 +52,32 @@ export function ShareButton({
 
     try {
       const nav = typeof window !== "undefined" ? window.navigator : undefined;
+      const clipboard = nav?.clipboard;
+
+      if (clipboard?.writeText) {
+        await clipboard.writeText(url);
+        await trackShare("clipboard");
+        setStatus("Link copied.");
+        return;
+      }
 
       if (nav?.share) {
         await nav.share({ title, text, url });
         await trackShare("native");
-        setStatus("Shared.");
+        setStatus("Link shared.");
         return;
       }
 
-      const clipboard = nav?.clipboard;
-
-      if (clipboard?.writeText) {
-        await clipboard.writeText(shareMessage);
-        await trackShare("clipboard");
-        setStatus("Caption and link copied.");
-        return;
-      }
-
-      setStatus("Share is not available on this device.");
+      setStatus("Copy is not available on this device.");
     } catch {
-      setStatus("Share cancelled.");
+      setStatus("Copy cancelled.");
     }
   }
 
   return (
     <div className="flex flex-col gap-2">
       <button type="button" onClick={handleShare} className={className ?? "ghost-button min-h-11"}>
-        {buttonChildren ?? "Share"}
+        {buttonChildren ?? "Copy link"}
       </button>
       {hideSecondaryLinks ? null : (
         <div className="flex flex-wrap gap-2 text-sm">
