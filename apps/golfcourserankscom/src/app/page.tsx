@@ -16,7 +16,14 @@ export default async function HomePage() {
     getAppOverviewStats()
   ]);
   const crowdPreview = leaderboard.filter((course) => !course.isEarly && course.numUniqueGolfers > 0);
-  const previewCourses = (crowdPreview.length > 0 ? crowdPreview : leaderboard).slice(0, 6);
+  const previewCourses = (() => {
+    if (crowdPreview.length === 0) {
+      return leaderboard.slice(0, 6);
+    }
+
+    const filler = leaderboard.filter((course) => !crowdPreview.some((previewCourse) => previewCourse.id === course.id));
+    return [...crowdPreview, ...filler].slice(0, 6);
+  })();
   const showingFallbackPreview = crowdPreview.length === 0;
 
   return (
@@ -43,12 +50,20 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="overflow-hidden rounded-[2rem] border border-[var(--line)] bg-white/70">
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Pebble_Beach_18th_hole.jpg/1280px-Pebble_Beach_18th_hole.jpg"
-              alt="Pebble Beach Golf Links shoreline finishing hole"
-              className="h-full min-h-[18rem] w-full object-cover"
-            />
+          <div className="relative overflow-hidden rounded-[2rem] border border-[var(--line)] bg-[linear-gradient(180deg,_rgba(231,242,235,0.92)_0%,_rgba(247,244,238,0.96)_52%,_rgba(232,222,196,0.78)_100%)] min-h-[18rem]">
+            <div className="absolute inset-x-0 top-0 h-[44%] bg-[radial-gradient(circle_at_30%_18%,_rgba(255,255,255,0.78),_transparent_32%),linear-gradient(180deg,_rgba(215,233,223,0.95)_0%,_rgba(238,245,240,0.72)_100%)]" />
+            <div className="absolute left-[9%] top-[28%] h-16 w-16 rounded-full border border-white/80 bg-[rgba(255,255,255,0.58)] shadow-[0_10px_30px_rgba(21,42,35,0.08)]" />
+            <div className="absolute inset-x-[8%] bottom-[24%] h-[30%] rounded-[999px] bg-[linear-gradient(180deg,_rgba(112,153,123,0.98)_0%,_rgba(70,113,83,0.98)_100%)] shadow-[0_24px_44px_rgba(35,58,47,0.18)]" />
+            <div className="absolute bottom-[22%] left-[18%] h-[18%] w-[52%] rounded-[999px] border border-[rgba(255,255,255,0.55)] bg-[linear-gradient(180deg,_rgba(129,176,141,0.96)_0%,_rgba(91,134,103,0.96)_100%)]" />
+            <div className="absolute bottom-[14%] right-[12%] h-[22%] w-[26%] rounded-[999px] bg-[linear-gradient(180deg,_rgba(232,215,184,0.98)_0%,_rgba(208,190,150,0.94)_100%)] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.45)]" />
+            <div className="absolute bottom-[32%] left-[38%] h-[22%] w-[2px] bg-[rgba(52,88,66,0.62)]" />
+            <div className="absolute bottom-[48%] left-[36.4%] h-5 w-5 rounded-full border-2 border-white bg-[var(--pine)] shadow-[0_4px_10px_rgba(18,37,29,0.18)]" />
+            <div className="absolute inset-x-6 bottom-6 rounded-[1.4rem] border border-white/70 bg-[rgba(255,253,249,0.78)] px-4 py-3 backdrop-blur-sm">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--pine)]">Built for bucket-list golfers</p>
+              <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                Real-player rankings, editorial context, and friend comparisons in one clean national board.
+              </p>
+            </div>
           </div>
         </div>
         <div className="mt-6 flex flex-wrap gap-3">
@@ -84,7 +99,7 @@ export default async function HomePage() {
 
       <PairwiseDemo />
 
-      <section className="grid gap-6 xl:grid-cols-[1fr_1fr]">
+      <section className="space-y-6">
         <div className="shell-panel rounded-[2rem] p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -138,8 +153,8 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <section className="shell-panel rounded-[2rem] p-6">
-          <div className="mb-6 rounded-[1.8rem] border border-[var(--line)] bg-white/88 p-5">
+        <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+          <section className="shell-panel rounded-[2rem] p-6">
             <p className="section-label">Social golf</p>
             <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
               Follow golfers you trust and compare lists course by course.
@@ -155,16 +170,18 @@ export default async function HomePage() {
                 See my profile
               </Link>
             </div>
-          </div>
+          </section>
 
-          <CoursesBrowser
-            courses={courses}
-            initialPlayedCourses={playedCourses}
-            viewerSignedIn={Boolean(viewer.user)}
-            viewerNeedsOnboarding={Boolean(viewer.user && !viewer.profile?.onboarding_completed)}
-            defaultVisibleCount={18}
-          />
-        </section>
+          <section className="shell-panel rounded-[2rem] p-6">
+            <CoursesBrowser
+              courses={courses}
+              initialPlayedCourses={playedCourses}
+              viewerSignedIn={Boolean(viewer.user)}
+              viewerNeedsOnboarding={Boolean(viewer.user && !viewer.profile?.onboarding_completed)}
+              defaultVisibleCount={10}
+            />
+          </section>
+        </div>
       </section>
     </div>
   );
