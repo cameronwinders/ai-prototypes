@@ -224,7 +224,7 @@ export async function processUnrankedReminderEmails() {
 
     await sendEmail({
       to: candidate.profile.email,
-      subject: "You’ve got courses waiting to be ranked",
+      subject: "You've got courses waiting to be ranked",
       html: `
         <div style="font-family:Arial,sans-serif;line-height:1.6;color:#14231d">
           <p>Hi ${personName(candidate.profile.display_name, candidate.profile.handle)},</p>
