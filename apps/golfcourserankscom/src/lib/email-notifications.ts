@@ -4,6 +4,7 @@ import {
   getUnrankedReminderCandidates,
   recordEmailNotification
 } from "@/lib/data";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { getSiteUrl } from "@/lib/supabase/env";
 
 function getEmailConfig() {
@@ -52,6 +53,50 @@ function personName(name?: string | null, fallback = "there") {
   return name?.trim() || fallback;
 }
 
+function normalizeNextPath(input: string) {
+  if (input.startsWith("/")) {
+    return input;
+  }
+
+  try {
+    const target = new URL(input);
+    const site = new URL(getSiteUrl());
+
+    if (target.origin === site.origin) {
+      return `${target.pathname}${target.search}${target.hash}`;
+    }
+  } catch {
+    // Fall back below.
+  }
+
+  return "/leaderboard";
+}
+
+async function createEmailSignInLink(email: string, next: string) {
+  const admin = createAdminClient();
+  const nextPath = normalizeNextPath(next);
+  const generatedLink = await admin.auth.admin.generateLink({
+    type: "magiclink",
+    email,
+    options: {
+      redirectTo: `${getSiteUrl()}/api/auth/callback?next=${encodeURIComponent(nextPath)}`
+    }
+  });
+
+  if (generatedLink.error) {
+    throw new Error(generatedLink.error.message);
+  }
+
+  const hashedToken = generatedLink.data.properties?.hashed_token;
+  const verificationType = generatedLink.data.properties?.verification_type;
+
+  if (!hashedToken || !verificationType) {
+    throw new Error("We could not create the secure sign-in link.");
+  }
+
+  return `${getSiteUrl()}/api/auth/callback?token_hash=${encodeURIComponent(hashedToken)}&type=${encodeURIComponent(verificationType)}&next=${encodeURIComponent(nextPath)}`;
+}
+
 export async function sendAuthMagicLinkEmail(input: {
   to: string;
   subject: string;
@@ -84,7 +129,7 @@ export async function sendFriendRequestReceivedEmail(input: {
   requesterName: string;
   requesterHandle: string;
 }) {
-  const friendsUrl = `${getSiteUrl()}/friends`;
+  const friendsUrl = await createEmailSignInLink(input.to, "/friends");
   const requesterUrl = `${getSiteUrl()}/u/${encodeURIComponent(input.requesterHandle)}`;
 
   await sendEmail({
@@ -128,6 +173,8 @@ export async function sendFriendRequestAcceptedEmail(input: {
     return false;
   }
 
+  const compareSignInUrl = await createEmailSignInLink(input.to, input.compareUrl);
+
   await sendEmail({
     to: input.to,
     subject: `${input.accepterName} accepted your Golf Course Ranks request`,
@@ -135,12 +182,12 @@ export async function sendFriendRequestAcceptedEmail(input: {
       <div style="font-family:Arial,sans-serif;line-height:1.6;color:#14231d">
         <p>Hi ${personName(input.requesterName)},</p>
         <p><strong>${input.accepterName}</strong> accepted your request on Golf Course Ranks.</p>
-        <p><a href="${input.compareUrl}" style="display:inline-block;padding:12px 18px;border-radius:999px;background:#162622;color:#ffffff;text-decoration:none;font-weight:600">Compare lists</a></p>
+        <p><a href="${compareSignInUrl}" style="display:inline-block;padding:12px 18px;border-radius:999px;background:#162622;color:#ffffff;text-decoration:none;font-weight:600">Compare lists</a></p>
         <p style="font-size:14px;color:#5d6a64">You can also view their profile here:</p>
         <p style="font-size:14px;word-break:break-all;color:#5d6a64">${input.profileUrl}</p>
       </div>
     `,
-    text: `Hi ${personName(input.requesterName)},\n\n${input.accepterName} accepted your request on Golf Course Ranks.\n\nCompare lists: ${input.compareUrl}\nView profile: ${input.profileUrl}`
+    text: `Hi ${personName(input.requesterName)},\n\n${input.accepterName} accepted your request on Golf Course Ranks.\n\nCompare lists: ${compareSignInUrl}\nView profile: ${input.profileUrl}`
   });
 
   return true;
@@ -170,7 +217,7 @@ export async function sendInviteConversionEmail(input: {
     return false;
   }
 
-  const friendsUrl = `${getSiteUrl()}/friends?utm_source=email&utm_medium=lifecycle&utm_campaign=invite_conversion`;
+  const friendsUrl = await createEmailSignInLink(input.to, "/friends?utm_source=email&utm_medium=lifecycle&utm_campaign=invite_conversion");
   const joinerProfileUrl = `${getSiteUrl()}/u/${encodeURIComponent(input.joinerHandle)}?utm_source=email&utm_medium=lifecycle&utm_campaign=invite_conversion`;
 
   await sendEmail({
@@ -220,7 +267,10 @@ export async function processUnrankedReminderEmails() {
       candidate.sampleCourses.length > 0
         ? `You already marked ${candidate.sampleCourses.join(", ")}${candidate.sampleCourses.length >= 3 ? ", and more" : ""} as played.`
         : `You already marked ${candidate.playedCount} courses as played.`;
-    const actionUrl = `${getSiteUrl()}/me/courses?utm_source=email&utm_medium=lifecycle&utm_campaign=unranked_reminder`;
+    const actionUrl = await createEmailSignInLink(
+      candidate.profile.email,
+      "/me/courses?utm_source=email&utm_medium=lifecycle&utm_campaign=unranked_reminder"
+    );
 
     await sendEmail({
       to: candidate.profile.email,
