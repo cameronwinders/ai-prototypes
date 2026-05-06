@@ -21,25 +21,23 @@ export default async function FeedbackPage({
 
   return (
     <div className="space-y-6">
-      <section className="shell-panel rounded-[2.3rem] p-6 sm:p-8">
-        <p className="section-label">Feedback</p>
-        <h1 className="brand-heading mt-4 text-5xl font-semibold tracking-[-0.05em] text-[var(--ink)]">
-          Tell us what to improve.
-        </h1>
-        <p className="mt-4 max-w-3xl text-lg leading-8 text-[var(--muted)]">
-          Share bugs, feature ideas, or request a course addition. We attach the current screen and URL automatically so your note arrives with context.
+      <section className="shell-panel p-6 sm:p-8">
+        <p className="eyebrow">FEEDBACK</p>
+        <h1 className="h2 mt-4">Tell us what to improve</h1>
+        <p className="subhed mt-4">
+          Share bugs, feature ideas, or request a course addition with the current page attached.
         </p>
         <div className="mt-6">
           <Link
             href={`/feedback?screen=${encodeURIComponent(screenName)}&from=${encodeURIComponent(currentUrl)}&topic=course-addition`}
-            className="ghost-button min-h-11"
+            className="ghost-button"
           >
             Request a course addition
           </Link>
         </div>
       </section>
 
-      <section className="shell-panel rounded-[2rem] p-6 sm:p-7">
+      <section className="shell-panel-contrast p-6 sm:p-7">
         <FeedbackForm initialScreenName={screenName} initialUrl={currentUrl} initialFeedbackType={initialFeedbackType} />
       </section>
     </div>

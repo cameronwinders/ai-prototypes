@@ -10,7 +10,7 @@ export default async function CoursesPage() {
   ]);
 
   return (
-    <section className="shell-panel shell-panel-soft rounded-[2rem] p-6">
+    <section className="shell-panel shell-panel-soft p-6">
       <CoursesBrowser
         courses={courses}
         initialPlayedCourses={playedCourses}

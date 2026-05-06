@@ -72,16 +72,12 @@ export default async function PublicProfilePage({
 
   return (
     <div className="space-y-6">
-      <section className="shell-panel rounded-[2.3rem] p-6 sm:p-8">
-        <p className="section-label">Public profile</p>
-        <h1 className="brand-heading mt-4 text-5xl font-semibold tracking-[-0.05em] text-[var(--ink)]">
-          {overview.profile.display_name ?? overview.profile.handle}
-        </h1>
-        <p className="mt-3 text-lg text-[var(--muted)]">
+      <section className="shell-panel p-6 sm:p-8">
+        <p className="eyebrow">PUBLIC PROFILE</p>
+        <h1 className="h2 mt-4">{overview.profile.display_name ?? overview.profile.handle}</h1>
+        <p className="subhed mt-4">
           @{overview.profile.handle}
-          {overview.profile.handicap_visibility && overview.profile.handicap_band
-            ? ` · Handicap ${overview.profile.handicap_band}`
-            : ""}
+          {overview.profile.handicap_visibility && overview.profile.handicap_band ? ` · Handicap ${overview.profile.handicap_band}` : ""}
           {overview.profile.home_state ? ` · ${overview.profile.home_state}` : ""}
         </p>
 
@@ -90,12 +86,12 @@ export default async function PublicProfilePage({
             title={`${overview.profile.display_name ?? overview.profile.handle} on Golf Course Ranks`}
             text="Check out this public-course ranking profile on Golf Course Ranks."
             url={profileUrl}
-            className="solid-button min-h-11"
+            className="solid-button"
             analyticsSurface="public-profile"
             buttonChildren="Copy profile link"
           />
           {overview.canCompare ? (
-            <Link href={`/invite/${overview.profile.handle}`} className="ghost-button min-h-11">
+            <Link href={`/invite/${overview.profile.handle}`} className="ghost-button">
               Compare lists with {overview.profile.display_name ?? overview.profile.handle}
             </Link>
           ) : null}
@@ -103,21 +99,25 @@ export default async function PublicProfilePage({
       </section>
 
       {overview.visibilityState !== "visible" ? (
-        <section className="shell-panel rounded-[2rem] p-6">
-          <p className="section-label">Profile unavailable</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
+        <section className="shell-panel-contrast p-6">
+          <p className="eyebrow">PROFILE UNAVAILABLE</p>
+          <h2 className="h3 mt-4">
             {overview.visibilityState === "private"
               ? "This golfer keeps their profile private."
               : "This profile is only visible to accepted friends."}
           </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--muted)]">
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)]">
             You can still explore the leaderboard, save courses you have played, and share your own profile once your list is ready.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
-            <Link href="/leaderboard" className="solid-button min-h-11">
+            <Link href="/leaderboard" className="solid-button">
               Explore leaderboard
             </Link>
-            {viewer.user ? <Link href={`/invite/${overview.profile.handle}`} className="ghost-button min-h-11">Open friend invite</Link> : null}
+            {viewer.user ? (
+              <Link href={`/invite/${overview.profile.handle}`} className="ghost-button">
+                Open friend invite
+              </Link>
+            ) : null}
           </div>
         </section>
       ) : (
@@ -129,25 +129,25 @@ export default async function PublicProfilePage({
               { label: "Top-100 played", value: overview.stats.topHundredPlayedCount },
               { label: "Friends", value: overview.stats.friendsCount }
             ].map((item) => (
-              <div key={item.label} className="shell-panel rounded-[1.8rem] p-5">
-                <p className="text-sm text-[var(--muted)]">{item.label}</p>
-                <p className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">{item.value}</p>
+              <div key={item.label} className="shell-panel-contrast p-5">
+                <p className="meta">{item.label}</p>
+                <p className="mt-3 text-3xl font-semibold tracking-[var(--tracking-tight)] text-[var(--ink)]">
+                  {item.value}
+                </p>
               </div>
             ))}
           </section>
 
-          <section className="shell-panel rounded-[2rem] p-6">
+          <section className="shell-panel p-6">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="section-label">Top 10</p>
-                <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
-                  The courses this golfer keeps highest.
-                </h2>
+                <p className="eyebrow">TOP 10</p>
+                <h2 className="h3 mt-4">The courses this golfer keeps highest</h2>
               </div>
             </div>
 
             {overview.topCourses.length === 0 ? (
-              <div className="mt-5 rounded-[1.6rem] border border-dashed border-[var(--line)] px-5 py-8 text-sm leading-6 text-[var(--muted)]">
+              <div className="mt-5 rounded-[var(--radius-lg)] border border-dashed border-[var(--line)] px-5 py-8 text-sm leading-7 text-[var(--muted)]">
                 No ranked courses are public yet. Check back after this golfer finishes their first stack.
               </div>
             ) : (
@@ -156,21 +156,17 @@ export default async function PublicProfilePage({
                   <Link
                     key={course.id}
                     href={`/courses/${course.id}`}
-                    className="rounded-[1.6rem] border border-[var(--line)] bg-white/90 p-4 transition hover:bg-white"
+                    className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4 transition hover:-translate-y-px hover:bg-white"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div className="flex items-start gap-4">
-                        <span className="inline-flex h-12 w-12 items-center justify-center rounded-[1.15rem] bg-[var(--pine-soft)] text-sm font-semibold text-[var(--pine)]">
-                          #{course.rankPosition + 1}
-                        </span>
+                        <span className="pill pill-pine shrink-0">#{course.rankPosition + 1}</span>
                         <div>
-                          <h3 className="text-lg font-semibold tracking-[-0.03em] text-[var(--ink)]">{course.name}</h3>
+                          <h3 className="h3 text-[1.2rem]">{course.name}</h3>
                           <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
                         </div>
                       </div>
-                      <span className="rounded-full border border-[var(--line)] px-3 py-2 text-sm font-semibold text-[var(--muted)]">
-                        Personal rank #{course.rankPosition + 1}
-                      </span>
+                      <span className="pill pill-line pill-sentence">Personal rank #{course.rankPosition + 1}</span>
                     </div>
                   </Link>
                 ))}

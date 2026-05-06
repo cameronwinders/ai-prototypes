@@ -146,67 +146,64 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle }: Friends
   return (
     <div className="grid gap-6 xl:grid-cols-[1.08fr_0.92fr]">
       <section className="space-y-6">
-        <section className="shell-panel rounded-[2rem] p-6">
-          <p className="section-label">Share your invite link</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
-            Send one link and start comparing lists.
-          </h2>
-          <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-            Your personal invite route is permanent, mobile-friendly, and can be dropped into a group chat or shown in person.
+        <section className="shell-panel-soft p-6">
+          <p className="eyebrow">SHARE YOUR INVITE LINK</p>
+          <h2 className="h3 mt-4">Send one link and start comparing lists</h2>
+          <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
+            Your personal invite route is permanent, mobile-friendly, and easy to drop into a group chat.
           </p>
 
-          <div className="mt-5 rounded-[1.5rem] border border-[var(--line)] bg-white/88 p-4">
-            <p className="text-sm text-[var(--muted)]">Invite URL</p>
+          <div className="shell-panel-contrast mt-5 p-4">
+            <p className="meta">Invite URL</p>
             <p className="mt-2 break-all text-sm font-semibold text-[var(--ink)]">{inviteUrl}</p>
           </div>
 
           <div className="mt-5 flex flex-wrap gap-3">
-            <button type="button" onClick={handleCopyLink} className="solid-button min-h-11">
+            <button type="button" onClick={handleCopyLink} className="solid-button">
               Copy link
             </button>
-            <button type="button" onClick={handleShareLink} disabled={sharing} className="ghost-button min-h-11">
+            <button type="button" onClick={handleShareLink} disabled={sharing} className="ghost-button">
               {sharing ? "Sharing..." : "Share link"}
             </button>
-            <Link href={`/u/${viewerHandle}`} className="ghost-button min-h-11">
+            <Link href={`/u/${viewerHandle}`} className="ghost-button">
               Open my public profile
             </Link>
           </div>
 
-          <div className="mt-6 flex justify-center rounded-[1.7rem] border border-[var(--line)] bg-white/92 p-5">
+          <div className="shell-panel-contrast mt-6 flex justify-center p-5">
             <img
               src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(inviteUrl)}`}
               alt="QR code for your Golf Course Ranks invite link"
               width={180}
               height={180}
-              className="h-[180px] w-[180px] rounded-[1rem]"
+              className="h-[180px] w-[180px] rounded-[var(--radius-md)]"
             />
           </div>
         </section>
 
-        <section className="shell-panel rounded-[2rem] p-6">
-          <p className="section-label">Search golfers</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
-            Find people by handle, name, or email.
-          </h2>
+        <section className="shell-panel p-6">
+          <p className="eyebrow">SEARCH GOLFERS</p>
+          <h2 className="h3 mt-4">Find people by handle, name, or email</h2>
+
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <input
               type="text"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search handle, display name, or email"
-              className="min-h-11 flex-1 rounded-[1.35rem] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none focus:border-[rgba(49,107,83,0.45)]"
+              className="min-h-11 flex-1 rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none focus:border-[rgba(49,107,83,0.45)]"
             />
-            <button type="button" onClick={handleSearch} disabled={submitting} className="solid-button min-h-11 justify-center">
+            <button type="button" onClick={handleSearch} disabled={submitting} className="solid-button justify-center">
               {submitting ? "Searching..." : "Search"}
             </button>
           </div>
 
           <div className="mt-5 grid gap-3">
             {searchResults.map((profile) => (
-              <div key={profile.id} className="rounded-[1.5rem] border border-[var(--line)] bg-white/90 p-4">
+              <div key={profile.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <p className="text-lg font-semibold text-[var(--ink)]">{profile.display_name ?? profile.handle}</p>
+                    <p className="h3 text-[1.15rem]">{profile.display_name ?? profile.handle}</p>
                     <p className="mt-1 text-sm text-[var(--muted)]">
                       @{profile.handle}
                       {profile.home_state ? ` · ${profile.home_state}` : ""}
@@ -214,19 +211,17 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle }: Friends
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    <Link href={`/u/${profile.handle}`} className="ghost-button min-h-11">
+                    <Link href={`/u/${profile.handle}`} className="ghost-button sm">
                       View profile
                     </Link>
                     {acceptedIds.has(profile.id) ? (
-                      <span className="rounded-full bg-[var(--pine-soft)] px-4 py-3 text-sm font-semibold text-[var(--pine)]">
-                        Already connected
-                      </span>
+                      <span className="pill pill-pine pill-sentence">Already connected</span>
                     ) : (
                       <button
                         type="button"
                         onClick={() => handleInviteRequest(profile.id)}
                         disabled={pendingId === profile.id}
-                        className="solid-button min-h-11"
+                        className="solid-button sm"
                       >
                         {pendingId === profile.id ? "Sending..." : "Send request"}
                       </button>
@@ -238,12 +233,10 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle }: Friends
           </div>
         </section>
 
-        <section className="shell-panel rounded-[2rem] p-6">
-          <p className="section-label">Fallback</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
-            Still want to invite by email?
-          </h2>
-          <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+        <section className="shell-panel-contrast p-6">
+          <p className="eyebrow">FALLBACK</p>
+          <h2 className="h3 mt-4">Still want to invite by email?</h2>
+          <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
             Keep the manual path around for golfers who have not claimed a public handle yet.
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
@@ -252,9 +245,9 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle }: Friends
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="friend@email.com"
-              className="min-h-11 flex-1 rounded-[1.35rem] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none focus:border-[rgba(49,107,83,0.45)]"
+              className="min-h-11 flex-1 rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none focus:border-[rgba(49,107,83,0.45)]"
             />
-            <button type="button" onClick={handleSendEmail} disabled={submitting} className="ghost-button min-h-11 justify-center">
+            <button type="button" onClick={handleSendEmail} disabled={submitting} className="ghost-button justify-center">
               {submitting ? "Sending..." : "Send email request"}
             </button>
           </div>
@@ -264,28 +257,28 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle }: Friends
       </section>
 
       <aside className="space-y-6">
-        <section className="shell-panel rounded-[2rem] p-6">
-          <p className="section-label">Accepted friends</p>
+        <section className="shell-panel p-6">
+          <p className="eyebrow">ACCEPTED FRIENDS</p>
           <div className="mt-4 grid gap-3">
             {data.accepted.length === 0 ? (
-              <div className="rounded-[1.5rem] border border-dashed border-[var(--line)] px-4 py-6 text-sm text-[var(--muted)]">
+              <div className="rounded-[var(--radius-md)] border border-dashed border-[var(--line)] px-4 py-6 text-sm leading-7 text-[var(--muted)]">
                 No accepted friendships yet. Share your invite link or search for a golfer to unlock compare views.
               </div>
             ) : (
               data.accepted.map((friend) => (
-                <div key={friend.friendshipId} className="rounded-[1.5rem] border border-[var(--line)] bg-white/90 p-4">
+                <div key={friend.friendshipId} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                      <p className="text-lg font-semibold text-[var(--ink)]">{friend.profile.display_name ?? friend.profile.handle}</p>
+                      <p className="h3 text-[1.15rem]">{friend.profile.display_name ?? friend.profile.handle}</p>
                       <p className="mt-1 text-sm text-[var(--muted)]">
                         {friend.overlapCount} shared courses · {friend.rankedCount} ranked
                       </p>
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <Link href={`/compare/${friend.profile.id}`} className="solid-button min-h-11">
+                      <Link href={`/compare/${friend.profile.id}`} className="solid-button sm">
                         Compare
                       </Link>
-                      <Link href={`/u/${friend.profile.handle}`} className="ghost-button min-h-11">
+                      <Link href={`/u/${friend.profile.handle}`} className="ghost-button sm">
                         View profile
                       </Link>
                     </div>
@@ -296,23 +289,23 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle }: Friends
           </div>
         </section>
 
-        <section className="shell-panel rounded-[2rem] p-6">
-          <p className="section-label">Incoming</p>
+        <section className="shell-panel-contrast p-6">
+          <p className="eyebrow">INCOMING</p>
           <div className="mt-4 grid gap-3">
             {data.incoming.length === 0 ? (
-              <div className="rounded-[1.5rem] border border-dashed border-[var(--line)] px-4 py-6 text-sm text-[var(--muted)]">
+              <div className="rounded-[var(--radius-md)] border border-dashed border-[var(--line)] px-4 py-6 text-sm leading-7 text-[var(--muted)]">
                 No pending requests right now.
               </div>
             ) : (
               data.incoming.map((request) => (
-                <div key={request.id} className="rounded-[1.5rem] border border-[var(--line)] bg-white/90 p-4">
-                  <p className="text-lg font-semibold text-[var(--ink)]">{request.profile.display_name ?? request.profile.handle}</p>
+                <div key={request.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4">
+                  <p className="h3 text-[1.15rem]">{request.profile.display_name ?? request.profile.handle}</p>
                   <p className="mt-1 text-sm text-[var(--muted)]">@{request.profile.handle}</p>
                   <button
                     type="button"
                     onClick={() => handleAccept(request.id)}
                     disabled={pendingId === request.id}
-                    className="solid-button mt-4 min-h-11"
+                    className="solid-button mt-4"
                   >
                     {pendingId === request.id ? "Accepting..." : "Accept request"}
                   </button>
@@ -322,17 +315,17 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle }: Friends
           </div>
         </section>
 
-        <section className="shell-panel rounded-[2rem] p-6">
-          <p className="section-label">Outgoing</p>
+        <section className="shell-panel-contrast p-6">
+          <p className="eyebrow">OUTGOING</p>
           <div className="mt-4 grid gap-3">
             {data.outgoing.length === 0 ? (
-              <div className="rounded-[1.5rem] border border-dashed border-[var(--line)] px-4 py-6 text-sm text-[var(--muted)]">
+              <div className="rounded-[var(--radius-md)] border border-dashed border-[var(--line)] px-4 py-6 text-sm leading-7 text-[var(--muted)]">
                 Nothing pending on the other side right now.
               </div>
             ) : (
               data.outgoing.map((request) => (
-                <div key={request.id} className="rounded-[1.5rem] border border-[var(--line)] bg-white/90 p-4">
-                  <p className="text-lg font-semibold text-[var(--ink)]">{request.profile.display_name ?? request.profile.handle}</p>
+                <div key={request.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4">
+                  <p className="h3 text-[1.15rem]">{request.profile.display_name ?? request.profile.handle}</p>
                   <p className="mt-1 text-sm text-[var(--muted)]">Awaiting acceptance</p>
                 </div>
               ))

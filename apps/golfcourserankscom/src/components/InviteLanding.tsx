@@ -61,7 +61,7 @@ export function InviteLanding({
 
   if (isSelf) {
     return (
-      <div className="mt-6 rounded-[1.5rem] border border-[var(--line)] bg-white/88 px-4 py-4 text-sm leading-6 text-[var(--muted)]">
+      <div className="mt-6 rounded-[var(--radius-md)] border border-[var(--line)] bg-white/88 px-4 py-4 text-sm leading-7 text-[var(--muted)]">
         This is your invite link. Share it with golf friends so they can connect to your profile in one tap.
       </div>
     );

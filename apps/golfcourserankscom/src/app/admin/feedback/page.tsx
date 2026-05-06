@@ -14,30 +14,28 @@ export default async function AdminFeedbackPage() {
 
   return (
     <div className="space-y-6">
-      <section className="shell-panel rounded-[2.3rem] p-6 sm:p-8">
-        <p className="section-label">Admin feedback</p>
-        <h1 className="brand-heading mt-4 text-5xl font-semibold tracking-[-0.05em] text-[var(--ink)]">
-          Every bug, feature request, and rough edge in one place.
-        </h1>
-        <p className="mt-4 max-w-3xl text-lg leading-8 text-[var(--muted)]">
-          This viewer is allowlist-protected. Each submission carries the screen and URL so product triage does not depend on guesswork.
+      <section className="shell-panel p-6 sm:p-8">
+        <p className="eyebrow">ADMIN FEEDBACK</p>
+        <h1 className="h2 mt-4">Every bug, feature request, and rough edge in one place</h1>
+        <p className="subhed mt-4">
+          Each submission carries the screen and URL so product triage does not depend on guesswork.
         </p>
       </section>
 
-      <section className="shell-panel rounded-[2rem] p-6">
+      <section className="shell-panel-contrast p-6">
         <div className="grid gap-3">
           {feedback.length === 0 ? (
-            <div className="rounded-[1.6rem] border border-dashed border-[var(--line)] px-5 py-8 text-sm text-[var(--muted)]">
+            <div className="rounded-[var(--radius-lg)] border border-dashed border-[var(--line)] px-5 py-8 text-sm leading-7 text-[var(--muted)]">
               No feedback submissions yet.
             </div>
           ) : (
             feedback.map((item) => (
-              <div key={item.id} className="rounded-[1.7rem] border border-[var(--line)] bg-white/92 p-5">
+              <div key={item.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/92 p-5">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-[var(--pine-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pine)]">
+                  <span className="pill pill-pine">
                     {FEEDBACK_LABELS[item.feedback_type] ?? item.feedback_type}
                   </span>
-                  <span className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
+                  <span className="pill pill-line">
                     {item.screen_name}
                   </span>
                 </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { completeOnboardingCourseSelection } from "@/app/actions";
 import { formatLocation } from "@/lib/ranking";
@@ -12,17 +12,20 @@ type OnboardingCoursePickerProps = {
   error?: string | null;
 };
 
+const PAGE_SIZE = 25;
+
 export function OnboardingCoursePicker({ courses, next, error }: OnboardingCoursePickerProps) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [scope, setScope] = useState<"all" | "top50">("all");
   const [stateFilter, setStateFilter] = useState("ALL");
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const states = useMemo(
     () => Array.from(new Set(courses.map((course) => course.state))).sort((left, right) => left.localeCompare(right)),
     [courses]
   );
 
-  const visibleCourses = useMemo(() => {
+  const filteredCourses = useMemo(() => {
     return courses.filter((course) => {
       if (scope === "top50" && (course.leaderboard_rank ?? course.seed_rank) > 50) {
         return false;
@@ -36,11 +39,19 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
     });
   }, [courses, scope, stateFilter]);
 
+  const visibleCourses = useMemo(() => filteredCourses.slice(0, visibleCount), [filteredCourses, visibleCount]);
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [scope, stateFilter]);
+
   function toggleCourse(courseId: string) {
     setSelectedIds((current) =>
       current.includes(courseId) ? current.filter((id) => id !== courseId) : [...current, courseId]
     );
   }
+
+  const hasMore = visibleCount < filteredCourses.length;
 
   return (
     <form action={completeOnboardingCourseSelection} className="space-y-6">
@@ -49,14 +60,12 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
         <input key={courseId} type="hidden" name="course_ids" value={courseId} />
       ))}
 
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--pine)]">Step 2 of 2</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
-            Pick the public courses you have already played.
-          </h2>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--muted)]">
-            Pick 5-15 to get the most out of ranking. We will drop them into your played list first, then you can drag your favorites into order.
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div className="max-w-3xl">
+          <p className="eyebrow">STEP 2 OF 2</p>
+          <h2 className="h3 mt-4">Pick the public courses you have already played</h2>
+          <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
+            Pick 5 to 15 to get the most out of ranking. We will save them as played first, then bring you straight into your list.
           </p>
         </div>
 
@@ -64,25 +73,23 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
           <button
             type="button"
             onClick={() => setScope("all")}
-            className={`ghost-button min-h-11 ${scope === "all" ? "bg-[var(--ink)] text-white" : ""}`}
-            style={scope === "all" ? { color: "#ffffff", WebkitTextFillColor: "#ffffff" } : undefined}
+            className={scope === "all" ? "solid-button sm" : "ghost-button sm"}
           >
             All
           </button>
           <button
             type="button"
             onClick={() => setScope("top50")}
-            className={`ghost-button min-h-11 ${scope === "top50" ? "bg-[var(--ink)] text-white" : ""}`}
-            style={scope === "top50" ? { color: "#ffffff", WebkitTextFillColor: "#ffffff" } : undefined}
+            className={scope === "top50" ? "solid-button sm" : "ghost-button sm"}
           >
             Top 50
           </button>
-          <label className="text-sm font-semibold text-[var(--ink)]">
+          <label className="text-sm font-medium text-[var(--ink)]">
             <span className="sr-only">Filter by state</span>
             <select
               value={stateFilter}
               onChange={(event) => setStateFilter(event.target.value)}
-              className="min-h-11 rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-semibold text-[var(--ink)]"
+              className="min-h-11 rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-3 text-sm"
             >
               <option value="ALL">All states</option>
               {states.map((state) => (
@@ -95,11 +102,7 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
         </div>
       </div>
 
-      {error ? (
-        <div className="rounded-[1.5rem] border border-[rgba(126,58,58,0.14)] bg-[rgba(126,58,58,0.08)] px-4 py-3 text-sm text-[var(--ink)]">
-          {error}
-        </div>
-      ) : null}
+      {error ? <div className="pill pill-warning pill-sentence">{error}</div> : null}
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {visibleCourses.map((course) => {
@@ -111,45 +114,51 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
               key={course.id}
               type="button"
               onClick={() => toggleCourse(course.id)}
-              className={`min-h-[10rem] rounded-[1.8rem] border p-4 text-left transition ${
+              className={`min-h-[10rem] rounded-[var(--radius-lg)] border p-4 text-left transition ${
                 selected
-                  ? "border-[rgba(49,107,83,0.65)] bg-[var(--pine-soft)] shadow-[0_0_0_2px_rgba(49,107,83,0.12)]"
-                  : "border-[var(--line)] bg-white/90 hover:bg-white"
+                  ? "border-[rgba(49,107,83,0.52)] bg-[var(--pine-soft)] shadow-[0_0_0_1px_rgba(49,107,83,0.1)]"
+                  : "border-[var(--line)] bg-white/90 hover:-translate-y-px hover:bg-white"
               }`}
             >
               <div className="flex items-start justify-between gap-3">
-                <span className="rounded-full bg-[rgba(24,37,43,0.06)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
-                  Rank #{badgeValue}
-                </span>
+                <span className={selected ? "pill pill-pine" : "pill pill-line"}>Rank #{badgeValue}</span>
                 <span
-                  className={`inline-flex h-7 w-7 items-center justify-center rounded-full border text-[11px] font-semibold ${
+                  className={`inline-flex h-7 w-7 items-center justify-center rounded-[var(--radius-xs)] border text-[11px] font-semibold ${
                     selected
-                      ? "border-[rgba(49,107,83,0.65)] bg-[var(--pine)] text-white"
+                      ? "border-[rgba(49,107,83,0.65)] bg-[var(--pine)] text-[rgb(255,255,255)]"
                       : "border-[var(--line)] bg-white text-[var(--muted)]"
                   }`}
                 >
-                  {selected ? "YES" : "+"}
+                  {selected ? "✓" : "+"}
                 </span>
               </div>
-              <h3 className="mt-4 text-lg font-semibold tracking-[-0.03em] text-[var(--ink)]">{course.name}</h3>
+              <h3 className="h3 mt-4 text-[1.35rem]">{course.name}</h3>
               <p className="mt-2 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
             </button>
           );
         })}
       </div>
 
-      <div className="sticky bottom-4 z-20 rounded-[1.8rem] border border-[var(--line)] bg-[rgba(255,253,249,0.96)] p-4 shadow-[0_20px_40px_rgba(24,37,43,0.12)] backdrop-blur">
+      {hasMore ? (
+        <div className="flex justify-center">
+          <button type="button" onClick={() => setVisibleCount((count) => count + PAGE_SIZE)} className="ghost-button">
+            More courses ▾
+          </button>
+        </div>
+      ) : null}
+
+      <div className="sticky bottom-4 z-20 rounded-[var(--radius-lg)] border border-[var(--line)] bg-[rgba(255,253,249,0.96)] p-4 shadow-[var(--shadow-panel)] backdrop-blur">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-semibold text-[var(--ink)]">
-              Continue with {selectedIds.length} {selectedIds.length === 1 ? "course" : "courses"} {"->"}
+              Continue with {selectedIds.length} {selectedIds.length === 1 ? "course" : "courses"} →
             </p>
-            <p className="mt-1 text-sm text-[var(--muted)]">Rank your first 5-15 courses in under a minute.</p>
+            <p className="mt-1 text-sm text-[var(--muted)]">Pick 5 to 15 to get the most out of ranking.</p>
           </div>
           <button
             type="submit"
             disabled={selectedIds.length === 0}
-            className="solid-button min-h-11 justify-center disabled:cursor-not-allowed disabled:opacity-45"
+            className="solid-button justify-center disabled:cursor-not-allowed disabled:opacity-45"
           >
             Continue with {selectedIds.length} course{selectedIds.length === 1 ? "" : "s"}
           </button>

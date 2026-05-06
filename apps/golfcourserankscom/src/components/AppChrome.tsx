@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { signOut } from "@/app/actions";
+import { Wordmark } from "@/components/Wordmark";
 
 type AppChromeProps = {
   viewer: {
@@ -76,6 +77,12 @@ function toScreenName(pathname: string) {
   return labels[pathname] ?? "App";
 }
 
+function navPillClasses(active: boolean) {
+  return active
+    ? "inline-flex min-h-10 items-center justify-center rounded-xs bg-ink px-4 py-2 text-sm font-semibold shadow-active"
+    : "inline-flex min-h-10 items-center justify-center rounded-xs px-4 py-2 text-sm font-semibold text-muted transition hover:bg-white/78 hover:text-ink";
+}
+
 export function AppChrome({ viewer, children }: AppChromeProps) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -106,136 +113,120 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(202,218,201,0.45),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(233,216,182,0.32),_transparent_28%),linear-gradient(180deg,_#f6f3ec_0%,_#efe8db_52%,_#f7f4ee_100%)] text-[var(--ink)]">
-      <div className="mx-auto flex min-h-screen w-full max-w-[1280px] flex-col px-4 pb-10 pt-0 sm:px-6 sm:pb-16 sm:pt-4 lg:px-8">
-        <header className="-mx-4 sticky top-0 z-40 border-b border-[rgba(28,41,36,0.12)] bg-[rgba(251,248,242,0.94)] px-4 py-2.5 shadow-[0_12px_28px_rgba(20,31,28,0.06)] backdrop-blur-xl sm:-mx-6 sm:px-6 lg:mx-0 lg:rounded-[2rem] lg:border lg:border-[var(--line)] lg:bg-[linear-gradient(180deg,_rgba(255,253,249,0.96),_rgba(255,250,243,0.84))] lg:px-4 lg:py-3 lg:shadow-[0_22px_65px_rgba(18,28,25,0.08)] lg:backdrop-blur-[18px]">
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex min-w-0 items-center gap-5">
-                <Link
-                  href="/"
-                  className="brand-heading shrink-0 text-[1.45rem] font-semibold leading-none tracking-[-0.05em] text-[var(--ink)] sm:text-[1.35rem] lg:whitespace-nowrap lg:text-[1.45rem]"
-                >
-                  Golf Course Ranks
-                </Link>
-                <nav className="hidden items-center gap-2 lg:flex">
-                  {desktopNav.map((item) => {
-                    const active = isDesktopNavActive(item.href);
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className={`inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition ${
-                          active
-                            ? "bg-[var(--ink)] shadow-[0_10px_25px_rgba(24,37,43,0.12)]"
-                            : "text-[var(--muted)] hover:bg-white/70"
-                        }`}
-                        style={active ? activePillTextStyle : undefined}
-                      >
-                        <span style={active ? activePillTextStyle : undefined}>{item.label}</span>
-                      </Link>
-                    );
-                  })}
-                </nav>
-              </div>
+    <div className="min-h-screen bg-[var(--bg-page-gradient)] text-ink">
+      <div className="mx-auto flex min-h-screen w-full max-w-[1280px] flex-col px-0 pb-10 pt-0 sm:px-6 sm:pb-16 sm:pt-4 lg:px-8">
+        <header className="sticky top-0 z-40 border-b border-[rgba(28,41,36,0.1)] bg-[rgba(251,248,242,0.92)] backdrop-blur-xl sm:rounded-xl sm:border sm:border-line sm:bg-[linear-gradient(180deg,_rgba(255,253,249,0.96),_rgba(255,250,243,0.84))] sm:shadow-header">
+          <div className="flex min-h-[72px] items-center justify-between gap-4 px-5 py-3 sm:min-h-[76px] sm:px-5">
+            <div className="flex min-w-0 items-center gap-5">
+              <Link href="/" className="shrink-0 text-ink" aria-label="Golf Course Ranks home">
+                <Wordmark className="h-10 w-auto max-w-[18rem] sm:h-9" />
+              </Link>
 
-              <div className="hidden items-center gap-2 lg:flex">
-                {viewer.signedIn ? (
-                  <Link
-                    href={profileHref}
-                    className="hidden min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--ink)] lg:inline-flex"
-                  >
-                    <ProfileIcon className="h-4 w-4" />
-                    Profile
-                  </Link>
-                ) : null}
-                {viewer.signedIn && viewer.isAdmin ? (
-                  <Link
-                    href="/admin/feedback"
-                    className="hidden min-h-11 items-center justify-center whitespace-nowrap rounded-full border border-[var(--line)] bg-white/85 px-4 py-2 text-sm font-semibold text-[var(--ink)] xl:inline-flex"
-                  >
-                    Admin
-                  </Link>
-                ) : null}
-                {viewer.signedIn ? (
-                  <form action={signOut}>
-                    <button
-                      type="submit"
-                      className="solid-button min-h-11 whitespace-nowrap px-4 text-[rgb(255,255,255)]"
-                      style={activePillTextStyle}
+              <nav className="hidden items-center gap-2 lg:flex">
+                {desktopNav.map((item) => {
+                  const active = isDesktopNavActive(item.href);
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={navPillClasses(active)}
+                      style={active ? activePillTextStyle : undefined}
                     >
-                      Sign out
-                    </button>
-                  </form>
-                ) : (
-                  <Link
-                    href={`/sign-in?next=${encodeURIComponent(currentUrl)}`}
-                    className="solid-button min-h-11 whitespace-nowrap px-4 text-[rgb(255,255,255)]"
-                    style={activePillTextStyle}
-                  >
-                    Sign in
-                  </Link>
-                )}
-              </div>
-
-              <div className="flex items-center gap-2 lg:hidden">
-                <Link
-                  href={viewer.signedIn ? profileHref : `/sign-in?next=${encodeURIComponent(currentUrl)}`}
-                  className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[var(--line)] bg-white/94 text-[var(--ink)] shadow-[0_8px_24px_rgba(24,37,43,0.08)]"
-                  aria-label={viewer.signedIn ? "Open profile" : "Sign in"}
-                >
-                  <ProfileIcon className="h-5 w-5" />
-                </Link>
-                <button
-                  type="button"
-                  aria-expanded={menuOpen}
-                  aria-controls="mobile-site-menu"
-                  aria-label={menuOpen ? "Close menu" : "Open menu"}
-                  onClick={() => setMenuOpen((open) => !open)}
-                  className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[var(--line)] bg-white/92 p-0 text-[var(--ink)] shadow-[0_8px_24px_rgba(24,37,43,0.08)]"
-                >
-                  <span className="sr-only">{menuOpen ? "Close menu" : "Open menu"}</span>
-                  <span className="flex w-5 flex-col gap-1.5">
-                    <span className={`h-0.5 rounded-full bg-[var(--ink)] transition ${menuOpen ? "translate-y-2 rotate-45" : ""}`} />
-                    <span className={`h-0.5 rounded-full bg-[var(--ink)] transition ${menuOpen ? "opacity-0" : ""}`} />
-                    <span className={`h-0.5 rounded-full bg-[var(--ink)] transition ${menuOpen ? "-translate-y-2 -rotate-45" : ""}`} />
-                  </span>
-                </button>
-              </div>
+                      <span style={active ? activePillTextStyle : undefined}>{item.label}</span>
+                    </Link>
+                  );
+                })}
+              </nav>
             </div>
 
-            {inCourseSection ? (
-              <div className="hidden items-center gap-2 lg:flex">
-                <span className="rounded-full bg-[var(--pine-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--pine)]">
-                  Courses
-                </span>
-                <div className="flex min-w-0 items-center gap-2 overflow-x-auto">
-                  {courseSubnav.map((item) => {
-                    const href =
-                      item.href === "/me/courses"
-                          ? myCoursesHref
-                        : item.href;
-                    const active = isCourseSubnavActive(item.href);
+            <div className="hidden items-center gap-2 lg:flex">
+              {viewer.signedIn ? (
+                <Link
+                  href={profileHref}
+                  className="ghost-button sm gap-2"
+                >
+                  <ProfileIcon className="h-4 w-4" />
+                  Profile
+                </Link>
+              ) : null}
+              {viewer.signedIn && viewer.isAdmin ? (
+                <Link href="/admin/feedback" className="ghost-button sm">
+                  Admin
+                </Link>
+              ) : null}
+              {viewer.signedIn ? (
+                <form action={signOut}>
+                  <button type="submit" className="solid-button sm" style={activePillTextStyle}>
+                    Sign out
+                  </button>
+                </form>
+              ) : (
+                <Link href={`/sign-in?next=${encodeURIComponent(currentUrl)}`} className="solid-button sm" style={activePillTextStyle}>
+                  Sign in
+                </Link>
+              )}
+            </div>
 
-                    return (
-                      <Link
-                        key={item.label}
-                        href={href}
-                        className={`inline-flex min-h-10 items-center justify-center whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition ${
-                          active
-                            ? "border-[rgba(24,37,43,0.08)] bg-[var(--ink)] shadow-[0_10px_25px_rgba(24,37,43,0.1)]"
-                            : "border-[var(--line)] bg-white/72 text-[var(--muted)] hover:bg-white"
-                        }`}
-                        style={active ? activePillTextStyle : undefined}
-                      >
-                        <span style={active ? activePillTextStyle : undefined}>{item.label}</span>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-            ) : null}
+            <div className="flex items-center gap-2 lg:hidden">
+              <Link
+                href={viewer.signedIn ? profileHref : `/sign-in?next=${encodeURIComponent(currentUrl)}`}
+                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-line bg-white/92 text-ink shadow-chip"
+                aria-label={viewer.signedIn ? "Open profile" : "Sign in"}
+              >
+                <ProfileIcon className="h-5 w-5" />
+              </Link>
+              <button
+                type="button"
+                aria-expanded={menuOpen}
+                aria-controls="mobile-site-menu"
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
+                onClick={() => setMenuOpen((open) => !open)}
+                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-line bg-white/92 text-ink shadow-chip"
+              >
+                <span className="sr-only">{menuOpen ? "Close menu" : "Open menu"}</span>
+                <span className="relative flex h-5 w-5 flex-col justify-center gap-1.5">
+                  <span
+                    className={`block h-0.5 rounded-full bg-current transition-all duration-200 ${
+                      menuOpen ? "translate-y-2 rotate-45" : ""
+                    }`}
+                  />
+                  <span
+                    className={`block h-0.5 rounded-full bg-current transition-all duration-200 ${
+                      menuOpen ? "opacity-0" : ""
+                    }`}
+                  />
+                  <span
+                    className={`block h-0.5 rounded-full bg-current transition-all duration-200 ${
+                      menuOpen ? "-translate-y-2 -rotate-45" : ""
+                    }`}
+                  />
+                </span>
+              </button>
+            </div>
           </div>
+
+          {inCourseSection ? (
+            <div className="hidden items-center gap-2 border-t border-[rgba(28,41,36,0.08)] px-5 py-3 lg:flex">
+              <span className="pill pill-pine">Courses</span>
+              <div className="flex min-w-0 items-center gap-2 overflow-x-auto">
+                {courseSubnav.map((item) => {
+                  const href = item.href === "/me/courses" ? myCoursesHref : item.href;
+                  const active = isCourseSubnavActive(item.href);
+
+                  return (
+                    <Link
+                      key={item.label}
+                      href={href}
+                      className={navPillClasses(active)}
+                      style={active ? activePillTextStyle : undefined}
+                    >
+                      <span style={active ? activePillTextStyle : undefined}>{item.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
         </header>
 
         <div
@@ -245,9 +236,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
           <button
             type="button"
             aria-label="Close menu"
-            className={`absolute inset-0 bg-[rgba(17,27,24,0.34)] backdrop-blur-[4px] transition-opacity duration-300 ${
-              menuOpen ? "opacity-100" : "opacity-0"
-            }`}
+            className={`absolute inset-0 bg-[rgba(17,27,24,0.3)] transition-opacity duration-300 ${menuOpen ? "opacity-100" : "opacity-0"}`}
             onClick={() => setMenuOpen(false)}
           />
           <div
@@ -260,50 +249,47 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
             }`}
           >
             <div className="flex items-center justify-between gap-3 border-b border-[rgba(28,41,36,0.08)] pb-5">
-              <div>
-                <p className="brand-heading text-[1.5rem] font-semibold tracking-[-0.05em] text-[var(--ink)]">Golf Course Ranks</p>
-                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">Open the next part of your golf list without losing your place.</p>
-              </div>
+              <Link href="/" onClick={() => setMenuOpen(false)} className="text-ink" aria-label="Golf Course Ranks home">
+                <Wordmark className="h-10 w-auto max-w-[15rem]" />
+              </Link>
               <button
                 type="button"
                 onClick={() => setMenuOpen(false)}
-                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[var(--line)] bg-white text-[var(--ink)]"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-line bg-white text-ink shadow-chip"
                 aria-label="Close menu"
               >
-                <span className="text-2xl leading-none">x</span>
+                <span className="text-2xl leading-none">{"\u00D7"}</span>
               </button>
             </div>
 
             <nav className="mt-6 grid gap-3">
               {mobileMenuItems.map((item) => {
                 const href =
-                    item.href === "/me/courses"
-                        ? myCoursesHref
-                        : item.href === "/profile"
-                          ? profileHref
-                          : item.href;
+                  item.href === "/me/courses"
+                    ? myCoursesHref
+                    : item.href === "/profile"
+                      ? profileHref
+                      : item.href;
                 const active =
                   item.href === "/profile"
-                      ? pathname === "/profile" || pathname.startsWith("/profile/") || pathname.startsWith("/u/")
-                      : pathname === item.href || pathname.startsWith(`${item.href}/`);
+                    ? pathname === "/profile" || pathname.startsWith("/profile/") || pathname.startsWith("/u/")
+                    : pathname === item.href || pathname.startsWith(`${item.href}/`);
 
                 return (
                   <Link
                     key={item.label}
                     href={href}
                     onClick={() => setMenuOpen(false)}
-                    className={`flex min-h-[3.5rem] items-center justify-between rounded-[1.5rem] border px-4 py-3 text-base font-semibold transition ${
+                    className={`flex min-h-[3.25rem] items-center justify-between rounded-md border px-4 py-3 text-base font-semibold transition ${
                       active
-                        ? "border-[rgba(24,37,43,0.08)] bg-[var(--ink)] shadow-[0_14px_28px_rgba(24,37,43,0.14)]"
-                        : "border-[var(--line)] bg-white/84 text-[var(--ink)]"
+                        ? "border-[rgba(24,37,43,0.08)] bg-ink shadow-active"
+                        : "border-line bg-white/84 text-ink"
                     }`}
                     style={active ? activePillTextStyle : undefined}
                   >
                     <span style={active ? activePillTextStyle : undefined}>{item.label}</span>
                     <span
-                      className={`text-xs uppercase tracking-[0.16em] ${
-                        active ? "" : "text-[var(--muted)]"
-                      }`}
+                      className={`eyebrow text-[11px] ${active ? "" : "text-muted"}`}
                       style={active ? activePillTextStyle : undefined}
                     >
                       {active ? "Current" : "Open"}
@@ -314,32 +300,16 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
             </nav>
 
             <div className="mt-auto border-t border-[rgba(28,41,36,0.08)] pt-5">
-              <div className="flex items-center justify-between rounded-[1.4rem] bg-[rgba(255,255,255,0.76)] px-4 py-3">
-                <div>
-                  <p className="text-sm font-semibold text-[var(--ink)]">
-                    {viewer.signedIn ? viewer.handle ?? "Signed-in golfer" : "Not signed in"}
-                  </p>
-                  <p className="mt-1 text-sm text-[var(--muted)]">
-                    {viewer.signedIn ? "Open your account, invite friends, or sign out." : "Sign in to save courses and compare lists."}
-                  </p>
-                </div>
-                <Link
-                  href={viewer.signedIn ? profileHref : `/sign-in?next=${encodeURIComponent(currentUrl)}`}
-                  onClick={() => setMenuOpen(false)}
-                  className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[var(--line)] bg-white text-[var(--ink)]"
-                  aria-label={viewer.signedIn ? "Open profile" : "Sign in"}
-                >
-                  <ProfileIcon className="h-5 w-5" />
-                </Link>
+              <div className="rounded-lg border border-line bg-white/76 px-4 py-4">
+                <p className="text-sm font-semibold text-ink">{viewer.signedIn ? viewer.handle ?? "Signed-in golfer" : "Not signed in"}</p>
+                <p className="meta mt-1">
+                  {viewer.signedIn ? "Open your account, invite friends, or sign out." : "Sign in to save courses and compare lists."}
+                </p>
               </div>
 
               {viewer.signedIn ? (
                 <form action={signOut} className="mt-4">
-                  <button
-                    type="submit"
-                    className="solid-button min-h-11 w-full justify-center"
-                    style={activePillTextStyle}
-                  >
+                  <button type="submit" className="solid-button w-full" style={activePillTextStyle}>
                     Sign out
                   </button>
                 </form>
@@ -347,7 +317,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                 <Link
                   href={`/sign-in?next=${encodeURIComponent(currentUrl)}`}
                   onClick={() => setMenuOpen(false)}
-                  className="solid-button mt-4 min-h-11 w-full justify-center"
+                  className="solid-button mt-4 w-full"
                   style={activePillTextStyle}
                 >
                   Sign in
@@ -357,14 +327,16 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
           </div>
         </div>
 
-        <main className="flex-1 py-4 sm:py-6">{children}</main>
+        <main className="flex-1 px-4 py-4 sm:px-0 sm:py-6">{children}</main>
 
         <Link
           href={feedbackHref}
-          className="solid-button fixed bottom-4 right-4 z-40 min-h-11 gap-2 whitespace-nowrap px-4 text-[rgb(255,255,255)] shadow-[0_20px_55px_rgba(22,38,34,0.28)] lg:bottom-6 lg:right-8 lg:px-5"
+          className="solid-button fixed bottom-4 right-4 z-40 gap-2 shadow-[0_20px_55px_rgba(22,38,34,0.28)] lg:bottom-6 lg:right-8"
           style={activePillTextStyle}
         >
-          <span className="text-base leading-none" style={activePillTextStyle}>+</span>
+          <span className="text-base leading-none" style={activePillTextStyle}>
+            +
+          </span>
           <span style={activePillTextStyle}>Feedback</span>
         </Link>
       </div>

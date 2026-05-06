@@ -98,7 +98,7 @@ export function CoursesBrowser({
   initialPlayedCourses,
   viewerSignedIn,
   viewerNeedsOnboarding,
-  defaultVisibleCount = 48
+  defaultVisibleCount = 30
 }: CoursesBrowserProps) {
   const [playedCourses, setPlayedCourses] = useState(initialPlayedCourses);
   const [query, setQuery] = useState("");
@@ -162,32 +162,26 @@ export function CoursesBrowser({
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div className="w-full max-w-2xl">
-          <label className="sr-only" htmlFor="course-directory-search">
-            Search courses
-          </label>
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <label className="block w-full max-w-2xl">
+          <span className="sr-only">Search courses</span>
           <input
-            id="course-directory-search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search by course, city, or state"
             data-testid="courses-search"
-            className="w-full rounded-[1.35rem] border border-[var(--line)] bg-white px-4 py-3 text-sm font-normal outline-none focus:border-[rgba(49,107,83,0.45)]"
+            className="w-full rounded-md border border-line bg-white px-4 py-3 text-sm text-ink outline-none transition focus:border-[rgba(49,107,83,0.45)]"
           />
-        </div>
-        <p className="text-sm font-semibold text-[var(--muted)]">{filteredCourses.length} courses</p>
+        </label>
+        <p className="text-sm font-semibold text-muted">{filteredCourses.length} courses</p>
       </div>
 
-      {status ? <p className="text-sm text-[var(--muted)]">{status}</p> : null}
+      {status ? <p className="meta">{status}</p> : null}
 
       {filteredCourses.length === 0 ? (
-        <div className="rounded-[1.8rem] border border-dashed border-[var(--line)] bg-white/82 px-5 py-8 text-sm leading-6 text-[var(--muted)]">
+        <div className="rounded-lg border border-dashed border-line bg-white/82 px-5 py-8 text-sm leading-6 text-muted">
           <p>No courses matched that search.</p>
-          <Link
-            href="/feedback?screen=Courses&from=%2Fcourses&topic=course-addition"
-            className="ghost-button mt-4 min-h-11"
-          >
+          <Link href="/feedback?screen=Courses&from=%2Fcourses&topic=course-addition" className="ghost-button mt-4 min-h-11">
             Request a course addition
           </Link>
         </div>
@@ -198,54 +192,51 @@ export function CoursesBrowser({
               const isPlayed = playedIds.has(course.id);
 
               return (
-                <div key={course.id} data-testid={`course-card-${course.id}`} className="rounded-[1.7rem] border border-[var(--line)] bg-white/92 p-4">
-                  <div className="flex flex-col gap-4">
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        {course.leaderboard_rank ? (
-                          <span className="rounded-full bg-[var(--pine-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pine)]">
-                            #{course.leaderboard_rank}
-                          </span>
-                        ) : null}
+                <Link
+                  key={course.id}
+                  href={`/courses/${course.id}`}
+                  data-testid={`course-card-${course.id}`}
+                  className="block rounded-lg border border-line bg-white/92 p-4 transition-[background-color,transform] duration-150 hover:-translate-y-px hover:bg-white"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap gap-2">
+                        {course.leaderboard_rank ? <span className="pill pill-pine">#{course.leaderboard_rank}</span> : null}
                         {course.normalized_score !== null && course.normalized_score !== undefined ? (
-                          <span className="rounded-full border border-[var(--line)] bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
-                            Crowd score {course.normalized_score.toFixed(1)}
+                          <span className={`pill ${course.num_unique_golfers === 0 ? "pill-warning" : "pill-line"} pill-sentence`}>
+                            {course.num_unique_golfers === 0 ? "Starting score" : "Crowd score"} {course.normalized_score.toFixed(1)}
                           </span>
                         ) : null}
                       </div>
-                      <h3 className="mt-3 text-xl font-semibold leading-tight tracking-[-0.03em] text-[var(--ink)]">{course.name}</h3>
-                      <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
+                      <h3 className="mt-3 text-[1.2rem] font-semibold tracking-[var(--tracking-tight)] text-ink">{course.name}</h3>
+                      <p className="meta mt-1">{formatLocation(course)}</p>
                     </div>
 
-                    <div className={`grid gap-2 ${viewerSignedIn ? "sm:grid-cols-2" : ""}`}>
-                      <Link href={`/courses/${course.id}`} className="ghost-button min-h-11 justify-center">
-                        View detail
-                      </Link>
-                      {viewerSignedIn ? (
-                        viewerNeedsOnboarding ? (
-                          <Link
-                            href={`/onboarding?next=${encodeURIComponent(`/courses/${course.id}`)}`}
-                            className="solid-button min-h-11 justify-center"
-                          >
-                            Finish profile
-                          </Link>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={() => handleToggle(course.id, !isPlayed)}
-                            disabled={busyCourseId === course.id}
-                            data-testid={`course-play-toggle-${course.id}`}
-                            className={`min-h-11 rounded-full px-4 py-2 text-sm font-semibold ${
-                              isPlayed ? "border border-[var(--line)] bg-white text-[var(--ink)]" : "bg-[var(--ink)] text-[rgb(255,255,255)]"
-                            }`}
-                          >
-                            {busyCourseId === course.id ? "Saving..." : isPlayed ? "Played" : "Mark played"}
-                          </button>
-                        )
-                      ) : null}
-                    </div>
+                    <span className="shrink-0 pt-1 text-lg text-muted" aria-hidden="true">
+                      &gt;
+                    </span>
                   </div>
-                </div>
+
+                  {viewerSignedIn ? (
+                    <div className="mt-4 flex flex-wrap gap-2" onClick={(event) => event.preventDefault()}>
+                      {viewerNeedsOnboarding ? (
+                        <Link href={`/onboarding?next=${encodeURIComponent(`/courses/${course.id}`)}`} className="solid-button sm min-h-11">
+                          Finish profile
+                        </Link>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleToggle(course.id, !isPlayed)}
+                          disabled={busyCourseId === course.id}
+                          data-testid={`course-play-toggle-${course.id}`}
+                          className={isPlayed ? "ghost-button sm min-h-11" : "solid-button sm min-h-11"}
+                        >
+                          {busyCourseId === course.id ? "Saving..." : isPlayed ? "Played" : "Mark played"}
+                        </button>
+                      )}
+                    </div>
+                  ) : null}
+                </Link>
               );
             })}
           </div>
@@ -253,7 +244,7 @@ export function CoursesBrowser({
           {hasMore ? (
             <div className="flex justify-center pt-2">
               <button type="button" onClick={() => setVisibleCount((count) => count + defaultVisibleCount)} className="ghost-button min-h-11">
-                Show more courses
+                More courses
               </button>
             </div>
           ) : null}

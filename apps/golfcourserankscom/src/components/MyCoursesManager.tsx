@@ -83,7 +83,7 @@ function mergePlayedCourses(current: PlayedCourse[], ranked: Array<{ id: string;
 
 export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl, viewerHandle }: MyCoursesManagerProps) {
   const [playedCourses, setPlayedCourses] = useState(initialPlayedCourses);
-  const [status, setStatus] = useState<string>("Drag a played course into the ranked section. Top means favorite.");
+  const [status, setStatus] = useState<string>("Drag favorites into order. Top means favorite.");
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(new Date().toISOString());
   const [saveError, setSaveError] = useState<string | null>(null);
   const [busyCourseId, setBusyCourseId] = useState<string | null>(null);
@@ -290,38 +290,38 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl, vi
   }
 
   return (
-    <section className="shell-panel rounded-[2.4rem] p-6 sm:p-8">
+    <section className="shell-panel-soft p-6 sm:p-8">
       <div className="sr-only" aria-live="polite">
         {announcement}
       </div>
 
-        <div className="flex flex-col gap-8">
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-              <div className="max-w-4xl">
-                <p className="section-label">My courses</p>
-                <h1 className="brand-heading mt-4 text-[2.35rem] font-semibold leading-[0.95] tracking-[-0.05em] text-[var(--ink)] sm:text-5xl">
-                  Your public-course stack.
-                </h1>
-                <p className="mt-4 max-w-3xl text-sm leading-6 text-[var(--muted)] sm:text-lg sm:leading-8">
-                  Keep the list honest. Played courses can stay below the line until you are ready, and every saved reorder helps shape the national leaderboard.
-                </p>
-              </div>
-
-              <div className="rounded-[1.2rem] border border-[var(--line)] bg-white/85 px-4 py-3 text-sm font-medium text-[var(--muted)]">
-                {status} {lastSavedAt ? `| Last saved ${formatUpdatedAt(lastSavedAt)}` : ""}
-              </div>
+      <div className="space-y-8">
+        <header className="space-y-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div className="max-w-4xl">
+              <p className="eyebrow">MY COURSES</p>
+              <h1 className="h2 mt-4">Your public-course stack</h1>
+              <p className="subhed mt-4">
+                Keep the list honest. Rank the rounds you would book again first.
+              </p>
             </div>
+            <div className="pill pill-line pill-sentence self-start">
+              {status}
+              {lastSavedAt ? ` · Last saved ${formatUpdatedAt(lastSavedAt)}` : ""}
+            </div>
+          </div>
 
-            <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-[repeat(3,minmax(0,1fr))_auto_auto_auto] xl:items-center">
-              {[
-                { label: "Played", value: playedCourses.length },
-                { label: "Ranked", value: ranked.length },
+          <div className="grid gap-3 sm:grid-cols-3 xl:grid-cols-[repeat(3,minmax(0,1fr))_auto_auto_auto] xl:items-center">
+            {[
+              { label: "Played", value: playedCourses.length },
+              { label: "Ranked", value: ranked.length },
               { label: "Waiting below", value: unranked.length }
             ].map((item) => (
-              <div key={item.label} className="rounded-[1.5rem] bg-white/82 px-4 py-4">
-                <p className="text-sm text-[var(--muted)]">{item.label}</p>
-                <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">{item.value}</p>
+              <div key={item.label} className="shell-panel-contrast p-4">
+                <p className="meta">{item.label}</p>
+                <p className="mt-3 text-[2rem] font-semibold tracking-[var(--tracking-tight)] text-[var(--ink)]">
+                  {item.value}
+                </p>
               </div>
             ))}
 
@@ -329,281 +329,252 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl, vi
               title="Share my Top 10"
               text="My top 10 public courses, ranked. Roast me."
               url={`${siteUrl}/u/${viewerHandle}?utm_source=share&utm_medium=top10card&utm_campaign=user_share`}
-              className="ghost-button min-h-11 justify-center whitespace-nowrap"
+              className="ghost-button justify-center whitespace-nowrap"
               analyticsSurface="my-courses-top10"
               buttonChildren="Copy top 10 link"
             />
-            <Link href="/courses" className="ghost-button min-h-11 justify-center whitespace-nowrap">
+            <Link href="/courses" className="ghost-button justify-center whitespace-nowrap">
               Browse courses
             </Link>
-            <Link href="/leaderboard" className="ghost-button min-h-11 justify-center whitespace-nowrap">
+            <Link href="/leaderboard" className="ghost-button justify-center whitespace-nowrap">
               See leaderboard
             </Link>
           </div>
-        </div>
+        </header>
 
         {saveError ? (
-          <div className="rounded-[1.4rem] border border-[rgba(126,58,58,0.14)] bg-[rgba(126,58,58,0.08)] px-4 py-3 text-sm text-[var(--ink)]">
-            {saveError}
-          </div>
+          <div className="pill pill-warning pill-sentence">{saveError}</div>
         ) : null}
 
         {playedCourses.length === 0 ? (
-          <div className="rounded-[1.9rem] border border-dashed border-[var(--line)] bg-white/86 px-5 py-10 text-center">
-            <p className="section-label">Start your list</p>
-            <h2 className="mt-4 text-2xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
-              Add your first course.
-            </h2>
-            <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-              Mark the public courses you have already played, then drag the best ones into your ranking.
+          <section className="shell-panel-contrast p-8 text-center">
+            <p className="eyebrow">START YOUR LIST</p>
+            <h2 className="h3 mt-4">Add your first course</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)]">
+              Mark the public courses you have already played, then drag the best ones into order.
             </p>
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              <Link href="/courses" className="solid-button min-h-11 justify-center">
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+              <Link href="/courses" className="solid-button justify-center">
                 Browse courses
               </Link>
-              <Link href="/leaderboard" className="ghost-button min-h-11 justify-center">
+              <Link href="/leaderboard" className="ghost-button justify-center">
                 See the leaderboard
               </Link>
             </div>
-          </div>
+          </section>
         ) : null}
 
-        <div>
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="section-label">My ranking list</p>
-              <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
-                Rank the public courses you have actually played.
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-                Drag within the ranked stack to reorder favorites. Drag any played course from below into the ranked section when it deserves a spot.
+        <section className="shell-panel-contrast p-6 sm:p-7">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-3xl">
+              <p className="eyebrow">RANKING</p>
+              <h2 className="h3 mt-4">Rank the public courses you have actually played</h2>
+              <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
+                Drag within the ranked stack to reorder favorites. On mobile, tap Add to ranking below.
               </p>
             </div>
-            {ranked.length > 0 ? (
-              <span className="rounded-full border border-[var(--line)] bg-white/85 px-3 py-2 text-sm font-semibold text-[var(--muted)]">
-                {ranked.length} ranked
-              </span>
-            ) : null}
+            <div className="pill pill-line pill-sentence self-start">{ranked.length} ranked</div>
           </div>
 
-          <div className="mt-6">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--pine)]">Ranked</p>
-                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                  Top means favorite. Reorder with drag on larger screens, or use the rank buttons on mobile.
-                </p>
+          <div className="mt-6 space-y-6">
+            <div>
+              <div className="flex items-center justify-between gap-3">
+                <p className="eyebrow">RANKED</p>
+                <span className="meta">Top means favorite</span>
               </div>
-            </div>
 
-            {ranked.length === 0 ? (
-              <div
-                onDragOver={(event) => event.preventDefault()}
-                onDrop={() => commitRankDrop(null)}
-                className="mt-5 rounded-[1.7rem] border border-dashed border-[var(--line)] px-5 py-8 text-sm leading-6 text-[var(--muted)]"
-              >
-                {playedCourses.length === 0
-                  ? "Once you add a course you have played, drag it here to start your ranking."
-                  : "Drag a played course here once you know where it belongs. Your first drop becomes rank #1."}
-              </div>
-            ) : (
-              <div className="mt-5 grid gap-3">
-                {ranked.map((course) => (
-                  <div
-                    key={course.id}
-                    data-testid={`ranked-course-${course.id}`}
-                    draggable
-                    onDragStart={() => setDragState({ id: course.id, source: "ranked" })}
-                    onDragOver={(event) => event.preventDefault()}
-                    onDrop={() => commitRankDrop(course.id)}
-                    onDragEnd={() => setDragState(null)}
-                    className={`rounded-[1.7rem] border border-[var(--line)] bg-white/92 p-4 shadow-[0_10px_30px_rgba(24,37,43,0.06)] ${
-                      dragState?.id === course.id ? "opacity-80" : ""
-                    }`}
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[1.2rem] bg-[var(--sand)] text-sm font-semibold text-[var(--ink)]">
-                        #{course.rankPosition + 1}
-                      </div>
-
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-start justify-between gap-3">
-                          <div>
-                            <h3 className="text-lg font-semibold tracking-[-0.03em] text-[var(--ink)]">{course.name}</h3>
-                            <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
-                          </div>
-
-                          <div className="flex items-center gap-2">
-                            <span className="drag-handle hidden md:inline-flex">Drag</span>
-                            <button type="button" onClick={() => handleMove(course.id, -1)} className="ghost-button min-h-11">
-                              Up
-                            </button>
-                            <button type="button" onClick={() => handleMove(course.id, 1)} className="ghost-button min-h-11">
-                              Down
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveFromRanking(course.id)}
-                              disabled={busyCourseId === course.id}
-                              className="ghost-button min-h-11"
-                            >
-                              Move below
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-
+              {ranked.length === 0 ? (
                 <div
                   onDragOver={(event) => event.preventDefault()}
                   onDrop={() => commitRankDrop(null)}
-                  className="rounded-[1.5rem] border border-dashed border-[rgba(24,37,43,0.1)] px-4 py-4 text-sm text-[var(--muted)]"
+                  className="mt-4 rounded-[var(--radius-lg)] border border-dashed border-[var(--line)] bg-white/70 px-5 py-8 text-sm leading-7 text-[var(--muted)]"
                 >
-                  Drop here to place a course at the end of your ranking.
+                  {playedCourses.length === 0
+                    ? "Once you add a course you have played, drag it here to start your ranking."
+                    : "Drag a played course here once it deserves a spot. Your first drop becomes rank #1."}
                 </div>
-              </div>
-            )}
-          </div>
+              ) : (
+                <div className="mt-4 grid gap-3">
+                  {ranked.map((course) => (
+                    <div
+                      key={course.id}
+                      data-testid={`ranked-course-${course.id}`}
+                      draggable
+                      onDragStart={() => setDragState({ id: course.id, source: "ranked" })}
+                      onDragOver={(event) => event.preventDefault()}
+                      onDrop={() => commitRankDrop(course.id)}
+                      onDragEnd={() => setDragState(null)}
+                      className={`rounded-[var(--radius-md)] border border-[var(--line)] bg-white/92 p-4 shadow-[var(--shadow-card)] ${
+                        dragState?.id === course.id ? "opacity-80" : ""
+                      }`}
+                    >
+                      <div className="flex items-start gap-4">
+                        <div className="pill pill-pine shrink-0">#{course.rankPosition + 1}</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                            <div className="min-w-0">
+                              <h3 className="h3 text-[1.45rem]">{course.name}</h3>
+                              <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
+                            </div>
 
-          <div className="mt-8 border-t border-[rgba(24,37,43,0.08)] pt-8">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--pine)]">Played but unranked</p>
-                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                  These courses are already in your played list. Tap Add to ranking on mobile, or drag one upward on larger screens when it deserves a spot.
-                </p>
-              </div>
-              <span className="rounded-full border border-[var(--line)] bg-white/85 px-3 py-2 text-sm font-semibold text-[var(--muted)]">
-                {unranked.length} waiting
-              </span>
-            </div>
-
-            {unranked.length === 0 ? (
-              <div className="mt-5 rounded-[1.6rem] border border-dashed border-[var(--line)] px-5 py-8 text-sm leading-6 text-[var(--muted)]">
-                Every played course is already ranked. Add another played course below when you want to expand the stack.
-              </div>
-            ) : (
-              <div className="mt-5 grid gap-3">
-                {unranked.map((course) => (
-                  <div
-                    key={course.id}
-                    data-testid={`unranked-course-${course.id}`}
-                    draggable
-                    onDragStart={() => setDragState({ id: course.id, source: "unranked" })}
-                    onDragEnd={() => setDragState(null)}
-                    className={`rounded-[1.6rem] border border-[var(--line)] bg-white/90 p-4 ${
-                      dragState?.id === course.id ? "opacity-80" : ""
-                    }`}
-                  >
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="drag-handle hidden md:inline-flex">Drag up</span>
-                          <h3 className="text-lg font-semibold tracking-[-0.03em] text-[var(--ink)]">{course.name}</h3>
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="pill pill-line hidden md:inline-flex">Drag</span>
+                              <button type="button" onClick={() => handleMove(course.id, -1)} className="ghost-button sm">
+                                Up
+                              </button>
+                              <button type="button" onClick={() => handleMove(course.id, 1)} className="ghost-button sm">
+                                Down
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveFromRanking(course.id)}
+                                disabled={busyCourseId === course.id}
+                                className="ghost-button sm"
+                              >
+                                Move below
+                              </button>
+                            </div>
+                          </div>
                         </div>
-                        <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => handleAddToRanking(course.id)}
-                        disabled={busyCourseId === course.id}
-                        className="solid-button min-h-11 md:hidden"
-                      >
-                        {busyCourseId === course.id ? "Saving..." : "Add to ranking"}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleUnplay(course.id)}
-                        disabled={busyCourseId === course.id}
-                        className="ghost-button min-h-11"
-                      >
-                        Remove played
-                      </button>
                     </div>
+                  ))}
+
+                  <div
+                    onDragOver={(event) => event.preventDefault()}
+                    onDrop={() => commitRankDrop(null)}
+                    className="rounded-[var(--radius-md)] border border-dashed border-[rgba(24,37,43,0.1)] bg-white/66 px-4 py-4 text-sm text-[var(--muted)]"
+                  >
+                    Drop here to place a course at the end of your ranking.
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="mt-8 border-t border-[rgba(24,37,43,0.08)] pt-8">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-              <div className="max-w-2xl">
-                <p className="section-label">Add from the leaderboard</p>
-                <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
-                  Search and mark more public courses as played.
-                </h3>
-                <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-                  This list starts in national leaderboard order. Once you mark a course as played, it drops into the unranked section above so you can drag it into your stack.
-                </p>
-              </div>
-
-              <label className="block w-full max-w-xl text-sm font-semibold text-[var(--ink)]">
-                Search by course, city, or state
-                <input
-                  value={catalogQuery}
-                  onChange={(event) => setCatalogQuery(event.target.value)}
-                  placeholder="Pebble, Bandon, Scottsdale, Wisconsin..."
-                  className="mt-2 w-full rounded-[1.35rem] border border-[var(--line)] bg-white px-4 py-3 text-sm font-normal outline-none focus:border-[rgba(49,107,83,0.45)]"
-                />
-              </label>
+                </div>
+              )}
             </div>
 
-            <div className="mt-6 grid gap-3">
-              {filteredCatalog.map((course) => {
-                const isRanked = rankedIds.has(course.id);
-                const isPlayed = playedIds.has(course.id);
+            <div className="border-t border-[var(--line)] pt-6">
+              <div className="flex items-center justify-between gap-3">
+                <p className="eyebrow">PLAYED BUT UNRANKED</p>
+                <span className="meta">{unranked.length} waiting</span>
+              </div>
+              <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--muted)]">
+                These courses are already in your played list. On larger screens you can drag them upward. On mobile, use Add to ranking.
+              </p>
 
-                return (
-                  <div key={course.id} className="rounded-[1.6rem] border border-[var(--line)] bg-white/90 p-4">
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          {course.leaderboard_rank ? (
-                            <span className="rounded-full bg-[var(--pine-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--pine)]">
-                              National rank #{course.leaderboard_rank}
-                            </span>
-                          ) : null}
-                          <span className="rounded-full border border-[var(--line)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
-                            Editorial start #{course.seed_rank}
-                          </span>
+              {unranked.length === 0 ? (
+                <div className="mt-4 rounded-[var(--radius-lg)] border border-dashed border-[var(--line)] bg-white/70 px-5 py-8 text-sm leading-7 text-[var(--muted)]">
+                  Every played course is already ranked. Add another played course below when you want to expand the stack.
+                </div>
+              ) : (
+                <div className="mt-4 grid gap-3">
+                  {unranked.map((course) => (
+                    <div
+                      key={course.id}
+                      data-testid={`unranked-course-${course.id}`}
+                      draggable
+                      onDragStart={() => setDragState({ id: course.id, source: "unranked" })}
+                      onDragEnd={() => setDragState(null)}
+                      className={`rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4 ${
+                        dragState?.id === course.id ? "opacity-80" : ""
+                      }`}
+                    >
+                      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="pill pill-line hidden md:inline-flex">Drag up</span>
+                            <h3 className="h3 text-[1.35rem]">{course.name}</h3>
+                          </div>
+                          <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
                         </div>
-                        <h4 className="mt-3 text-lg font-semibold tracking-[-0.03em] text-[var(--ink)]">{course.name}</h4>
-                        <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-2">
-                        <Link href={`/courses/${course.id}`} className="ghost-button min-h-11">
-                          View detail
-                        </Link>
-                        {isRanked ? (
-                          <span className="rounded-full bg-[var(--ink)] px-4 py-3 text-sm font-semibold text-[rgb(255,255,255)]">
-                            In ranking
-                          </span>
-                        ) : isPlayed ? (
-                          <span className="rounded-full border border-[var(--line)] bg-white px-4 py-3 text-sm font-semibold text-[var(--muted)]">
-                            In played list
-                          </span>
-                        ) : (
+                        <div className="flex flex-wrap gap-2">
                           <button
                             type="button"
-                            onClick={() => handleMarkPlayed(course.id)}
+                            onClick={() => handleAddToRanking(course.id)}
                             disabled={busyCourseId === course.id}
-                            className="solid-button min-h-11"
+                            className="solid-button sm md:hidden"
                           >
-                            {busyCourseId === course.id ? "Saving..." : "Mark played"}
+                            {busyCourseId === course.id ? "Saving..." : "Add to ranking"}
                           </button>
-                        )}
+                          <button
+                            type="button"
+                            onClick={() => handleUnplay(course.id)}
+                            disabled={busyCourseId === course.id}
+                            className="ghost-button sm"
+                          >
+                            Remove played
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  ))}
+                </div>
+              )}
             </div>
           </div>
-        </div>
+        </section>
+
+        <section className="shell-panel-contrast p-6 sm:p-7">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="eyebrow">ADD MORE COURSES</p>
+              <h2 className="h3 mt-4">Search and mark more public courses as played</h2>
+              <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
+                This list starts in national leaderboard order. Once you mark a course as played, it drops into the unranked section above.
+              </p>
+            </div>
+
+            <label className="block w-full max-w-xl text-sm font-medium text-[var(--ink)]">
+              <span className="sr-only">Search by course, city, or state</span>
+              <input
+                value={catalogQuery}
+                onChange={(event) => setCatalogQuery(event.target.value)}
+                placeholder="Search by course, city, or state"
+                className="min-h-11 w-full rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none focus:border-[rgba(49,107,83,0.45)]"
+              />
+            </label>
+          </div>
+
+          <div className="mt-6 grid gap-3">
+            {filteredCatalog.map((course) => {
+              const isRanked = rankedIds.has(course.id);
+              const isPlayed = playedIds.has(course.id);
+
+              return (
+                <div key={course.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4">
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        {course.leaderboard_rank ? <span className="pill pill-pine">National rank #{course.leaderboard_rank}</span> : null}
+                        <span className="pill pill-line">Editorial start #{course.seed_rank}</span>
+                      </div>
+                      <h3 className="h3 mt-4 text-[1.35rem]">{course.name}</h3>
+                      <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Link href={`/courses/${course.id}`} className="ghost-button sm">
+                        View detail
+                      </Link>
+                      {isRanked ? (
+                        <span className="pill pill-ink">In ranking</span>
+                      ) : isPlayed ? (
+                        <span className="pill pill-line">In played list</span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleMarkPlayed(course.id)}
+                          disabled={busyCourseId === course.id}
+                          className="solid-button sm"
+                        >
+                          {busyCourseId === course.id ? "Saving..." : "Mark played"}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
       </div>
     </section>
   );

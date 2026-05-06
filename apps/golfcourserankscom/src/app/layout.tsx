@@ -9,13 +9,13 @@ import { getViewerContext } from "@/lib/viewer";
 const displayFont = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["500", "600", "700"],
-  variable: "--font-display"
+  variable: "--font-display-face"
 });
 
 const bodyFont = Public_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-body"
+  variable: "--font-body-face"
 });
 
 export const metadata: Metadata = {

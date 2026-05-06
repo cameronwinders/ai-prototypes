@@ -45,48 +45,30 @@ export function SignInForm() {
 
   return (
     <form className="space-y-5" onSubmit={onSubmit}>
-      {signedOut ? (
-        <div className="rounded-[1.4rem] border border-[rgba(49,107,83,0.16)] bg-[rgba(49,107,83,0.08)] px-4 py-3 text-sm text-[var(--ink)]">
-          You have been signed out.
-        </div>
-      ) : null}
+      {signedOut ? <div className="pill pill-pine pill-sentence">You have been signed out.</div> : null}
+      {error ? <div className="pill pill-warning pill-sentence">{error}</div> : null}
+      {message ? <div className="pill pill-pine pill-sentence">{message}</div> : null}
 
-      {error ? (
-        <div className="rounded-[1.4rem] border border-[rgba(126,58,58,0.14)] bg-[rgba(126,58,58,0.08)] px-4 py-3 text-sm text-[var(--ink)]">
-          {error}
-        </div>
-      ) : null}
-
-      {message ? (
-        <div className="rounded-[1.4rem] border border-[rgba(49,107,83,0.16)] bg-[rgba(49,107,83,0.08)] px-4 py-3 text-sm text-[var(--ink)]">
-          {message}
-        </div>
-      ) : null}
-
-      <div className="rounded-full border border-[var(--line)] bg-white/85 p-1">
+      <div className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/85 p-1">
         <div className="grid grid-cols-2 gap-1">
           <button
             type="button"
             onClick={() => setMode("sign-in")}
-            className={`rounded-full px-4 py-2.5 text-sm font-semibold ${
-              mode === "sign-in" ? "bg-[var(--ink)] text-[rgb(255,255,255)]" : "text-[var(--muted)]"
-            }`}
+            className={mode === "sign-in" ? "solid-button justify-center" : "ghost-button justify-center"}
           >
             Sign in
           </button>
           <button
             type="button"
             onClick={() => setMode("sign-up")}
-            className={`rounded-full px-4 py-2.5 text-sm font-semibold ${
-              mode === "sign-up" ? "bg-[var(--ink)] text-[rgb(255,255,255)]" : "text-[var(--muted)]"
-            }`}
+            className={mode === "sign-up" ? "solid-button justify-center" : "ghost-button justify-center"}
           >
             Create account
           </button>
         </div>
       </div>
 
-      <label className="block text-sm font-semibold text-[var(--ink)]">
+      <label className="block text-sm font-medium text-[var(--ink)]">
         Email
         <input
           type="email"
@@ -94,21 +76,17 @@ export function SignInForm() {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="you@golfmail.com"
-          className="mt-2 w-full rounded-[1.2rem] border border-[var(--line)] bg-white px-4 py-3 text-sm text-[var(--ink)] outline-none transition focus:border-[rgba(49,107,83,0.45)]"
+          className="mt-2 w-full rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-3 text-sm text-[var(--ink)] outline-none transition focus:border-[rgba(49,107,83,0.45)]"
         />
       </label>
 
-      <p className="text-sm leading-6 text-[var(--muted)]">
+      <p className="text-sm leading-7 text-[var(--muted)]">
         {mode === "sign-up"
           ? "We will help you set your handicap band after the link opens so you can start ranking right away."
-          : "We will email a secure access link. If this is your first time, we will finish your setup after you open it."}
+          : "We will email a secure sign-in link and bring you back to the page you started from."}
       </p>
 
-      <button
-        type="submit"
-        disabled={submitting}
-        className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-[rgb(255,255,255)] shadow-[0_18px_50px_rgba(24,37,43,0.18)] disabled:opacity-70"
-      >
+      <button type="submit" disabled={submitting} className="solid-button w-full justify-center disabled:opacity-70">
         {submitting ? "Sending..." : mode === "sign-up" ? "Email my account link" : "Email my sign-in link"}
       </button>
     </form>

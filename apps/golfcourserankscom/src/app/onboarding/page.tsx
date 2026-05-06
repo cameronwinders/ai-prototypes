@@ -32,13 +32,11 @@ export default async function OnboardingPage({
 
     return (
       <div className="mx-auto max-w-6xl">
-        <section className="shell-panel rounded-[2.4rem] p-6 sm:p-8">
-          <p className="section-label">First ranking setup</p>
-          <h1 className="brand-heading mt-4 text-5xl font-semibold tracking-[-0.05em] text-[var(--ink)]">
-            Start with the courses you already know.
-          </h1>
-          <p className="mt-4 max-w-3xl text-lg leading-8 text-[var(--muted)]">
-            We will save these as played, then bring you straight into your ranking list so you can drag the best ones into order.
+        <section className="shell-panel p-6 sm:p-8">
+          <p className="eyebrow">FIRST RANKING SETUP</p>
+          <h1 className="h2 mt-4">Start with the courses you already know</h1>
+          <p className="subhed mt-4">
+            Save the rounds you have played first, then drag the best ones into order.
           </p>
           <div className="mt-8">
             <OnboardingCoursePicker courses={courses} next="/me/courses" error={error} />
@@ -50,26 +48,22 @@ export default async function OnboardingPage({
 
   return (
     <div className="mx-auto max-w-3xl">
-      <section className="shell-panel rounded-[2.4rem] p-6 sm:p-8">
-        <p className="section-label">Onboarding</p>
-        <h1 className="brand-heading mt-4 text-5xl font-semibold tracking-[-0.05em] text-[var(--ink)]">
-          One last detail before the leaderboard opens.
-        </h1>
-        <p className="mt-4 max-w-2xl text-lg leading-8 text-[var(--muted)]">
-          Choose the handicap band that best fits your game so the leaderboard stays relevant to how you play.
+      <section className="shell-panel p-6 sm:p-8">
+        <p className="eyebrow">ONBOARDING</p>
+        <h1 className="h2 mt-4">One last detail before the leaderboard opens</h1>
+        <p className="subhed mt-4">
+          Choose the handicap band that best fits your game so the board stays relevant.
         </p>
 
         {error ? (
-          <div className="mt-6 rounded-[1.5rem] border border-[rgba(126,58,58,0.14)] bg-[rgba(126,58,58,0.08)] px-4 py-3 text-sm text-[var(--ink)]">
-            {error}
-          </div>
+          <div className="mt-6 pill pill-warning pill-sentence">{error}</div>
         ) : null}
 
         <form action={completeOnboarding} className="mt-8 space-y-5">
           <input type="hidden" name="next" value={next} />
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--pine)]">Handicap band</p>
-            <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+            <p className="eyebrow">HANDICAP BAND</p>
+            <p className="mt-2 text-sm leading-7 text-[var(--muted)]">
               Pick the range that best matches your current game.
             </p>
           </div>
@@ -77,7 +71,7 @@ export default async function OnboardingPage({
             {HANDICAP_OPTIONS.map((option) => (
               <label
                 key={option}
-                className="block cursor-pointer rounded-[1.7rem] border border-[rgba(24,37,43,0.08)] bg-white/90 p-5 transition hover:bg-white has-[:checked]:border-[rgba(49,107,83,0.55)] has-[:checked]:bg-[var(--pine-soft)] has-[:checked]:shadow-[0_0_0_2px_rgba(49,107,83,0.12)]"
+                className="block cursor-pointer rounded-[var(--radius-lg)] border border-[rgba(24,37,43,0.08)] bg-white/90 p-5 transition hover:-translate-y-px hover:bg-white has-[:checked]:border-[rgba(49,107,83,0.55)] has-[:checked]:bg-[var(--pine-soft)] has-[:checked]:shadow-[0_0_0_1px_rgba(49,107,83,0.12)]"
               >
                 <div className="flex items-start gap-4">
                   <input
@@ -88,7 +82,7 @@ export default async function OnboardingPage({
                     className="mt-1 h-5 w-5 accent-[var(--pine)]"
                   />
                   <div className="min-w-0">
-                    <p className="text-3xl font-semibold tracking-[-0.05em] text-[var(--ink)]">{option}</p>
+                    <p className="h3 text-[2rem]">{option}</p>
                     <p className="mt-2 text-sm text-[var(--muted)]">
                       {option === "0-5"
                         ? "Low-handicap range"
@@ -104,10 +98,7 @@ export default async function OnboardingPage({
             ))}
           </div>
 
-          <button
-            type="submit"
-            className="rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-white"
-          >
+          <button type="submit" className="solid-button">
             Continue to played courses
           </button>
         </form>

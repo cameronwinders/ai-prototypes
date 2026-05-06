@@ -85,18 +85,14 @@ export function FeedbackForm({ initialScreenName, initialUrl, initialFeedbackTyp
             key={type}
             type="button"
             onClick={() => setFeedbackType(type)}
-            className={`min-h-11 rounded-full px-4 py-2 text-sm font-semibold capitalize transition ${
-              feedbackType === type
-                ? "bg-[var(--ink)] text-[rgb(255,255,255)]"
-                : "border border-[var(--line)] bg-white text-[var(--muted)]"
-            }`}
+            className={feedbackType === type ? "solid-button sm capitalize" : "ghost-button sm capitalize"}
           >
             {FEEDBACK_LABELS[type]}
           </button>
         ))}
       </div>
 
-      <div className="rounded-[1.5rem] border border-[var(--line)] bg-[rgba(255,255,255,0.88)] p-4 text-sm text-[var(--muted)]">
+      <div className="shell-panel-contrast p-4 text-sm text-[var(--muted)]">
         <p>
           Captured screen: <span className="font-semibold text-[var(--ink)]">{screenName}</span>
         </p>
@@ -105,7 +101,7 @@ export function FeedbackForm({ initialScreenName, initialUrl, initialFeedbackTyp
         </p>
       </div>
 
-      <label className="block text-sm font-semibold text-[var(--ink)]">
+      <label className="block text-sm font-medium text-[var(--ink)]">
         What should we know?
         <textarea
           required
@@ -114,17 +110,13 @@ export function FeedbackForm({ initialScreenName, initialUrl, initialFeedbackTyp
           onChange={(event) => setMessage(event.target.value)}
           rows={6}
           placeholder={PLACEHOLDERS[feedbackType]}
-          className="mt-2 w-full rounded-[1.5rem] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none focus:border-[rgba(49,107,83,0.45)]"
+          className="mt-2 w-full rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none focus:border-[rgba(49,107,83,0.45)]"
         />
       </label>
 
       {status ? <p className="text-sm text-[var(--muted)]">{status}</p> : null}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="min-h-11 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-[rgb(255,255,255)] disabled:opacity-70"
-      >
+      <button type="submit" disabled={pending} className="solid-button disabled:opacity-70">
         {pending ? "Sending..." : "Send feedback"}
       </button>
     </form>

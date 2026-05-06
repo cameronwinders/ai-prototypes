@@ -33,13 +33,11 @@ export default async function InvitePage({
 
   return (
     <div className="mx-auto max-w-3xl">
-      <section className="shell-panel rounded-[2.4rem] p-6 sm:p-8">
-        <p className="section-label">Friend invite</p>
-        <h1 className="brand-heading mt-4 text-5xl font-semibold tracking-[-0.05em] text-[var(--ink)]">
-          {inviter.display_name ?? inviter.handle} wants to compare public-course lists with you.
-        </h1>
-        <p className="mt-4 max-w-2xl text-lg leading-8 text-[var(--muted)]">
-          Accepting this invite keeps the social layer simple: you unlock overlap-only comparisons without exposing your full ranking history to everyone.
+      <section className="shell-panel p-6 sm:p-8">
+        <p className="eyebrow">FRIEND INVITE</p>
+        <h1 className="h2 mt-4">{inviter.display_name ?? inviter.handle} wants to compare public-course lists with you</h1>
+        <p className="subhed mt-4">
+          Accept the invite and unlock overlap-only comparisons.
         </p>
 
         <InviteLanding
@@ -51,10 +49,10 @@ export default async function InvitePage({
         />
 
         <div className="mt-8 grid gap-3 sm:grid-cols-2">
-          <Link href={`/u/${inviter.handle}`} className="ghost-button min-h-11 justify-center">
+          <Link href={`/u/${inviter.handle}`} className="ghost-button justify-center">
             View public profile
           </Link>
-          <Link href="/friends" className="ghost-button min-h-11 justify-center">
+          <Link href="/friends" className="ghost-button justify-center">
             Open friends
           </Link>
         </div>
