@@ -13,6 +13,13 @@ const SORT_OPTIONS = [
   { value: "most-played", label: "Most golfers" }
 ] as const;
 
+const MOBILE_RANK_STACK = [
+  { key: "crowd", label: "Crowd" },
+  { key: "golf-top-100", label: "GOLF.com" },
+  { key: "golf-digest-public", label: "Golf Digest" },
+  { key: "golfweek-you-can-play", label: "Golfweek" }
+] as const;
+
 function formatEditorialPosition(position?: number) {
   return position ? `#${position}` : "-";
 }
@@ -146,23 +153,44 @@ export default async function LeaderboardPage({
                       </div>
                     ) : null}
 
-                    <details className="mt-4 rounded-[1.2rem] border border-[var(--line)] bg-[rgba(255,255,255,0.84)] px-3 py-3">
-                      <summary className="cursor-pointer list-none text-sm font-semibold text-[var(--ink)]">
-                        Editorial positions
-                      </summary>
-                      <div className="mt-3 grid gap-2 text-sm">
-                        {EDITORIAL_LISTS.map((editorial) => (
-                          <div key={editorial.key} className="rounded-[1.1rem] bg-[rgba(246,243,236,0.92)] px-3 py-3">
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
-                              {editorial.label}
-                            </p>
-                            <p className="mt-2 text-base font-semibold text-[var(--ink)]">
-                              {formatEditorialPosition(course.editorialRanks?.[editorial.key])}
-                            </p>
-                          </div>
-                        ))}
+                    <div className="mt-4 rounded-[1.35rem] border border-[var(--line)] bg-[rgba(255,255,255,0.84)] p-3">
+                      <div className="mb-2 flex items-center justify-between gap-3">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+                          Rank comparison
+                        </p>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+                          Position
+                        </p>
                       </div>
-                    </details>
+                      <div className="overflow-hidden rounded-[1rem] border border-[rgba(28,41,36,0.08)] bg-[rgba(246,243,236,0.92)]">
+                        {MOBILE_RANK_STACK.map((entry, index) => {
+                          const value =
+                            entry.key === "crowd"
+                              ? `#${course.leaderboardRank}`
+                              : formatEditorialPosition(course.editorialRanks?.[entry.key]);
+
+                          return (
+                            <div
+                              key={entry.key}
+                              className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 ${
+                                index === MOBILE_RANK_STACK.length - 1 ? "" : "border-b border-[rgba(28,41,36,0.08)]"
+                              }`}
+                            >
+                              <span
+                                className={`min-w-0 text-sm font-semibold tracking-[-0.02em] ${
+                                  entry.key === "crowd" ? "text-[var(--ink)]" : "text-[var(--muted)]"
+                                }`}
+                              >
+                                {entry.label}
+                              </span>
+                              <span className="rounded-full bg-white/85 px-3 py-1 text-sm font-semibold tracking-[-0.02em] text-[var(--ink)]">
+                                {value}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
                   </Link>
                 );
               })}
@@ -208,26 +236,19 @@ export default async function LeaderboardPage({
                                 {course.numUniqueGolfers === 0 ? "Starting score" : "Crowd score"}{" "}
                                 {course.normalizedScore.toFixed(1)}
                               </div>
-                              {earlySignalLabel ? (
-                                <p className="mt-2 text-xs leading-5 text-[rgb(120,88,38)]">{earlySignalLabel}</p>
-                              ) : null}
                             </Link>
                           </td>
                           <td className="px-5 py-5 align-top">
                             <Link href={`/courses/${course.id}`} className="block">
                               <h2 className="text-xl font-semibold tracking-[-0.04em] text-[var(--ink)]">{course.name}</h2>
                               <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
-                              {earlySignalLabel ? (
-                                <div className="mt-3 flex flex-wrap gap-2">
-                                  <span className="rounded-full bg-[rgba(217,191,141,0.18)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[rgb(120,88,38)]">
-                                    {earlySignalLabel}
-                                  </span>
-                                </div>
-                              ) : null}
                             </Link>
                           </td>
                           <td className="px-5 py-5 align-top text-sm text-[var(--muted)]">
                             <div className="font-semibold text-[var(--ink)]">{pluralize(course.numUniqueGolfers, "golfer")}</div>
+                            {earlySignalLabel ? (
+                              <div className="mt-2 text-xs leading-5 text-[rgb(120,88,38)]">{earlySignalLabel}</div>
+                            ) : null}
                           </td>
                           {EDITORIAL_LISTS.map((editorial) => (
                             <td key={editorial.key} className="px-5 py-5 align-top text-sm text-[var(--muted)]">
