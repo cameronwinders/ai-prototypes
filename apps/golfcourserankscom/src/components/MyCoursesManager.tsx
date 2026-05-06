@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
-import { removeCourseFromRanking, saveCourseOrder, setCoursePlayed } from "@/app/actions";
+import { addCourseToRanking, removeCourseFromRanking, saveCourseOrder, setCoursePlayed } from "@/app/actions";
 import { ShareButton } from "@/components/ShareButton";
 import { formatLocation, formatUpdatedAt, splitPlayedCourses } from "@/lib/ranking";
 import type { CourseRecord, PlayedCourse } from "@/lib/types";
@@ -235,6 +235,28 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl, vi
     setStatus("Saved");
   }
 
+  async function handleAddToRanking(courseId: string) {
+    setBusyCourseId(courseId);
+    const result = await addCourseToRanking(courseId);
+    setBusyCourseId(null);
+
+    if (!result.ok || !result.data) {
+      setSaveError(result.message ?? "We could not add that course to your ranking.");
+      return;
+    }
+
+    const updated = mergePlayedCourses(latestState.current, result.data);
+    latestServerState.current = updated;
+    setPlayedCourses(updated);
+    setLastSavedAt(new Date().toISOString());
+    setStatus("Saved");
+
+    const movedCourse = updated.find((course) => course.id === courseId);
+    if (movedCourse?.rankPosition != null) {
+      setAnnouncement(`${movedCourse.name} added at rank ${movedCourse.rankPosition + 1}.`);
+    }
+  }
+
   async function handleUnplay(courseId: string) {
     setBusyCourseId(courseId);
     const result = await setCoursePlayed(courseId, false);
@@ -368,7 +390,9 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl, vi
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--pine)]">Ranked</p>
-                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">Top means favorite. This order shapes your public-course list.</p>
+                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                  Top means favorite. Reorder with drag on larger screens, or use the rank buttons on mobile.
+                </p>
               </div>
             </div>
 
@@ -448,7 +472,7 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl, vi
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--pine)]">Played but unranked</p>
                 <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                  These courses are already in your played list. Drag one upward whenever you want it to join the ranking.
+                  These courses are already in your played list. Tap Add to ranking on mobile, or drag one upward on larger screens when it deserves a spot.
                 </p>
               </div>
               <span className="rounded-full border border-[var(--line)] bg-white/85 px-3 py-2 text-sm font-semibold text-[var(--muted)]">
@@ -481,6 +505,14 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl, vi
                         </div>
                         <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
                       </div>
+                      <button
+                        type="button"
+                        onClick={() => handleAddToRanking(course.id)}
+                        disabled={busyCourseId === course.id}
+                        className="solid-button min-h-11 md:hidden"
+                      >
+                        {busyCourseId === course.id ? "Saving..." : "Add to ranking"}
+                      </button>
                       <button
                         type="button"
                         onClick={() => handleUnplay(course.id)}
