@@ -83,6 +83,34 @@ async function sendAuthLinkEmail(input: {
     throw new Error("Email delivery is not configured.");
   }
 
+  async function sendEmail(payload: {
+    to: string;
+    subject: string;
+    html: string;
+    text: string;
+  }) {
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        from,
+        to: [payload.to],
+        reply_to: replyTo,
+        subject: payload.subject,
+        html: payload.html,
+        text: payload.text
+      })
+    });
+
+    if (!response.ok) {
+      const detail = await response.text();
+      throw new Error(`Email delivery failed: ${detail}`);
+    }
+  }
+
   const intro =
     input.mode === "sign-up"
       ? "Open the secure link below to confirm your Golf Course Ranks account and finish your handicap setup."
@@ -97,6 +125,42 @@ async function sendAuthLinkEmail(input: {
     </div>
   `;
 
+  await sendEmail({
+    to: input.to,
+    subject: input.subject,
+    html,
+    text: `${intro}\n\n${input.actionLink}`
+  });
+}
+
+async function sendFriendRequestEmail(input: {
+  to: string;
+  recipientName: string;
+  requesterName: string;
+  requesterHandle: string;
+}) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.RESEND_FROM_EMAIL ?? "Golf Course Ranks <hello@golfcourseranks.com>";
+  const replyTo = process.env.RESEND_REPLY_TO?.trim() || undefined;
+
+  if (!apiKey) {
+    throw new Error("Email delivery is not configured.");
+  }
+
+  const friendsUrl = `${getSiteUrl()}/friends`;
+  const requesterUrl = `${getSiteUrl()}/u/${encodeURIComponent(input.requesterHandle)}`;
+  const subject = `${input.requesterName} sent you a Golf Course Ranks request`;
+  const html = `
+    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#14231d">
+      <p>Hi ${input.recipientName},</p>
+      <p><strong>${input.requesterName}</strong> wants to connect with you on Golf Course Ranks.</p>
+      <p><a href="${friendsUrl}" style="display:inline-block;padding:12px 18px;border-radius:999px;background:#162622;color:#ffffff;text-decoration:none;font-weight:600">Review request</a></p>
+      <p style="font-size:14px;color:#5d6a64">You can also view their profile here:</p>
+      <p style="font-size:14px;word-break:break-all;color:#5d6a64">${requesterUrl}</p>
+    </div>
+  `;
+  const text = `Hi ${input.recipientName},\n\n${input.requesterName} wants to connect with you on Golf Course Ranks.\n\nReview request: ${friendsUrl}\nView their profile: ${requesterUrl}`;
+
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -107,9 +171,9 @@ async function sendAuthLinkEmail(input: {
       from,
       to: [input.to],
       reply_to: replyTo,
-      subject: input.subject,
+      subject,
       html,
-      text: `${intro}\n\n${input.actionLink}`
+      text
     })
   });
 
@@ -668,6 +732,17 @@ export async function sendFriendRequest(email: string): Promise<ActionResult<nul
     };
   }
 
+  try {
+    await sendFriendRequestEmail({
+      to: cleanedEmail,
+      recipientName: target.data.display_name ?? target.data.handle ?? "there",
+      requesterName: viewer.profile?.display_name ?? viewer.profile?.handle ?? "A golfer",
+      requesterHandle: viewer.profile?.handle ?? "golfer"
+    });
+  } catch {
+    // Best effort: the request itself should still succeed even if email delivery is down.
+  }
+
   revalidateApp(viewer.profile?.handle);
   return {
     ok: true,
@@ -715,6 +790,19 @@ export async function sendFriendRequestToUser(targetUserId: string): Promise<Act
       ok: false,
       message: insert.error.message
     };
+  }
+
+  if (target.email) {
+    try {
+      await sendFriendRequestEmail({
+        to: target.email,
+        recipientName: target.display_name ?? target.handle ?? "there",
+        requesterName: viewer.profile?.display_name ?? viewer.profile?.handle ?? "A golfer",
+        requesterHandle: viewer.profile?.handle ?? "golfer"
+      });
+    } catch {
+      // Best effort: do not block the connection flow on email delivery.
+    }
   }
 
   revalidateApp(viewer.profile?.handle);
