@@ -131,6 +131,7 @@ export async function sendFriendRequestReceivedEmail(input: {
 }) {
   const friendsUrl = await createEmailSignInLink(input.to, "/friends");
   const requesterUrl = `${getSiteUrl()}/u/${encodeURIComponent(input.requesterHandle)}`;
+  const requesterSignInUrl = await createEmailSignInLink(input.to, requesterUrl);
 
   await sendEmail({
     to: input.to,
@@ -141,10 +142,10 @@ export async function sendFriendRequestReceivedEmail(input: {
         <p><strong>${input.requesterName}</strong> wants to connect with you on Golf Course Ranks.</p>
         <p><a href="${friendsUrl}" style="display:inline-block;padding:12px 18px;border-radius:999px;background:#162622;color:#ffffff;text-decoration:none;font-weight:600">Review request</a></p>
         <p style="font-size:14px;color:#5d6a64">You can also view their profile here:</p>
-        <p style="font-size:14px;word-break:break-all;color:#5d6a64">${requesterUrl}</p>
+        <p><a href="${requesterSignInUrl}" style="font-size:14px;word-break:break-all;color:#5d6a64">${requesterUrl}</a></p>
       </div>
     `,
-    text: `Hi ${personName(input.recipientName)},\n\n${input.requesterName} wants to connect with you on Golf Course Ranks.\n\nReview request: ${friendsUrl}\nView their profile: ${requesterUrl}`
+    text: `Hi ${personName(input.recipientName)},\n\n${input.requesterName} wants to connect with you on Golf Course Ranks.\n\nReview request: ${friendsUrl}\nView their profile: ${requesterSignInUrl}`
   });
 }
 
@@ -174,6 +175,7 @@ export async function sendFriendRequestAcceptedEmail(input: {
   }
 
   const compareSignInUrl = await createEmailSignInLink(input.to, input.compareUrl);
+  const profileSignInUrl = await createEmailSignInLink(input.to, input.profileUrl);
 
   await sendEmail({
     to: input.to,
@@ -184,10 +186,10 @@ export async function sendFriendRequestAcceptedEmail(input: {
         <p><strong>${input.accepterName}</strong> accepted your request on Golf Course Ranks.</p>
         <p><a href="${compareSignInUrl}" style="display:inline-block;padding:12px 18px;border-radius:999px;background:#162622;color:#ffffff;text-decoration:none;font-weight:600">Compare lists</a></p>
         <p style="font-size:14px;color:#5d6a64">You can also view their profile here:</p>
-        <p style="font-size:14px;word-break:break-all;color:#5d6a64">${input.profileUrl}</p>
+        <p><a href="${profileSignInUrl}" style="font-size:14px;word-break:break-all;color:#5d6a64">${input.profileUrl}</a></p>
       </div>
     `,
-    text: `Hi ${personName(input.requesterName)},\n\n${input.accepterName} accepted your request on Golf Course Ranks.\n\nCompare lists: ${compareSignInUrl}\nView profile: ${input.profileUrl}`
+    text: `Hi ${personName(input.requesterName)},\n\n${input.accepterName} accepted your request on Golf Course Ranks.\n\nCompare lists: ${compareSignInUrl}\nView profile: ${profileSignInUrl}`
   });
 
   return true;
@@ -219,6 +221,7 @@ export async function sendInviteConversionEmail(input: {
 
   const friendsUrl = await createEmailSignInLink(input.to, "/friends?utm_source=email&utm_medium=lifecycle&utm_campaign=invite_conversion");
   const joinerProfileUrl = `${getSiteUrl()}/u/${encodeURIComponent(input.joinerHandle)}?utm_source=email&utm_medium=lifecycle&utm_campaign=invite_conversion`;
+  const joinerProfileSignInUrl = await createEmailSignInLink(input.to, joinerProfileUrl);
 
   await sendEmail({
     to: input.to,
@@ -229,10 +232,10 @@ export async function sendInviteConversionEmail(input: {
         <p><strong>${input.joinerName}</strong> joined Golf Course Ranks through your invite link.</p>
         <p><a href="${friendsUrl}" style="display:inline-block;padding:12px 18px;border-radius:999px;background:#162622;color:#ffffff;text-decoration:none;font-weight:600">See your new friend</a></p>
         <p style="font-size:14px;color:#5d6a64">Their profile is ready here:</p>
-        <p style="font-size:14px;word-break:break-all;color:#5d6a64">${joinerProfileUrl}</p>
+        <p><a href="${joinerProfileSignInUrl}" style="font-size:14px;word-break:break-all;color:#5d6a64">${joinerProfileUrl}</a></p>
       </div>
     `,
-    text: `Hi ${personName(input.inviterName)},\n\n${input.joinerName} joined Golf Course Ranks through your invite link.\n\nSee your new friend: ${friendsUrl}\nView profile: ${joinerProfileUrl}`
+    text: `Hi ${personName(input.inviterName)},\n\n${input.joinerName} joined Golf Course Ranks through your invite link.\n\nSee your new friend: ${friendsUrl}\nView profile: ${joinerProfileSignInUrl}`
   });
 
   return true;
