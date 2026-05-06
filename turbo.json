@@ -1,5 +1,20 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": [
+    "APP_SLUG",
+    "APP_DB_SCHEMA",
+    "ADMIN_ALLOWLIST_EMAILS",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "RESEND_API_KEY",
+    "RESEND_FROM_EMAIL",
+    "RESEND_REPLY_TO",
+    "CRON_SECRET",
+    "APP_CRON_SECRET",
+    "NEXT_PUBLIC_SUPABASE_URL",
+    "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+    "NEXT_PUBLIC_SITE_URL"
+  ],
   "tasks": {
     "dev": {
       "cache": false,
