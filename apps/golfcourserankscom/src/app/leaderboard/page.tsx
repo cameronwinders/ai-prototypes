@@ -130,39 +130,28 @@ export default async function LeaderboardPage({
                       </div>
                     </div>
 
-                    <div className="mt-4 flex flex-wrap items-center gap-2">
-                      <span
-                        className={`rounded-full px-3 py-2 text-sm font-semibold ${
-                          course.numUniqueGolfers === 0
-                            ? "border border-[rgba(217,191,141,0.4)] bg-[rgba(255,248,236,0.95)] text-[rgb(120,88,38)]"
-                            : "bg-[var(--pine-soft)] text-[var(--pine)]"
-                        }`}
-                      >
-                        {course.numUniqueGolfers === 0 ? "Starting score" : "Crowd score"} {course.normalizedScore.toFixed(1)}
-                      </span>
-                      <span className="rounded-full border border-[var(--line)] px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
-                        {pluralize(course.numUniqueGolfers, "golfer")}
-                      </span>
-                    </div>
-
-                    {earlySignalLabel ? (
-                      <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
-                        <span className="rounded-full bg-[rgba(217,191,141,0.18)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[rgb(120,88,38)]">
-                          {earlySignalLabel}
+                    <div className="mt-4 grid grid-cols-[minmax(0,1fr)_9.75rem] items-start gap-3">
+                      <div className="min-w-0 space-y-3">
+                        <span
+                          className={`inline-flex rounded-full px-3 py-2 text-sm font-semibold ${
+                            course.numUniqueGolfers === 0
+                              ? "border border-[rgba(217,191,141,0.4)] bg-[rgba(255,248,236,0.95)] text-[rgb(120,88,38)]"
+                              : "bg-[var(--pine-soft)] text-[var(--pine)]"
+                          }`}
+                        >
+                          {course.numUniqueGolfers === 0 ? "Starting score" : "Crowd score"} {course.normalizedScore.toFixed(1)}
                         </span>
+                        <div>
+                          <span className="inline-flex rounded-full border border-[var(--line)] px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)]">
+                            {pluralize(course.numUniqueGolfers, "golfer")}
+                          </span>
+                          {earlySignalLabel ? (
+                            <p className="mt-2 text-xs leading-5 text-[rgb(120,88,38)]">{earlySignalLabel}</p>
+                          ) : null}
+                        </div>
                       </div>
-                    ) : null}
 
-                    <div className="mt-4 rounded-[1.35rem] border border-[var(--line)] bg-[rgba(255,255,255,0.84)] p-3">
-                      <div className="mb-2 flex items-center justify-between gap-3">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
-                          Rank comparison
-                        </p>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
-                          Position
-                        </p>
-                      </div>
-                      <div className="overflow-hidden rounded-[1rem] border border-[rgba(28,41,36,0.08)] bg-[rgba(246,243,236,0.92)]">
+                      <div className="overflow-hidden rounded-[1.25rem] border border-[var(--line)] bg-[rgba(246,243,236,0.92)]">
                         {MOBILE_RANK_STACK.map((entry, index) => {
                           const value =
                             entry.key === "crowd"
@@ -172,20 +161,18 @@ export default async function LeaderboardPage({
                           return (
                             <div
                               key={entry.key}
-                              className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 ${
+                              className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-2.5 ${
                                 index === MOBILE_RANK_STACK.length - 1 ? "" : "border-b border-[rgba(28,41,36,0.08)]"
                               }`}
                             >
                               <span
-                                className={`min-w-0 text-sm font-semibold tracking-[-0.02em] ${
+                                className={`min-w-0 text-[11px] font-semibold uppercase tracking-[0.14em] ${
                                   entry.key === "crowd" ? "text-[var(--ink)]" : "text-[var(--muted)]"
                                 }`}
                               >
                                 {entry.label}
                               </span>
-                              <span className="rounded-full bg-white/85 px-3 py-1 text-sm font-semibold tracking-[-0.02em] text-[var(--ink)]">
-                                {value}
-                              </span>
+                              <span className="text-sm font-semibold tracking-[-0.02em] text-[var(--ink)]">{value}</span>
                             </div>
                           );
                         })}
