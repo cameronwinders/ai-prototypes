@@ -15,6 +15,13 @@ import {
   searchDiscoverableProfiles,
   upsertProfileSettings
 } from "@/lib/data";
+import {
+  processUnrankedReminderEmails,
+  sendAuthMagicLinkEmail,
+  sendFriendRequestAcceptedEmail,
+  sendFriendRequestReceivedEmail,
+  sendInviteConversionEmail
+} from "@/lib/email-notifications";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getSiteUrl } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -66,120 +73,6 @@ function appPaths(handle?: string | null) {
 function revalidateApp(handle?: string | null) {
   for (const path of appPaths(handle)) {
     revalidatePath(path);
-  }
-}
-
-async function sendAuthLinkEmail(input: {
-  to: string;
-  subject: string;
-  actionLink: string;
-  mode: AuthMode;
-}) {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM_EMAIL ?? "Golf Course Ranks <hello@golfcourseranks.com>";
-  const replyTo = process.env.RESEND_REPLY_TO?.trim() || undefined;
-
-  if (!apiKey) {
-    throw new Error("Email delivery is not configured.");
-  }
-
-  async function sendEmail(payload: {
-    to: string;
-    subject: string;
-    html: string;
-    text: string;
-  }) {
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        from,
-        to: [payload.to],
-        reply_to: replyTo,
-        subject: payload.subject,
-        html: payload.html,
-        text: payload.text
-      })
-    });
-
-    if (!response.ok) {
-      const detail = await response.text();
-      throw new Error(`Email delivery failed: ${detail}`);
-    }
-  }
-
-  const intro =
-    input.mode === "sign-up"
-      ? "Open the secure link below to confirm your Golf Course Ranks account and finish your handicap setup."
-      : "Open the secure link below to sign in to Golf Course Ranks.";
-
-  const html = `
-    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#14231d">
-      <p>${intro}</p>
-      <p><a href="${input.actionLink}" style="display:inline-block;padding:12px 18px;border-radius:999px;background:#162622;color:#ffffff;text-decoration:none;font-weight:600">Open Golf Course Ranks</a></p>
-      <p style="font-size:14px;color:#5d6a64">If the button does not work, copy and paste this link into your browser:</p>
-      <p style="font-size:14px;word-break:break-all;color:#5d6a64">${input.actionLink}</p>
-    </div>
-  `;
-
-  await sendEmail({
-    to: input.to,
-    subject: input.subject,
-    html,
-    text: `${intro}\n\n${input.actionLink}`
-  });
-}
-
-async function sendFriendRequestEmail(input: {
-  to: string;
-  recipientName: string;
-  requesterName: string;
-  requesterHandle: string;
-}) {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM_EMAIL ?? "Golf Course Ranks <hello@golfcourseranks.com>";
-  const replyTo = process.env.RESEND_REPLY_TO?.trim() || undefined;
-
-  if (!apiKey) {
-    throw new Error("Email delivery is not configured.");
-  }
-
-  const friendsUrl = `${getSiteUrl()}/friends`;
-  const requesterUrl = `${getSiteUrl()}/u/${encodeURIComponent(input.requesterHandle)}`;
-  const subject = `${input.requesterName} sent you a Golf Course Ranks request`;
-  const html = `
-    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#14231d">
-      <p>Hi ${input.recipientName},</p>
-      <p><strong>${input.requesterName}</strong> wants to connect with you on Golf Course Ranks.</p>
-      <p><a href="${friendsUrl}" style="display:inline-block;padding:12px 18px;border-radius:999px;background:#162622;color:#ffffff;text-decoration:none;font-weight:600">Review request</a></p>
-      <p style="font-size:14px;color:#5d6a64">You can also view their profile here:</p>
-      <p style="font-size:14px;word-break:break-all;color:#5d6a64">${requesterUrl}</p>
-    </div>
-  `;
-  const text = `Hi ${input.recipientName},\n\n${input.requesterName} wants to connect with you on Golf Course Ranks.\n\nReview request: ${friendsUrl}\nView their profile: ${requesterUrl}`;
-
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      from,
-      to: [input.to],
-      reply_to: replyTo,
-      subject,
-      html,
-      text
-    })
-  });
-
-  if (!response.ok) {
-    const detail = await response.text();
-    throw new Error(`Email delivery failed: ${detail}`);
   }
 }
 
@@ -367,7 +260,7 @@ export async function requestSignInLink(input: {
   const actionLink = `${getSiteUrl()}/api/auth/callback?token_hash=${encodeURIComponent(hashedToken)}&type=${encodeURIComponent(verificationType)}&next=${encodeURIComponent(next)}`;
 
   try {
-    await sendAuthLinkEmail({
+    await sendAuthMagicLinkEmail({
       to: email,
       subject:
         input.mode === "sign-up"
@@ -733,7 +626,7 @@ export async function sendFriendRequest(email: string): Promise<ActionResult<nul
   }
 
   try {
-    await sendFriendRequestEmail({
+    await sendFriendRequestReceivedEmail({
       to: cleanedEmail,
       recipientName: target.data.display_name ?? target.data.handle ?? "there",
       requesterName: viewer.profile?.display_name ?? viewer.profile?.handle ?? "A golfer",
@@ -794,7 +687,7 @@ export async function sendFriendRequestToUser(targetUserId: string): Promise<Act
 
   if (target.email) {
     try {
-      await sendFriendRequestEmail({
+      await sendFriendRequestReceivedEmail({
         to: target.email,
         recipientName: target.display_name ?? target.handle ?? "there",
         requesterName: viewer.profile?.display_name ?? viewer.profile?.handle ?? "A golfer",
@@ -838,6 +731,7 @@ export async function acceptInviteFromHandle(handle: string): Promise<ActionResu
 
   const existing = await getFriendshipBetweenUsers(viewer.user!.id, inviter.id);
   const admin = createAdminClient();
+  let acceptedNow = false;
 
   if (existing?.status === "accepted") {
     return {
@@ -862,6 +756,7 @@ export async function acceptInviteFromHandle(handle: string): Promise<ActionResu
         message: update.error.message
       };
     }
+    acceptedNow = true;
   } else {
     const insert = await admin.from("friendships").insert({
       requester_user_id: inviter.id,
@@ -876,6 +771,7 @@ export async function acceptInviteFromHandle(handle: string): Promise<ActionResu
         message: insert.error.message
       };
     }
+    acceptedNow = true;
   }
 
   await logAnalyticsEvent({
@@ -885,6 +781,22 @@ export async function acceptInviteFromHandle(handle: string): Promise<ActionResu
       inviter_handle: inviter.handle
     }
   });
+
+  if (acceptedNow && inviter.email) {
+    try {
+      await sendInviteConversionEmail({
+        to: inviter.email,
+        inviterName: inviter.display_name ?? inviter.handle ?? "there",
+        inviterUserId: inviter.id,
+        inviterHandle: inviter.handle,
+        joinerName: viewer.profile?.display_name ?? viewer.profile?.handle ?? "A golfer",
+        joinerUserId: viewer.user!.id,
+        joinerHandle: viewer.profile?.handle ?? "golfer"
+      });
+    } catch {
+      // Best effort: the connection should still complete even if email delivery is down.
+    }
+  }
 
   revalidateApp(viewer.profile?.handle);
   revalidateApp(inviter.handle);
@@ -942,6 +854,27 @@ export async function respondToFriendRequest(
       ok: false,
       message: update.error.message
     };
+  }
+
+  if (status === "accepted") {
+    const requester = await getProfileById(friendship.data.requester_user_id);
+
+    if (requester?.email) {
+      try {
+        await sendFriendRequestAcceptedEmail({
+          to: requester.email,
+          requesterName: requester.display_name ?? requester.handle ?? "there",
+          accepterName: viewer.profile?.display_name ?? viewer.profile?.handle ?? "A golfer",
+          compareUrl: `${getSiteUrl()}/compare/${encodeURIComponent(viewer.profile?.handle ?? viewer.user!.id)}?utm_source=email&utm_medium=lifecycle&utm_campaign=friend_request_accepted`,
+          profileUrl: `${getSiteUrl()}/u/${encodeURIComponent(viewer.profile?.handle ?? viewer.user!.id)}?utm_source=email&utm_medium=lifecycle&utm_campaign=friend_request_accepted`,
+          friendshipId,
+          requesterUserId: requester.id,
+          accepterUserId: viewer.user!.id
+        });
+      } catch {
+        // Best effort: accepting the request should still succeed even if email delivery fails.
+      }
+    }
   }
 
   revalidateApp(viewer.profile?.handle);
@@ -1039,4 +972,8 @@ export async function refreshProfileFromSession() {
   if (user) {
     await ensureProfileForUser(user);
   }
+}
+
+export async function runUnrankedReminderSweep() {
+  return processUnrankedReminderEmails();
 }

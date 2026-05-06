@@ -2,6 +2,12 @@ export const HANDICAP_OPTIONS = ["0-5", "6-10", "11-18", "19+"] as const;
 export const FEEDBACK_TYPES = ["bug", "feature", "general", "course-addition"] as const;
 export const FRIENDSHIP_STATUSES = ["pending", "accepted"] as const;
 export const PROFILE_VISIBILITY_OPTIONS = ["public", "friends_only", "private"] as const;
+export const EMAIL_NOTIFICATION_TYPES = [
+  "friend-request-received",
+  "friend-request-accepted",
+  "invite-conversion",
+  "unranked-reminder"
+] as const;
 export const EDITORIAL_LISTS = [
   { key: "golf-digest-public", label: "Golf Digest", sourceName: "Golf Digest Public" },
   { key: "golf-top-100", label: "GOLF.com", sourceName: "GOLF Top 100" },
@@ -12,6 +18,7 @@ export type HandicapBand = (typeof HANDICAP_OPTIONS)[number];
 export type FeedbackType = (typeof FEEDBACK_TYPES)[number];
 export type FriendshipStatus = (typeof FRIENDSHIP_STATUSES)[number];
 export type ProfileVisibility = (typeof PROFILE_VISIBILITY_OPTIONS)[number];
+export type EmailNotificationType = (typeof EMAIL_NOTIFICATION_TYPES)[number];
 export type EditorialKey = (typeof EDITORIAL_LISTS)[number]["key"];
 
 export type UserProfile = {
@@ -213,6 +220,17 @@ export type DiscoverableProfile = {
   email: string | null;
   home_state: string | null;
   handicap_band: HandicapBand | null;
+};
+
+export type UnrankedReminderCandidate = {
+  profile: UserProfile;
+  playedCount: number;
+  rankedCount: number;
+  latestPlayedAt: string;
+  sampleCourses: string[];
+  reminderCount: number;
+  remindersLast14Days: number;
+  lastReminderAt: string | null;
 };
 
 export type AnalyticsEventName =

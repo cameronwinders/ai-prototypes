@@ -19,6 +19,7 @@ import type {
   CourseDetail,
   CourseRecord,
   DiscoverableProfile,
+  EmailNotificationType,
   FeedbackRecord,
   FriendCard,
   FriendshipRecord,
@@ -32,6 +33,7 @@ import type {
   ProfileVisibility,
   PublicProfileOverview,
   RankedCourse,
+  UnrankedReminderCandidate,
   UserProfile
 } from "@/lib/types";
 
@@ -877,6 +879,178 @@ export async function getAppOverviewStats() {
     golferCount: golferCount ?? 0,
     signalCount: signalCount ?? 0
   };
+}
+
+export async function recordEmailNotification(input: {
+  recipientUserId: string;
+  notificationType: EmailNotificationType;
+  dedupeKey: string;
+  actorUserId?: string | null;
+  payload?: Record<string, unknown>;
+}) {
+  const { configured } = ensureConfigured();
+
+  if (!configured) {
+    return false;
+  }
+
+  const admin = createAdminClient();
+  const result = await admin.from("email_notifications").insert({
+    recipient_user_id: input.recipientUserId,
+    actor_user_id: input.actorUserId ?? null,
+    notification_type: input.notificationType,
+    dedupe_key: input.dedupeKey,
+    payload: input.payload ?? {}
+  });
+
+  if (result.error) {
+    if (result.error.code === "23505") {
+      return false;
+    }
+
+    throw new Error(result.error.message);
+  }
+
+  return true;
+}
+
+export async function getUnrankedReminderCandidates() {
+  const { configured } = ensureConfigured();
+
+  if (!configured) {
+    return [] as UnrankedReminderCandidate[];
+  }
+
+  const admin = createAdminClient();
+  const [{ data: usersData, error: usersError }, { data: playedData, error: playedError }, { data: rankedData, error: rankedError }, { data: notificationData, error: notificationError }] =
+    await Promise.all([
+      admin.from("users").select("*").eq("onboarding_completed", true).not("email", "is", null),
+      admin.from("played_courses").select("user_id, course_id, played_at"),
+      admin.from("user_course_ranks").select("user_id, course_id"),
+      admin
+        .from("email_notifications")
+        .select("recipient_user_id, notification_type, created_at")
+        .eq("notification_type", "unranked-reminder")
+    ]);
+
+  if (usersError) {
+    throw new Error(usersError.message);
+  }
+
+  if (playedError) {
+    throw new Error(playedError.message);
+  }
+
+  if (rankedError) {
+    throw new Error(rankedError.message);
+  }
+
+  if (notificationError) {
+    throw new Error(notificationError.message);
+  }
+
+  const users = (usersData ?? []) as UserProfile[];
+  const playedRows = (playedData ?? []) as Array<{ user_id: string; course_id: string; played_at: string }>;
+  const rankedRows = (rankedData ?? []) as Array<{ user_id: string; course_id: string }>;
+  const notificationRows = (notificationData ?? []) as Array<{
+    recipient_user_id: string;
+    notification_type: EmailNotificationType;
+    created_at: string;
+  }>;
+
+  const playedByUser = new Map<string, Array<{ courseId: string; playedAt: string }>>();
+  const rankedByUser = new Map<string, Set<string>>();
+  const reminderByUser = new Map<string, string[]>();
+
+  for (const row of playedRows) {
+    const current = playedByUser.get(row.user_id) ?? [];
+    current.push({ courseId: row.course_id, playedAt: row.played_at });
+    playedByUser.set(row.user_id, current);
+  }
+
+  for (const row of rankedRows) {
+    const current = rankedByUser.get(row.user_id) ?? new Set<string>();
+    current.add(row.course_id);
+    rankedByUser.set(row.user_id, current);
+  }
+
+  for (const row of notificationRows) {
+    const current = reminderByUser.get(row.recipient_user_id) ?? [];
+    current.push(row.created_at);
+    reminderByUser.set(row.recipient_user_id, current);
+  }
+
+  const allCourseIds = Array.from(new Set(playedRows.map((row) => row.course_id)));
+  const allCourses = await getCoursesByIds(allCourseIds);
+  const courseNameById = new Map(allCourses.map((course) => [course.id, course.name]));
+  const now = Date.now();
+  const twentyFourHoursMs = 24 * 60 * 60 * 1000;
+  const seventyTwoHoursMs = 72 * 60 * 60 * 1000;
+  const fourteenDaysMs = 14 * 24 * 60 * 60 * 1000;
+
+  const candidates = users
+    .map<UnrankedReminderCandidate | null>((profile) => {
+      const played = [...(playedByUser.get(profile.id) ?? [])].sort((left, right) =>
+        right.playedAt.localeCompare(left.playedAt)
+      );
+      const ranked = rankedByUser.get(profile.id) ?? new Set<string>();
+
+      if (played.length === 0) {
+        return null;
+      }
+
+      const rankedCount = ranked.size;
+      const qualifies = (played.length >= 3 && rankedCount === 0) || (played.length >= 5 && rankedCount < 3);
+
+      if (!qualifies) {
+        return null;
+      }
+
+      const latestPlayedAt = played[0]?.playedAt;
+      if (!latestPlayedAt) {
+        return null;
+      }
+
+      const reminderDates = (reminderByUser.get(profile.id) ?? []).sort((left, right) => right.localeCompare(left));
+      const reminderCount = reminderDates.length;
+      const remindersLast14Days = reminderDates.filter((date) => now - new Date(date).getTime() < fourteenDaysMs).length;
+      const lastReminderAt = reminderDates[0] ?? null;
+      const msSinceLatestPlayed = now - new Date(latestPlayedAt).getTime();
+      const msSinceLastReminder = lastReminderAt ? now - new Date(lastReminderAt).getTime() : Number.MAX_SAFE_INTEGER;
+
+      if (reminderCount >= 3) {
+        return null;
+      }
+
+      if (remindersLast14Days >= 2) {
+        return null;
+      }
+
+      if (reminderCount === 0 && msSinceLatestPlayed < twentyFourHoursMs) {
+        return null;
+      }
+
+      if (reminderCount > 0 && msSinceLastReminder < seventyTwoHoursMs) {
+        return null;
+      }
+
+      return {
+        profile,
+        playedCount: played.length,
+        rankedCount,
+        latestPlayedAt,
+        sampleCourses: played
+          .slice(0, 3)
+          .map((row) => courseNameById.get(row.courseId))
+          .filter(Boolean) as string[],
+        reminderCount,
+        remindersLast14Days,
+        lastReminderAt
+      };
+    })
+    .filter(Boolean) as UnrankedReminderCandidate[];
+
+  return candidates.sort((left, right) => right.latestPlayedAt.localeCompare(left.latestPlayedAt));
 }
 
 export async function getProfileSummary(viewerId: string) {
