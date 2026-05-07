@@ -161,6 +161,44 @@ export function getEditorialConsensusRank(course: Pick<CourseRecord, "editorialR
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
+export function getEditorialGap(course: Pick<LeaderboardCourse, "editorialConsensusRank" | "leaderboardRank">) {
+  if (course.editorialConsensusRank === null || course.editorialConsensusRank === undefined) {
+    return null;
+  }
+
+  return Number((course.editorialConsensusRank - course.leaderboardRank).toFixed(1));
+}
+
+export function formatRankPosition(rank: number | null | undefined) {
+  if (rank === null || rank === undefined) {
+    return "\u2014";
+  }
+
+  const rounded = Math.round(rank * 10) / 10;
+  return Number.isInteger(rounded) ? `#${rounded.toFixed(0)}` : `#${rounded.toFixed(1)}`;
+}
+
+export function getRankDeltaDisplay(delta: number | null | undefined) {
+  if (delta === null || delta === undefined) {
+    return null;
+  }
+
+  const rounded = Math.round(delta);
+  if (rounded === 0) {
+    return {
+      direction: "flat" as const,
+      value: 0,
+      label: "Even with editorials"
+    };
+  }
+
+  return {
+    direction: rounded > 0 ? ("up" as const) : ("down" as const),
+    value: Math.abs(rounded),
+    label: rounded > 0 ? `${Math.abs(rounded)} better than editorials` : `${Math.abs(rounded)} behind editorials`
+  };
+}
+
 export function buildRankSignal(input: {
   crowdRank: number;
   normalizedScore: number;
@@ -276,12 +314,19 @@ export function toLeaderboardCourse(
   aggregate: CourseAggregateRecord | null,
   fallback: Partial<LeaderboardCourse> = {}
 ): LeaderboardCourse {
+  const editorialConsensusRank = getEditorialConsensusRank(course);
+  const leaderboardRank = aggregate?.rank ?? fallback.leaderboardRank ?? course.seed_rank;
+  const editorialGap =
+    fallback.editorialGap ?? (editorialConsensusRank === null ? null : Number((editorialConsensusRank - leaderboardRank).toFixed(1)));
+
   return {
     ...course,
-    leaderboardRank: aggregate?.rank ?? fallback.leaderboardRank ?? course.seed_rank,
+    leaderboardRank,
     normalizedScore: aggregate?.normalized_score ?? fallback.normalizedScore ?? 0,
     score: aggregate?.score ?? fallback.score ?? course.seed_score,
     crowdScore: aggregate?.crowd_score ?? fallback.crowdScore ?? 0,
+    editorialConsensusRank,
+    editorialGap,
     numSignals: aggregate?.num_signals ?? fallback.numSignals ?? 0,
     numUniqueGolfers: aggregate?.num_unique_golfers ?? fallback.numUniqueGolfers ?? 0,
     wins: aggregate?.wins ?? fallback.wins ?? 0,

@@ -4,7 +4,7 @@ import { AvatarStack } from "@/components/InitialsAvatar";
 import { PlayedButton } from "@/components/PlayActions";
 import { RankSignal } from "@/components/RankSignal";
 import { EDITORIAL_LISTS, type LeaderboardCourse } from "@/lib/types";
-import { formatCrowdScore } from "@/lib/ranking";
+import { formatCrowdScore, formatRankPosition, getRankDeltaDisplay } from "@/lib/ranking";
 
 type CourseRowProps = {
   course: LeaderboardCourse;
@@ -12,8 +12,25 @@ type CourseRowProps = {
   actionLabel?: string;
 };
 
-function formatEditorialPosition(position?: number) {
-  return position ? `#${position}` : "\u2014";
+function formatEditorialPosition(position?: number | null) {
+  return formatRankPosition(position);
+}
+
+function GapBadge({ delta }: { delta: number | null }) {
+  const display = getRankDeltaDisplay(delta);
+
+  if (!display) {
+    return <span className="pill pill-line">No editorial avg</span>;
+  }
+
+  const isUp = display.direction === "up";
+  const isFlat = display.direction === "flat";
+
+  return (
+    <span className={`pill ${isFlat ? "pill-line" : isUp ? "pill-pine" : "pill-warning"}`}>
+      {isFlat ? "Even" : isUp ? "\u2191" : "\u2193"} {display.value}
+    </span>
+  );
 }
 
 export function CourseRow({ course, href, actionLabel }: CourseRowProps) {
@@ -38,7 +55,9 @@ export function CourseRow({ course, href, actionLabel }: CourseRowProps) {
           <span className={`pill ${course.isEarly ? "pill-warning" : "pill-pine"}`}>
             {course.isEarly ? "Starting score" : "Crowd score"} {formatCrowdScore(course.normalizedScore)}
           </span>
-              {course.rankSignal ? <RankSignal signal={course.rankSignal} /> : null}
+          <span className="pill pill-line">Editorial avg {formatRankPosition(course.editorialConsensusRank)}</span>
+          <GapBadge delta={course.editorialGap} />
+          {course.rankSignal ? <RankSignal signal={course.rankSignal} /> : null}
           {course.viewerPlayed ? <PlayedButton /> : null}
           {EDITORIAL_LISTS.map((editorial) => (
             <span key={editorial.key} className="pill pill-line">

@@ -4,7 +4,7 @@ import { AvatarStack } from "@/components/InitialsAvatar";
 import { LeaderboardFilterPanel } from "@/components/LeaderboardFilterPanel";
 import { RankSignal } from "@/components/RankSignal";
 import { getAllCourses, getAppOverviewStats, getLeaderboardCourses } from "@/lib/data";
-import { formatCrowdScore, formatLocation, pluralize } from "@/lib/ranking";
+import { formatCrowdScore, formatLocation, formatRankPosition, getRankDeltaDisplay, pluralize } from "@/lib/ranking";
 import { EDITORIAL_LISTS, HANDICAP_OPTIONS, RANK_SIGNAL_OPTIONS, type RankSignalFilter } from "@/lib/types";
 import { getViewerContext } from "@/lib/viewer";
 
@@ -18,13 +18,37 @@ const SORT_OPTIONS = [
 
 const MOBILE_RANK_STACK = [
   { key: "crowd", label: "Crowd" },
+  { key: "editorial", label: "Editorial avg" },
   { key: "golf-top-100", label: "GOLF.com" },
   { key: "golf-digest-public", label: "Golf Digest" },
   { key: "golfweek-you-can-play", label: "Golfweek" }
 ] as const;
 
-function formatEditorialPosition(position?: number) {
-  return position ? `#${position}` : "\u2014";
+function formatEditorialPosition(position?: number | null) {
+  return formatRankPosition(position);
+}
+
+function GapBadge({ delta }: { delta: number | null }) {
+  const display = getRankDeltaDisplay(delta);
+
+  if (!display) {
+    return <span className="pill pill-line pill-sentence">No editorial average</span>;
+  }
+
+  const isUp = display.direction === "up";
+  const isFlat = display.direction === "flat";
+
+  return (
+    <span
+      className={`pill pill-sentence ${
+        isFlat ? "pill-line" : isUp ? "pill-pine" : "pill-warning"
+      }`}
+      title={display.label}
+    >
+      {isFlat ? "Even" : isUp ? "\u2191" : "\u2193"} {display.value}
+      {!isFlat ? ` ${isUp ? "better" : "behind"}` : ""}
+    </span>
+  );
 }
 
 function golferSignalLabel(count: number) {
@@ -138,6 +162,10 @@ export default async function LeaderboardPage({
                         <span className={`pill ${course.isEarly ? "pill-warning" : "pill-pine"} pill-sentence`}>
                           {course.isEarly ? "Starting score" : "Crowd score"} {formatCrowdScore(course.normalizedScore)}
                         </span>
+                        <span className="pill pill-line pill-sentence">
+                          Editorial avg {formatRankPosition(course.editorialConsensusRank)}
+                        </span>
+                        <GapBadge delta={course.editorialGap} />
                         <span className="pill pill-line pill-sentence">{golferSignalLabel(course.numUniqueGolfers)}</span>
                         {course.viewerPlayed ? <span className="pill pill-pine pill-sentence">Played by you</span> : null}
                         {course.rankSignal ? (
@@ -151,28 +179,39 @@ export default async function LeaderboardPage({
                       {MOBILE_RANK_STACK.map((entry, index) => {
                         const value =
                           entry.key === "crowd"
-                            ? `#${course.leaderboardRank}`
+                            ? formatRankPosition(course.leaderboardRank)
+                            : entry.key === "editorial"
+                              ? formatRankPosition(course.editorialConsensusRank)
                             : formatEditorialPosition(course.editorialRanks?.[entry.key]);
 
                         const isCrowd = entry.key === "crowd";
+                        const isEditorial = entry.key === "editorial";
 
                         return (
                           <div
                             key={entry.key}
                             className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-2.5 ${
-                              isCrowd ? "bg-[rgba(49,107,83,0.16)]" : "bg-transparent"
+                              isCrowd
+                                ? "bg-[rgba(49,107,83,0.16)]"
+                                : isEditorial
+                                  ? "bg-[rgba(201,211,203,0.34)]"
+                                  : "bg-transparent"
                             } ${
                               index === MOBILE_RANK_STACK.length - 1 ? "" : "border-b border-[rgba(28,41,36,0.08)]"
                             }`}
                           >
                             <span
                               className={`min-w-0 text-[11px] uppercase tracking-[0.14em] ${
-                                isCrowd ? "font-bold text-ink" : "font-semibold text-muted"
+                                isCrowd ? "font-bold text-ink" : isEditorial ? "font-bold text-ink" : "font-semibold text-muted"
                               }`}
                             >
                               {entry.label}
                             </span>
-                            <span className={`text-sm tracking-[-0.02em] text-ink ${isCrowd ? "font-bold" : "font-semibold"}`}>
+                            <span
+                              className={`text-sm tracking-[-0.02em] text-ink ${
+                                isCrowd || isEditorial ? "font-bold" : "font-semibold"
+                              }`}
+                            >
                               {value}
                             </span>
                           </div>
@@ -194,6 +233,18 @@ export default async function LeaderboardPage({
                       </th>
                       <th className="px-5 py-4">Course</th>
                       <th className="px-5 py-4">Golfers</th>
+                      <th
+                        className="px-5 py-4"
+                        title="Average of the available editorial rankings for this course."
+                      >
+                        Editorial avg
+                      </th>
+                      <th
+                        className="px-5 py-4"
+                        title="How many ranking spots better or worse the crowd has this course versus the editorial average."
+                      >
+                        Crowd vs editorial
+                      </th>
                       {EDITORIAL_LISTS.map((editorial) => (
                         <th
                           key={editorial.key}
@@ -238,6 +289,20 @@ export default async function LeaderboardPage({
                               <span className="text-xs uppercase tracking-[0.12em] text-muted">Friends played</span>
                             </div>
                           ) : null}
+                        </td>
+                        <td className="px-5 py-5 align-top">
+                          <div className="text-base font-semibold text-ink">
+                            {formatRankPosition(course.editorialConsensusRank)}
+                          </div>
+                          <div className="mt-2 text-xs uppercase tracking-[0.14em] text-muted">
+                            Avg of listed editorials
+                          </div>
+                        </td>
+                        <td className="px-5 py-5 align-top">
+                          <GapBadge delta={course.editorialGap} />
+                          <div className="mt-2 text-xs uppercase tracking-[0.14em] text-muted">
+                            Crowd rank vs avg editorial
+                          </div>
                         </td>
                         {EDITORIAL_LISTS.map((editorial) => (
                           <td key={editorial.key} className="px-5 py-5 align-top">

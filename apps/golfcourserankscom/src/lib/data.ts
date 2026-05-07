@@ -7,6 +7,7 @@ import {
   buildRankSignal,
   compareRankings,
   computeCourseScore,
+  getEditorialGap,
   getEditorialConsensusRank,
   matchesRankSignalFilter,
   slugifyCourseName,
@@ -717,6 +718,8 @@ async function buildFilteredLeaderboard(handicapBand: HandicapBand, minSignals: 
       ...course,
       score,
       crowdScore: Number((score - course.seed_score).toFixed(2)),
+      editorialConsensusRank: getEditorialConsensusRank(course),
+      editorialGap: null,
       numSignals: stats.numSignals,
       numUniqueGolfers,
       wins: stats.wins,
@@ -736,7 +739,11 @@ async function buildFilteredLeaderboard(handicapBand: HandicapBand, minSignals: 
     })
   ).map((course, index) => ({
     ...course,
-    leaderboardRank: index + 1
+    leaderboardRank: index + 1,
+    editorialGap:
+      course.editorialConsensusRank === null
+        ? null
+        : Number((course.editorialConsensusRank - (index + 1)).toFixed(1))
   }));
 
   return normalized.slice(0, limit);
@@ -831,9 +838,14 @@ export async function getLeaderboardCourses(options?: {
       getRankSignalMap(sortedRows)
     ]);
 
-    return sortedRows
+  return sortedRows
       .map((course) => ({
         ...course,
+        editorialConsensusRank: getEditorialConsensusRank(course),
+        editorialGap: getEditorialGap({
+          editorialConsensusRank: getEditorialConsensusRank(course),
+          leaderboardRank: course.leaderboardRank
+        }),
         viewerPlayed: playedIds?.has(course.id) ?? false,
         friendPlayers: friendPresence.get(course.id) ?? [],
         rankSignal: rankSignals.get(course.id) ?? null
@@ -879,6 +891,11 @@ export async function getLeaderboardCourses(options?: {
   return sortedRows
     .map((course) => ({
       ...course,
+      editorialConsensusRank: getEditorialConsensusRank(course),
+      editorialGap: getEditorialGap({
+        editorialConsensusRank: getEditorialConsensusRank(course),
+        leaderboardRank: course.leaderboardRank
+      }),
       viewerPlayed: playedIds?.has(course.id) ?? false,
       friendPlayers: friendPresence.get(course.id) ?? [],
       rankSignal: rankSignals.get(course.id) ?? null
