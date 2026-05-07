@@ -2,8 +2,8 @@ import { SignInForm } from "@/components/SignInForm";
 
 export default function SignInPage() {
   return (
-    <div className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
-      <section className="shell-panel p-6 sm:p-8">
+    <div className="grid min-w-0 gap-6 overflow-x-hidden xl:grid-cols-[0.92fr_1.08fr]">
+      <section className="shell-panel min-w-0 p-6 sm:p-8">
         <p className="eyebrow">SIGN IN</p>
         <h1 className="h2 mt-4">The ranking list only real golfers can build</h1>
         <p className="subhed mt-4">
@@ -22,7 +22,7 @@ export default function SignInPage() {
         </div>
       </section>
 
-      <section className="shell-panel-contrast p-6 sm:p-8">
+      <section className="shell-panel-contrast min-w-0 p-6 sm:p-8">
         <p className="eyebrow">ONE-TAP EMAIL SIGN-IN</p>
         <h2 className="h3 mt-4">Email yourself the secure link</h2>
         <p className="mt-4 text-base leading-7 text-[var(--muted)]">

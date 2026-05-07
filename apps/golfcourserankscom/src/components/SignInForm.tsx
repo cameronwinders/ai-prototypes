@@ -44,12 +44,12 @@ export function SignInForm() {
   }
 
   return (
-    <form className="space-y-5" onSubmit={onSubmit}>
+    <form className="min-w-0 space-y-5 overflow-x-hidden" onSubmit={onSubmit}>
       {signedOut ? <div className="pill pill-pine pill-sentence">You have been signed out.</div> : null}
       {error ? <div className="pill pill-warning pill-sentence">{error}</div> : null}
       {message ? <div className="pill pill-pine pill-sentence">{message}</div> : null}
 
-      <div className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/85 p-1">
+      <div className="min-w-0 rounded-[var(--radius-md)] border border-[var(--line)] bg-white/85 p-1">
         <div className="grid grid-cols-2 gap-1">
           <button
             type="button"
@@ -76,7 +76,7 @@ export function SignInForm() {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="you@golfmail.com"
-          className="mt-2 w-full rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-3 text-sm text-[var(--ink)] outline-none transition focus:border-[rgba(49,107,83,0.45)]"
+          className="mt-2 min-w-0 w-full rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-3 text-sm text-[var(--ink)] outline-none transition focus:border-[rgba(49,107,83,0.45)]"
         />
       </label>
 

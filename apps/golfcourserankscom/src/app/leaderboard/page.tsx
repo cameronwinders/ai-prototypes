@@ -147,17 +147,27 @@ export default async function LeaderboardPage({
                             ? `#${course.leaderboardRank}`
                             : formatEditorialPosition(course.editorialRanks?.[entry.key]);
 
+                        const isCrowd = entry.key === "crowd";
+
                         return (
                           <div
                             key={entry.key}
                             className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-2.5 ${
+                              isCrowd ? "bg-[rgba(49,107,83,0.16)]" : "bg-transparent"
+                            } ${
                               index === MOBILE_RANK_STACK.length - 1 ? "" : "border-b border-[rgba(28,41,36,0.08)]"
                             }`}
                           >
-                            <span className={`min-w-0 text-[11px] font-semibold uppercase tracking-[0.14em] ${entry.key === "crowd" ? "text-ink" : "text-muted"}`}>
+                            <span
+                              className={`min-w-0 text-[11px] uppercase tracking-[0.14em] ${
+                                isCrowd ? "font-bold text-ink" : "font-semibold text-muted"
+                              }`}
+                            >
                               {entry.label}
                             </span>
-                            <span className="text-sm font-semibold tracking-[-0.02em] text-ink">{value}</span>
+                            <span className={`text-sm tracking-[-0.02em] text-ink ${isCrowd ? "font-bold" : "font-semibold"}`}>
+                              {value}
+                            </span>
                           </div>
                         );
                       })}

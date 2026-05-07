@@ -237,11 +237,10 @@ export function CoursesBrowser({
               const isWishlisted = wishlistIds.has(course.id);
 
               return (
-                <Link
+                <div
                   key={course.id}
-                  href={`/courses/${course.id}`}
                   data-testid={`course-card-${course.id}`}
-                  className="block rounded-lg border border-line bg-white/92 p-4 transition-[background-color,transform] duration-150 hover:-translate-y-px hover:bg-white"
+                  className="rounded-lg border border-line bg-white/92 p-4 transition-[background-color,transform] duration-150 hover:-translate-y-px hover:bg-white"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
@@ -261,17 +260,21 @@ export function CoursesBrowser({
                           </span>
                         ) : null}
                       </div>
-                      <h3 className="mt-3 text-[1.12rem] font-semibold tracking-[var(--tracking-tight)] text-ink sm:text-[1.2rem]">{course.name}</h3>
-                      <p className="meta mt-1">{formatLocation(course)}</p>
+                      <Link href={`/courses/${course.id}`} className="block">
+                        <h3 className="mt-3 text-[1.12rem] font-semibold tracking-[var(--tracking-tight)] text-ink sm:text-[1.2rem]">
+                          {course.name}
+                        </h3>
+                        <p className="meta mt-1">{formatLocation(course)}</p>
+                      </Link>
                     </div>
 
-                    <span className="shrink-0 pt-1 text-lg text-muted" aria-hidden="true">
+                    <Link href={`/courses/${course.id}`} className="shrink-0 pt-1 text-lg text-muted" aria-label={`Open ${course.name}`}>
                       &gt;
-                    </span>
+                    </Link>
                   </div>
 
                   {viewerSignedIn ? (
-                    <div className="mt-4 grid gap-2 sm:flex sm:flex-wrap" onClick={(event) => event.preventDefault()}>
+                    <div className="mt-4 grid gap-2 sm:flex sm:flex-wrap">
                       {viewerNeedsOnboarding ? (
                         <Link href={`/onboarding?next=${encodeURIComponent(`/courses/${course.id}`)}`} className="solid-button sm min-h-11 justify-center">
                           Finish profile
@@ -304,7 +307,7 @@ export function CoursesBrowser({
                       ) : null}
                     </div>
                   ) : null}
-                </Link>
+                </div>
               );
             })}
           </div>

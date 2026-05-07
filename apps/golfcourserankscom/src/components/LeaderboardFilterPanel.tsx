@@ -85,7 +85,27 @@ export function LeaderboardFilterPanel({
   return (
     <>
       <div className="sticky top-[4.7rem] z-30 rounded-lg border border-line bg-[rgba(255,252,246,0.96)] px-4 py-3 shadow-panel backdrop-blur xl:top-[6.1rem]">
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex items-center justify-between gap-3 sm:hidden">
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-ink">Filter the leaderboard</p>
+            <div className="mt-1 flex flex-wrap gap-2">
+              {selectedState ? <span className="pill pill-line pill-sentence">{selectedState}</span> : null}
+              <span className="pill pill-line pill-sentence">{sortLabel(sort)}</span>
+              {band ? <span className="pill pill-pine pill-sentence">Handicap {band}</span> : null}
+              {showActivityFilter && activity !== "all" ? (
+                <span className="pill pill-pine pill-sentence">
+                  {activity === "played" ? "Played by me" : "Not played by me"}
+                </span>
+              ) : null}
+            </div>
+          </div>
+
+          <button type="button" onClick={() => setOpen(true)} className="ghost-button sm min-h-11 shrink-0">
+            Filters
+          </button>
+        </div>
+
+        <div className="hidden flex-wrap items-center gap-2.5 sm:flex">
           <label className="sr-only" htmlFor="leaderboard-state-inline">
             State
           </label>

@@ -92,7 +92,7 @@ export function MyCoursesManager({
 }: MyCoursesManagerProps) {
   const [playedCourses, setPlayedCourses] = useState(initialPlayedCourses);
   const [wishlistIds, setWishlistIds] = useState(new Set(initialWishlistIds));
-  const [status, setStatus] = useState<string>("Drag favorites into order. Top means favorite.");
+  const [status, setStatus] = useState<string>("On mobile, use Top, Up, and Down to rank your favorites.");
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(new Date().toISOString());
   const [saveError, setSaveError] = useState<string | null>(null);
   const [busyCourseId, setBusyCourseId] = useState<string | null>(null);
@@ -231,6 +231,20 @@ export function MyCoursesManager({
     next.splice(targetIndex, 0, moved);
     applyOptimisticOrder(next.map((course) => course.id));
     setAnnouncement(`${moved.name} moved to rank ${targetIndex + 1}.`);
+  }
+
+  function handleMoveToTop(courseId: string) {
+    const currentIndex = ranked.findIndex((course) => course.id === courseId);
+
+    if (currentIndex <= 0) {
+      return;
+    }
+
+    const next = [...ranked];
+    const [moved] = next.splice(currentIndex, 1);
+    next.unshift(moved);
+    applyOptimisticOrder(next.map((course) => course.id));
+    setAnnouncement(`${moved.name} moved to rank 1.`);
   }
 
   async function handleRemoveFromRanking(courseId: string) {
@@ -414,7 +428,7 @@ export function MyCoursesManager({
               <p className="eyebrow">RANKING</p>
               <h2 className="h3 mt-4">Rank the public courses you have actually played</h2>
               <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
-                Drag within the ranked stack to reorder favorites. On mobile, tap Add to ranking below.
+                On mobile, use Top, Up, and Down to set the order. On larger screens, you can still drag the stack directly.
               </p>
             </div>
             <div className="pill pill-line pill-sentence self-start">{ranked.length} ranked</div>
@@ -463,6 +477,9 @@ export function MyCoursesManager({
 
                             <div className="flex flex-wrap items-center gap-2">
                               <span className="pill pill-line hidden md:inline-flex">Drag</span>
+                              <button type="button" onClick={() => handleMoveToTop(course.id)} className="ghost-button sm md:hidden">
+                                Top
+                              </button>
                               <button type="button" onClick={() => handleMove(course.id, -1)} className="ghost-button sm">
                                 Up
                               </button>
@@ -489,7 +506,7 @@ export function MyCoursesManager({
                     onDrop={() => commitRankDrop(null)}
                     className="rounded-[var(--radius-md)] border border-dashed border-[rgba(24,37,43,0.1)] bg-white/66 px-4 py-4 text-sm text-[var(--muted)]"
                   >
-                    Drop here to place a course at the end of your ranking.
+                    On mobile, use Top, Up, and Down. On larger screens, drop here to place a course at the end of your ranking.
                   </div>
                 </div>
               )}
@@ -501,7 +518,7 @@ export function MyCoursesManager({
                 <span className="meta">{unranked.length} waiting</span>
               </div>
               <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--muted)]">
-                These courses are already in your played list. On larger screens you can drag them upward. On mobile, use Add to ranking.
+                These courses are already in your played list. On mobile, use Add to ranking. On larger screens, you can drag them upward whenever they earn a spot.
               </p>
 
               {unranked.length === 0 ? (
@@ -534,7 +551,7 @@ export function MyCoursesManager({
                         type="button"
                         onClick={() => handleAddToRanking(course.id)}
                         disabled={busyCourseId === course.id}
-                        className="solid-button sm md:hidden"
+                            className="solid-button sm"
                           >
                             {busyCourseId === course.id ? "Saving..." : "Add to ranking"}
                           </button>
