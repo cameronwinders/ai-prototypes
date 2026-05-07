@@ -6,6 +6,7 @@ import type {
   HandicapBand,
   LeaderboardCourse,
   PlayedCourse,
+  RankSignalFilter,
   RankSignalRecord,
   RankedCourse
 } from "@/lib/types";
@@ -163,6 +164,7 @@ export function getEditorialConsensusRank(course: Pick<CourseRecord, "editorialR
 export function buildRankSignal(input: {
   crowdRank: number;
   normalizedScore: number;
+  numSignals: number;
   numUniqueGolfers: number;
   editorialConsensusRank: number | null;
   recentRank: number | null;
@@ -170,35 +172,27 @@ export function buildRankSignal(input: {
 }): RankSignalRecord | null {
   const trendDelta =
     input.recentRank && input.previousRank ? input.previousRank - input.recentRank : 0;
+  const editorialGap =
+    input.editorialConsensusRank !== null ? input.editorialConsensusRank - input.crowdRank : null;
 
-  if (input.numUniqueGolfers <= 4 && input.normalizedScore >= 84) {
-    return {
-      variant: "hidden-gem",
-      label: "Hidden gem",
-      title: "Low play volume so far, but the early crowd quality is very high."
-    };
-  }
-
-  if (trendDelta >= 4) {
+  if (input.numSignals >= 12 && input.numUniqueGolfers >= 5 && trendDelta >= 5) {
     return {
       variant: "trending-up",
       label: "Trending",
-      title: "Climbing in recent crowd rankings."
+      title: "Climbing in recent crowd rankings with enough signal to trust the move."
     };
   }
 
-  if (trendDelta <= -4) {
+  if (input.numSignals >= 12 && input.numUniqueGolfers >= 5 && trendDelta <= -5) {
     return {
       variant: "trending-down",
       label: "Cooling",
-      title: "Losing position in recent crowd rankings."
+      title: "Sliding in recent crowd rankings after a meaningful sample."
     };
   }
 
-  if (input.editorialConsensusRank !== null) {
-    const editorialGap = input.editorialConsensusRank - input.crowdRank;
-
-    if (editorialGap >= 10) {
+  if (editorialGap !== null && input.numUniqueGolfers >= 5) {
+    if (editorialGap >= 8) {
       return {
         variant: "underrated",
         label: "Underrated",
@@ -206,7 +200,7 @@ export function buildRankSignal(input: {
       };
     }
 
-    if (editorialGap <= -10) {
+    if (editorialGap <= -8) {
       return {
         variant: "overrated",
         label: "Overrated",
@@ -215,7 +209,30 @@ export function buildRankSignal(input: {
     }
   }
 
+  if (
+    input.numUniqueGolfers <= 4 &&
+    input.normalizedScore >= 84 &&
+    input.crowdRank >= 10 &&
+    (input.editorialConsensusRank === null ||
+      input.editorialConsensusRank >= 25 ||
+      (editorialGap !== null && editorialGap >= 12))
+  ) {
+    return {
+      variant: "hidden-gem",
+      label: "Hidden gem",
+      title: "The crowd loves it early, but it still sits outside the obvious editorial darlings."
+    };
+  }
+
   return null;
+}
+
+export function matchesRankSignalFilter(signal: RankSignalRecord | null | undefined, filter: RankSignalFilter) {
+  if (filter === "all") {
+    return true;
+  }
+
+  return signal?.variant === filter;
 }
 
 export function formatUpdatedAt(iso: string | null) {

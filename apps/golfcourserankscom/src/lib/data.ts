@@ -8,6 +8,7 @@ import {
   compareRankings,
   computeCourseScore,
   getEditorialConsensusRank,
+  matchesRankSignalFilter,
   slugifyCourseName,
   normalizeLeaderboard,
   toLeaderboardCourse
@@ -36,6 +37,7 @@ import type {
   ProfileVisibility,
   PublicProfileOverview,
   RankSignalRecord,
+  RankSignalFilter,
   RankedCourse,
   UnrankedReminderCandidate,
   UserProfile,
@@ -404,6 +406,7 @@ async function getRankSignalMap(courses: LeaderboardCourse[]) {
       buildRankSignal({
         crowdRank: course.leaderboardRank,
         normalizedScore: course.normalizedScore,
+        numSignals: course.numSignals,
         numUniqueGolfers: course.numUniqueGolfers,
         editorialConsensusRank: getEditorialConsensusRank(course),
         recentRank: recentRanks.get(course.id) ?? null,
@@ -790,6 +793,7 @@ export async function getLeaderboardCourses(options?: {
   limit?: number;
   viewerId?: string | null;
   activity?: CourseActivityFilter;
+  signal?: RankSignalFilter;
 }) {
   const { configured } = ensureConfigured();
 
@@ -804,6 +808,7 @@ export async function getLeaderboardCourses(options?: {
   const limit = options?.limit ?? 100;
   const viewerId = options?.viewerId ?? null;
   const activity = options?.activity ?? "all";
+  const signalFilter = options?.signal ?? "all";
 
   if (handicapBand) {
     const filteredByBand = await buildFilteredLeaderboard(handicapBand, minSignals, 250);
@@ -818,20 +823,23 @@ export async function getLeaderboardCourses(options?: {
       );
     }
 
-    const rankedRows = sortLeaderboardRows(filteredByState, sort).slice(0, limit);
+    const sortedRows = sortLeaderboardRows(filteredByState, sort);
     const [friendPresence, rankSignals] = await Promise.all([
       viewerId
-        ? getAcceptedFriendPresenceMap(viewerId, rankedRows.map((course) => course.id))
+        ? getAcceptedFriendPresenceMap(viewerId, sortedRows.map((course) => course.id))
         : Promise.resolve(new Map<string, FriendPresence[]>()),
-      getRankSignalMap(rankedRows)
+      getRankSignalMap(sortedRows)
     ]);
 
-    return rankedRows.map((course) => ({
-      ...course,
-      viewerPlayed: playedIds?.has(course.id) ?? false,
-      friendPlayers: friendPresence.get(course.id) ?? [],
-      rankSignal: rankSignals.get(course.id) ?? null
-    }));
+    return sortedRows
+      .map((course) => ({
+        ...course,
+        viewerPlayed: playedIds?.has(course.id) ?? false,
+        friendPlayers: friendPresence.get(course.id) ?? [],
+        rankSignal: rankSignals.get(course.id) ?? null
+      }))
+      .filter((course) => matchesRankSignalFilter(course.rankSignal, signalFilter))
+      .slice(0, limit);
   }
 
   const admin = createAdminClient();
@@ -860,20 +868,23 @@ export async function getLeaderboardCourses(options?: {
     );
   }
 
-  const rankedRows = sortLeaderboardRows(leaderboard, sort).slice(0, limit);
+  const sortedRows = sortLeaderboardRows(leaderboard, sort);
   const [friendPresence, rankSignals] = await Promise.all([
     viewerId
-      ? getAcceptedFriendPresenceMap(viewerId, rankedRows.map((course) => course.id))
+      ? getAcceptedFriendPresenceMap(viewerId, sortedRows.map((course) => course.id))
       : Promise.resolve(new Map<string, FriendPresence[]>()),
-    getRankSignalMap(rankedRows)
+    getRankSignalMap(sortedRows)
   ]);
 
-  return rankedRows.map((course) => ({
-    ...course,
-    viewerPlayed: playedIds?.has(course.id) ?? false,
-    friendPlayers: friendPresence.get(course.id) ?? [],
-    rankSignal: rankSignals.get(course.id) ?? null
-  }));
+  return sortedRows
+    .map((course) => ({
+      ...course,
+      viewerPlayed: playedIds?.has(course.id) ?? false,
+      friendPlayers: friendPresence.get(course.id) ?? [],
+      rankSignal: rankSignals.get(course.id) ?? null
+    }))
+    .filter((course) => matchesRankSignalFilter(course.rankSignal, signalFilter))
+    .slice(0, limit);
 }
 
 export async function getCourseDetail(

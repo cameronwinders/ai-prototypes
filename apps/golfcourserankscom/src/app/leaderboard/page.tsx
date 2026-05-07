@@ -5,7 +5,7 @@ import { LeaderboardFilterPanel } from "@/components/LeaderboardFilterPanel";
 import { RankSignal } from "@/components/RankSignal";
 import { getAllCourses, getAppOverviewStats, getLeaderboardCourses } from "@/lib/data";
 import { formatCrowdScore, formatLocation, pluralize } from "@/lib/ranking";
-import { EDITORIAL_LISTS, HANDICAP_OPTIONS } from "@/lib/types";
+import { EDITORIAL_LISTS, HANDICAP_OPTIONS, RANK_SIGNAL_OPTIONS, type RankSignalFilter } from "@/lib/types";
 import { getViewerContext } from "@/lib/viewer";
 
 const SORT_OPTIONS = [
@@ -41,7 +41,12 @@ export default async function LeaderboardPage({
   const stateParam = Array.isArray(params.state) ? params.state[0] : params.state;
   const sortParam = Array.isArray(params.sort) ? params.sort[0] : params.sort;
   const playedParam = Array.isArray(params.played) ? params.played[0] : params.played;
+  const tagParam = Array.isArray(params.tag) ? params.tag[0] : params.tag;
   const activity = playedParam === "played" || playedParam === "not-played" ? playedParam : "all";
+  const signal =
+    RANK_SIGNAL_OPTIONS.some((option) => option.value === tagParam)
+      ? (tagParam as RankSignalFilter)
+      : "all";
   const viewer = await getViewerContext();
 
   const band = HANDICAP_OPTIONS.includes(bandParam as (typeof HANDICAP_OPTIONS)[number])
@@ -61,7 +66,8 @@ export default async function LeaderboardPage({
       sort,
       limit: 400,
       viewerId: viewer.user?.id ?? null,
-      activity
+      activity,
+      signal
     }),
     getAllCourses()
   ]);
@@ -87,6 +93,7 @@ export default async function LeaderboardPage({
           sort={sort}
           states={states}
           activity={activity}
+          signal={signal}
           showActivityFilter={Boolean(viewer.user)}
         />
 

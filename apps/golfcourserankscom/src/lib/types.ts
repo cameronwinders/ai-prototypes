@@ -13,6 +13,14 @@ export const EDITORIAL_LISTS = [
   { key: "golf-top-100", label: "GOLF.com", sourceName: "GOLF Top 100" },
   { key: "golfweek-you-can-play", label: "Golfweek", sourceName: "Golfweek You Can Play" }
 ] as const;
+export const RANK_SIGNAL_OPTIONS = [
+  { value: "all", label: "All tags" },
+  { value: "hidden-gem", label: "Hidden gem" },
+  { value: "trending-up", label: "Trending" },
+  { value: "trending-down", label: "Cooling" },
+  { value: "underrated", label: "Underrated" },
+  { value: "overrated", label: "Overrated" }
+] as const;
 
 export type HandicapBand = (typeof HANDICAP_OPTIONS)[number];
 export type FeedbackType = (typeof FEEDBACK_TYPES)[number];
@@ -125,6 +133,7 @@ export type RankSignalVariant =
   | "underrated"
   | "overrated"
   | "hidden-gem";
+export type RankSignalFilter = "all" | RankSignalVariant;
 
 export type RankSignalRecord = {
   variant: RankSignalVariant;

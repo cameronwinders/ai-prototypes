@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import { HANDICAP_OPTIONS } from "@/lib/types";
+import { HANDICAP_OPTIONS, RANK_SIGNAL_OPTIONS, type RankSignalFilter } from "@/lib/types";
 
 const SORT_OPTIONS = [
   { value: "rank", label: "Crowd rank" },
@@ -19,6 +19,7 @@ type LeaderboardFilterPanelProps = {
   sort: string;
   states: string[];
   activity: string;
+  signal: RankSignalFilter;
   showActivityFilter: boolean;
 };
 
@@ -32,6 +33,7 @@ export function LeaderboardFilterPanel({
   sort,
   states,
   activity,
+  signal,
   showActivityFilter
 }: LeaderboardFilterPanelProps) {
   const router = useRouter();
@@ -39,13 +41,14 @@ export function LeaderboardFilterPanel({
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
 
-  function updateParams(next: { band?: string; state?: string; sort?: string; activity?: string }) {
+  function updateParams(next: { band?: string; state?: string; sort?: string; activity?: string; signal?: RankSignalFilter }) {
     const params = new URLSearchParams(searchParams.toString());
 
     const nextBand = next.band ?? band;
     const nextState = next.state ?? selectedState;
     const nextSort = next.sort ?? sort;
     const nextActivity = next.activity ?? activity;
+    const nextSignal = next.signal ?? signal;
 
     if (nextBand) {
       params.set("band", nextBand);
@@ -71,6 +74,12 @@ export function LeaderboardFilterPanel({
       params.delete("played");
     }
 
+    if (nextSignal && nextSignal !== "all") {
+      params.set("tag", nextSignal);
+    } else {
+      params.delete("tag");
+    }
+
     params.delete("minSignals");
 
     const query = params.toString();
@@ -78,7 +87,7 @@ export function LeaderboardFilterPanel({
   }
 
   function resetFilters() {
-    updateParams({ band: "", state: "", sort: "rank", activity: "all" });
+    updateParams({ band: "", state: "", sort: "rank", activity: "all", signal: "all" });
     setOpen(false);
   }
 
@@ -92,6 +101,11 @@ export function LeaderboardFilterPanel({
               {selectedState ? <span className="pill pill-line pill-sentence">{selectedState}</span> : null}
               <span className="pill pill-line pill-sentence">{sortLabel(sort)}</span>
               {band ? <span className="pill pill-pine pill-sentence">Handicap {band}</span> : null}
+              {signal !== "all" ? (
+                <span className="pill pill-line pill-sentence">
+                  {RANK_SIGNAL_OPTIONS.find((option) => option.value === signal)?.label ?? "Tag"}
+                </span>
+              ) : null}
               {showActivityFilter && activity !== "all" ? (
                 <span className="pill pill-pine pill-sentence">
                   {activity === "played" ? "Played by me" : "Not played by me"}
@@ -142,6 +156,11 @@ export function LeaderboardFilterPanel({
           {selectedState ? <span className="pill pill-line pill-sentence">{selectedState}</span> : null}
           {sort !== "rank" ? <span className="pill pill-line pill-sentence">{sortLabel(sort)}</span> : null}
           {band ? <span className="pill pill-pine pill-sentence">Handicap {band}</span> : null}
+          {signal !== "all" ? (
+            <span className="pill pill-line pill-sentence">
+              {RANK_SIGNAL_OPTIONS.find((option) => option.value === signal)?.label ?? "Tag"}
+            </span>
+          ) : null}
           {showActivityFilter && activity !== "all" ? (
             <span className="pill pill-pine pill-sentence">
               {activity === "played" ? "Played by me" : "Not played by me"}
@@ -211,6 +230,21 @@ export function LeaderboardFilterPanel({
                   className="min-h-11 rounded-md border border-line bg-white px-4 py-3 text-sm font-normal text-ink outline-none transition focus:border-[rgba(49,107,83,0.45)]"
                 >
                   {SORT_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="grid gap-2 text-sm font-semibold text-ink">
+                Tags
+                <select
+                  value={signal}
+                  onChange={(event) => updateParams({ signal: event.target.value as RankSignalFilter })}
+                  className="min-h-11 rounded-md border border-line bg-white px-4 py-3 text-sm font-normal text-ink outline-none transition focus:border-[rgba(49,107,83,0.45)]"
+                >
+                  {RANK_SIGNAL_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
                     </option>
