@@ -1,9 +1,10 @@
 import Link from "next/link";
 
-import { InitialsAvatar } from "@/components/InitialsAvatar";
+import { AvatarStack } from "@/components/InitialsAvatar";
 import { LeaderboardFilterPanel } from "@/components/LeaderboardFilterPanel";
+import { RankSignal } from "@/components/RankSignal";
 import { getAllCourses, getAppOverviewStats, getLeaderboardCourses } from "@/lib/data";
-import { formatLocation, pluralize } from "@/lib/ranking";
+import { formatCrowdScore, formatLocation, pluralize } from "@/lib/ranking";
 import { EDITORIAL_LISTS, HANDICAP_OPTIONS } from "@/lib/types";
 import { getViewerContext } from "@/lib/viewer";
 
@@ -114,17 +115,7 @@ export default async function LeaderboardPage({
                           {course.friendPlayers?.length ? (
                             <div className="mt-3 flex flex-wrap items-center gap-2">
                               <span className="meta">Friends played</span>
-                              <div className="flex -space-x-2">
-                                {course.friendPlayers.map((friend) => (
-                                  <InitialsAvatar
-                                    key={friend.id}
-                                    displayName={friend.display_name}
-                                    handle={friend.handle}
-                                    title={friend.display_name ?? friend.handle}
-                                    className="border-[rgba(255,255,255,0.9)]"
-                                  />
-                                ))}
-                              </div>
+                              <AvatarStack people={course.friendPlayers} size="sm" max={3} />
                             </div>
                           ) : null}
                         </div>
@@ -135,14 +126,19 @@ export default async function LeaderboardPage({
                     </span>
                   </div>
 
-                  <div className="mt-4 grid gap-3 sm:grid-cols-[minmax(0,1fr)_10.5rem]">
-                    <div className="min-w-0 space-y-3">
-                      <span className={`pill ${course.isEarly ? "pill-warning" : "pill-pine"} pill-sentence`}>
-                        {course.isEarly ? "Starting score" : "Crowd score"} {course.normalizedScore.toFixed(1)}
-                      </span>
-                      <span className="pill pill-line pill-sentence">{golferSignalLabel(course.numUniqueGolfers)}</span>
-                      {course.viewerPlayed ? <span className="pill pill-pine pill-sentence">Played by you</span> : null}
-                    </div>
+                    <div className="mt-4 grid gap-3 sm:grid-cols-[minmax(0,1fr)_10.5rem]">
+                      <div className="min-w-0 space-y-3">
+                        <span className={`pill ${course.isEarly ? "pill-warning" : "pill-pine"} pill-sentence`}>
+                          {course.isEarly ? "Starting score" : "Crowd score"} {formatCrowdScore(course.normalizedScore)}
+                        </span>
+                        <span className="pill pill-line pill-sentence">{golferSignalLabel(course.numUniqueGolfers)}</span>
+                        {course.viewerPlayed ? <span className="pill pill-pine pill-sentence">Played by you</span> : null}
+                        {course.rankSignal ? (
+                          <div>
+                            <RankSignal signal={course.rankSignal} />
+                          </div>
+                        ) : null}
+                      </div>
 
                     <div className="overflow-hidden rounded-md border border-line bg-[rgba(246,243,236,0.92)]">
                       {MOBILE_RANK_STACK.map((entry, index) => {
@@ -201,8 +197,13 @@ export default async function LeaderboardPage({
                               #{course.leaderboardRank}
                             </div>
                             <div className={`mt-2 inline-flex ${course.isEarly ? "pill pill-warning" : "pill pill-pine"} pill-sentence`}>
-                              {course.isEarly ? "Starting score" : "Crowd score"} {course.normalizedScore.toFixed(1)}
+                              {course.isEarly ? "Starting score" : "Crowd score"} {formatCrowdScore(course.normalizedScore)}
                             </div>
+                            {course.rankSignal ? (
+                              <div className="mt-2">
+                                <RankSignal signal={course.rankSignal} />
+                              </div>
+                            ) : null}
                           </Link>
                         </td>
                         <td className="px-5 py-5 align-top">
@@ -216,17 +217,7 @@ export default async function LeaderboardPage({
                           {course.viewerPlayed ? <div className="mt-2 text-sm text-pine">Played by you</div> : null}
                           {course.friendPlayers?.length ? (
                             <div className="mt-3 flex items-center gap-2">
-                              <div className="flex -space-x-2">
-                                {course.friendPlayers.map((friend) => (
-                                  <InitialsAvatar
-                                    key={friend.id}
-                                    displayName={friend.display_name}
-                                    handle={friend.handle}
-                                    title={friend.display_name ?? friend.handle}
-                                    className="border-[rgba(255,255,255,0.9)]"
-                                  />
-                                ))}
-                              </div>
+                              <AvatarStack people={course.friendPlayers} size="sm" max={3} />
                               <span className="text-xs uppercase tracking-[0.12em] text-muted">Friends played</span>
                             </div>
                           ) : null}

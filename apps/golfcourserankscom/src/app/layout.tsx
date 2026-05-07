@@ -4,6 +4,7 @@ import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Public_Sans } from "next/font/google";
 
 import { AppChrome } from "@/components/AppChrome";
+import { getSiteUrl } from "@/lib/supabase/env";
 import { getViewerContext } from "@/lib/viewer";
 
 const displayFont = Cormorant_Garamond({
@@ -19,9 +20,30 @@ const bodyFont = Public_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Golf Course Ranks",
+  metadataBase: new URL(getSiteUrl()),
+  title: {
+    default: "Golf Course Ranks",
+    template: "%s | Golf Course Ranks"
+  },
   description:
-    "Crowd-ranked leaderboard for U.S. public golf courses, powered by real golfers dragging their played lists into order."
+    "Crowd-ranked leaderboard for U.S. public golf courses, powered by real golfers dragging their played lists into order.",
+  openGraph: {
+    title: "Golf Course Ranks",
+    description:
+      "Crowd-ranked leaderboard for U.S. public golf courses, powered by real golfers dragging their played lists into order.",
+    images: ["/opengraph-image"]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Golf Course Ranks",
+    description:
+      "Crowd-ranked leaderboard for U.S. public golf courses, powered by real golfers dragging their played lists into order.",
+    images: ["/opengraph-image"]
+  },
+  icons: {
+    icon: "/icon",
+    apple: "/apple-icon"
+  }
 };
 
 export const viewport: Viewport = {

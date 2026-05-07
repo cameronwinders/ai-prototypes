@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
 import { setCoursePlayed, setCourseWishlisted } from "@/app/actions";
-import { PlayedMarkIcon } from "@/components/PlayedMarkIcon";
+import { PlayedButton, WantToPlayButton } from "@/components/PlayActions";
+import { WishlistIcon } from "@/components/WishlistIcon";
 import { formatLocation } from "@/lib/ranking";
 import type { CourseRecord, PlayedCourse } from "@/lib/types";
 
@@ -252,12 +253,12 @@ export function CoursesBrowser({
                           </span>
                         ) : null}
                         {isPlayed ? (
-                          <span className="pill pill-pine gap-1.5">
-                            <PlayedMarkIcon className="h-3.5 w-3.5" />
-                            Played
-                          </span>
+                          <PlayedButton className="pointer-events-none" />
                         ) : isWishlisted ? (
-                          <span className="pill pill-line">Wish list</span>
+                          <span className="pill pill-line gap-1.5">
+                            <WishlistIcon className="h-3.5 w-3.5" filled />
+                            Wish list
+                          </span>
                         ) : null}
                       </div>
                       <h3 className="mt-3 text-[1.12rem] font-semibold tracking-[var(--tracking-tight)] text-ink sm:text-[1.2rem]">{course.name}</h3>
@@ -281,22 +282,25 @@ export function CoursesBrowser({
                           onClick={() => handleToggle(course.id, !isPlayed)}
                           disabled={busyCourseId === course.id}
                           data-testid={`course-play-toggle-${course.id}`}
-                          className={isPlayed ? "ghost-button sm min-h-11 justify-center gap-2" : "solid-button sm min-h-11 justify-center gap-2"}
+                          className={isPlayed ? "ghost-button sm min-h-11 justify-center" : "solid-button sm min-h-11 justify-center"}
                         >
-                          <PlayedMarkIcon className="h-3.5 w-3.5" />
                           {busyCourseId === course.id ? "Saving..." : isPlayed ? "Played" : "Mark played"}
                         </button>
                       )}
                       {!viewerNeedsOnboarding && !isPlayed ? (
-                        <button
-                          type="button"
-                          onClick={() => handleWishlist(course.id, !isWishlisted)}
-                          disabled={wishlistBusyCourseId === course.id}
-                          data-testid={`course-wishlist-toggle-${course.id}`}
-                          className="ghost-button sm min-h-11 justify-center"
-                        >
-                            {wishlistBusyCourseId === course.id ? "Saving..." : isWishlisted ? "In wish list" : "Add to wish list"}
-                        </button>
+                        wishlistBusyCourseId === course.id ? (
+                          <button type="button" disabled className="ghost-button sm min-h-11 justify-center">
+                            Saving...
+                          </button>
+                        ) : (
+                          <WantToPlayButton
+                            saved={isWishlisted}
+                            onClick={() => handleWishlist(course.id, !isWishlisted)}
+                            className="min-h-11 justify-center"
+                            labelOn="On your list"
+                            labelOff="Want to play"
+                          />
+                        )
                       ) : null}
                     </div>
                   ) : null}

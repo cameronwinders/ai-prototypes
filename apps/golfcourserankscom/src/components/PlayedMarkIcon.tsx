@@ -9,22 +9,15 @@ export function PlayedMarkIcon({
 }: PlayedMarkIconProps) {
   return (
     <svg
-      viewBox="0 0 96 96"
+      viewBox="0 0 16 16"
       role="img"
       aria-label={title}
       fill="none"
       className={className}
     >
-      <g stroke="currentColor" strokeWidth="6" strokeLinecap="round">
-        <line x1="14" y1="22" x2="58" y2="22" />
-        <line x1="14" y1="48" x2="74" y2="48" />
-        <line x1="14" y1="74" x2="86" y2="74" />
-      </g>
-      <g fill="currentColor">
-        <path d="M14 22 L30 22 L22 8 Z" />
-        <path d="M14 48 L30 48 L22 34 Z" />
-        <path d="M14 74 L30 74 L22 60 Z" />
-      </g>
+      <line x1="5" y1="14" x2="5" y2="2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M5 2 L12 4.2 L5 6.6 Z" fill="currentColor" />
+      <ellipse cx="5" cy="14" rx="2.2" ry="0.6" fill="currentColor" opacity="0.6" />
     </svg>
   );
 }

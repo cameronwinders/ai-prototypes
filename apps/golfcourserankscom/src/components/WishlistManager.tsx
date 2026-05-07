@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 
 import { setCoursePlayed, setCourseWishlisted } from "@/app/actions";
-import { PlayedMarkIcon } from "@/components/PlayedMarkIcon";
+import { WantToPlayButton } from "@/components/PlayActions";
 import { formatLocation } from "@/lib/ranking";
 import type { WishlistCourse } from "@/lib/types";
 
@@ -104,19 +104,11 @@ export function WishlistManager({ initialCourses }: WishlistManagerProps) {
                       type="button"
                       onClick={() => handleMarkPlayed(course.id)}
                       disabled={busyCourseId === course.id}
-                      className="solid-button sm justify-center gap-2"
+                      className="solid-button sm justify-center"
                     >
-                      <PlayedMarkIcon className="h-3.5 w-3.5" />
                       {busyCourseId === course.id ? "Saving..." : "Mark played"}
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => handleRemove(course.id)}
-                      disabled={busyCourseId === course.id}
-                      className="ghost-button sm justify-center"
-                    >
-                      Remove
-                    </button>
+                    <WantToPlayButton saved onClick={() => handleRemove(course.id)} disabled={busyCourseId === course.id} labelOn="On your list" className="sm justify-center" />
                   </div>
                 </div>
               </div>

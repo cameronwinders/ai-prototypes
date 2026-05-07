@@ -36,8 +36,22 @@ export default async function Image({
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <div style={{ fontSize: 22, letterSpacing: 3, textTransform: "uppercase", color: "#316b53" }}>
-              Golf Course Ranks
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <svg viewBox="0 0 96 96" width="28" height="28" fill="none">
+                <g stroke="#1c2924" strokeWidth="6" strokeLinecap="round">
+                  <line x1="14" y1="28" x2="56" y2="28" />
+                  <line x1="14" y1="52" x2="72" y2="52" />
+                  <line x1="14" y1="76" x2="86" y2="76" />
+                </g>
+                <g fill="#316b53">
+                  <path d="M14 28 L36 28 L23 4 Z" />
+                  <path d="M14 52 L36 52 L23 28 Z" />
+                  <path d="M14 76 L36 76 L23 52 Z" />
+                </g>
+              </svg>
+              <div style={{ fontSize: 22, letterSpacing: 3, textTransform: "uppercase", color: "#316b53" }}>
+                Golf Course Ranks
+              </div>
             </div>
             <div style={{ fontSize: 56, fontWeight: 700, lineHeight: 1.02, maxWidth: 720 }}>{title}</div>
             <div style={{ fontSize: 28, color: "#5d6a64" }}>

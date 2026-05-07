@@ -116,6 +116,20 @@ export type FriendPresence = {
   id: string;
   handle: string;
   display_name: string | null;
+  avatar_url?: string | null;
+};
+
+export type RankSignalVariant =
+  | "trending-up"
+  | "trending-down"
+  | "underrated"
+  | "overrated"
+  | "hidden-gem";
+
+export type RankSignalRecord = {
+  variant: RankSignalVariant;
+  label: string;
+  title: string;
 };
 
 export type LeaderboardCourse = CourseRecord & {
@@ -130,6 +144,7 @@ export type LeaderboardCourse = CourseRecord & {
   isEarly: boolean;
   viewerPlayed?: boolean;
   friendPlayers?: FriendPresence[];
+  rankSignal?: RankSignalRecord | null;
 };
 
 export type ViewerContext = {

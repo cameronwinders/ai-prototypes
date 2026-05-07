@@ -6,6 +6,7 @@ import type {
   HandicapBand,
   LeaderboardCourse,
   PlayedCourse,
+  RankSignalRecord,
   RankedCourse
 } from "@/lib/types";
 
@@ -89,6 +90,10 @@ export function pluralize(count: number, singular: string, plural = `${singular}
   return `${count} ${count === 1 ? singular : plural}`;
 }
 
+export function formatCrowdScore(score: number | null | undefined) {
+  return Number(score ?? 0).toFixed(1);
+}
+
 export function splitDisplayName(displayName: string | null | undefined, fallbackHandle = "") {
   const source = (displayName ?? "").trim();
 
@@ -143,6 +148,74 @@ export function getGolferInitials(displayName: string | null | undefined, handle
   }
 
   return `${parts[0][0] ?? ""}${parts[parts.length - 1][0] ?? ""}`.toUpperCase();
+}
+
+export function getEditorialConsensusRank(course: Pick<CourseRecord, "editorialRanks">) {
+  const values = Object.values(course.editorialRanks ?? {}).filter((value): value is number => typeof value === "number");
+
+  if (values.length === 0) {
+    return null;
+  }
+
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+export function buildRankSignal(input: {
+  crowdRank: number;
+  normalizedScore: number;
+  numUniqueGolfers: number;
+  editorialConsensusRank: number | null;
+  recentRank: number | null;
+  previousRank: number | null;
+}): RankSignalRecord | null {
+  const trendDelta =
+    input.recentRank && input.previousRank ? input.previousRank - input.recentRank : 0;
+
+  if (input.numUniqueGolfers <= 4 && input.normalizedScore >= 84) {
+    return {
+      variant: "hidden-gem",
+      label: "Hidden gem",
+      title: "Low play volume so far, but the early crowd quality is very high."
+    };
+  }
+
+  if (trendDelta >= 4) {
+    return {
+      variant: "trending-up",
+      label: "Trending",
+      title: "Climbing in recent crowd rankings."
+    };
+  }
+
+  if (trendDelta <= -4) {
+    return {
+      variant: "trending-down",
+      label: "Cooling",
+      title: "Losing position in recent crowd rankings."
+    };
+  }
+
+  if (input.editorialConsensusRank !== null) {
+    const editorialGap = input.editorialConsensusRank - input.crowdRank;
+
+    if (editorialGap >= 10) {
+      return {
+        variant: "underrated",
+        label: "Underrated",
+        title: "The crowd ranks this materially better than the editorial consensus."
+      };
+    }
+
+    if (editorialGap <= -10) {
+      return {
+        variant: "overrated",
+        label: "Overrated",
+        title: "The editorial consensus runs hotter than the current crowd signal."
+      };
+    }
+  }
+
+  return null;
 }
 
 export function formatUpdatedAt(iso: string | null) {

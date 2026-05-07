@@ -4,8 +4,10 @@ import type { User } from "@supabase/supabase-js";
 
 import {
   buildAiCourseStory,
+  buildRankSignal,
   compareRankings,
   computeCourseScore,
+  getEditorialConsensusRank,
   slugifyCourseName,
   normalizeLeaderboard,
   toLeaderboardCourse
@@ -33,6 +35,7 @@ import type {
   PlayedCourseRecord,
   ProfileVisibility,
   PublicProfileOverview,
+  RankSignalRecord,
   RankedCourse,
   UnrankedReminderCandidate,
   UserProfile,
@@ -291,6 +294,123 @@ async function getAcceptedFriendPresenceMap(viewerId: string, courseIds: string[
   }
 
   return presenceByCourse;
+}
+
+function rankSnapshotFromScores(
+  courses: CourseRecord[],
+  counters: Map<string, { wins: number; losses: number; numSignals: number; uniqueGolfers: Set<string> }>
+) {
+  return normalizeLeaderboard(
+    courses.map((course) => {
+      const stats = counters.get(course.id) ?? {
+        wins: 0,
+        losses: 0,
+        numSignals: 0,
+        uniqueGolfers: new Set<string>()
+      };
+      const numUniqueGolfers = stats.uniqueGolfers.size;
+      const score = computeCourseScore(
+        course.seed_score,
+        stats.wins,
+        stats.losses,
+        stats.numSignals,
+        numUniqueGolfers
+      );
+
+      return {
+        courseId: course.id,
+        score
+      };
+    })
+  )
+    .sort((left, right) => right.score - left.score)
+    .map((row, index) => ({
+      ...row,
+      rank: index + 1
+    }));
+}
+
+async function getRankSignalMap(courses: LeaderboardCourse[]) {
+  if (courses.length === 0) {
+    return new Map<string, RankSignalRecord | null>();
+  }
+
+  const admin = createAdminClient();
+  const recentWindowStart = new Date(Date.now() - 21 * 24 * 60 * 60 * 1000);
+  const priorWindowStart = new Date(Date.now() - 42 * 24 * 60 * 60 * 1000);
+  const { data, error } = await admin
+    .from("pairwise_signals")
+    .select("user_id, winner_course_id, loser_course_id, created_at")
+    .gte("created_at", priorWindowStart.toISOString());
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const leaderboardIds = new Set(courses.map((course) => course.id));
+  const recentCounters = new Map<string, { wins: number; losses: number; numSignals: number; uniqueGolfers: Set<string> }>();
+  const priorCounters = new Map<string, { wins: number; losses: number; numSignals: number; uniqueGolfers: Set<string> }>();
+
+  for (const course of courses) {
+    recentCounters.set(course.id, { wins: 0, losses: 0, numSignals: 0, uniqueGolfers: new Set<string>() });
+    priorCounters.set(course.id, { wins: 0, losses: 0, numSignals: 0, uniqueGolfers: new Set<string>() });
+  }
+
+  for (const signal of (data ?? []) as Array<{
+    user_id: string;
+    winner_course_id: string;
+    loser_course_id: string;
+    created_at: string;
+  }>) {
+    const createdAt = new Date(signal.created_at).getTime();
+    const inRecent = createdAt >= recentWindowStart.getTime();
+    const inPrior = createdAt < recentWindowStart.getTime();
+
+    for (const [courseId, direction] of [
+      [signal.winner_course_id, "win"] as const,
+      [signal.loser_course_id, "loss"] as const
+    ]) {
+      if (!leaderboardIds.has(courseId)) {
+        continue;
+      }
+
+      const targetMap = inRecent ? recentCounters : inPrior ? priorCounters : null;
+      if (!targetMap) {
+        continue;
+      }
+
+      const bucket = targetMap.get(courseId);
+      if (!bucket) {
+        continue;
+      }
+
+      if (direction === "win") {
+        bucket.wins += 1;
+      } else {
+        bucket.losses += 1;
+      }
+
+      bucket.numSignals += 1;
+      bucket.uniqueGolfers.add(signal.user_id);
+    }
+  }
+
+  const recentRanks = new Map(rankSnapshotFromScores(courses, recentCounters).map((row) => [row.courseId, row.rank]));
+  const priorRanks = new Map(rankSnapshotFromScores(courses, priorCounters).map((row) => [row.courseId, row.rank]));
+
+  return new Map(
+    courses.map((course) => [
+      course.id,
+      buildRankSignal({
+        crowdRank: course.leaderboardRank,
+        normalizedScore: course.normalizedScore,
+        numUniqueGolfers: course.numUniqueGolfers,
+        editorialConsensusRank: getEditorialConsensusRank(course),
+        recentRank: recentRanks.get(course.id) ?? null,
+        previousRank: priorRanks.get(course.id) ?? null
+      })
+    ])
+  );
 }
 
 export async function ensureProfileForUser(user: User) {
@@ -699,14 +819,18 @@ export async function getLeaderboardCourses(options?: {
     }
 
     const rankedRows = sortLeaderboardRows(filteredByState, sort).slice(0, limit);
-    const friendPresence = viewerId
-      ? await getAcceptedFriendPresenceMap(viewerId, rankedRows.map((course) => course.id))
-      : new Map<string, FriendPresence[]>();
+    const [friendPresence, rankSignals] = await Promise.all([
+      viewerId
+        ? getAcceptedFriendPresenceMap(viewerId, rankedRows.map((course) => course.id))
+        : Promise.resolve(new Map<string, FriendPresence[]>()),
+      getRankSignalMap(rankedRows)
+    ]);
 
     return rankedRows.map((course) => ({
       ...course,
       viewerPlayed: playedIds?.has(course.id) ?? false,
-      friendPlayers: friendPresence.get(course.id) ?? []
+      friendPlayers: friendPresence.get(course.id) ?? [],
+      rankSignal: rankSignals.get(course.id) ?? null
     }));
   }
 
@@ -737,14 +861,18 @@ export async function getLeaderboardCourses(options?: {
   }
 
   const rankedRows = sortLeaderboardRows(leaderboard, sort).slice(0, limit);
-  const friendPresence = viewerId
-    ? await getAcceptedFriendPresenceMap(viewerId, rankedRows.map((course) => course.id))
-    : new Map<string, FriendPresence[]>();
+  const [friendPresence, rankSignals] = await Promise.all([
+    viewerId
+      ? getAcceptedFriendPresenceMap(viewerId, rankedRows.map((course) => course.id))
+      : Promise.resolve(new Map<string, FriendPresence[]>()),
+    getRankSignalMap(rankedRows)
+  ]);
 
   return rankedRows.map((course) => ({
     ...course,
     viewerPlayed: playedIds?.has(course.id) ?? false,
-    friendPlayers: friendPresence.get(course.id) ?? []
+    friendPlayers: friendPresence.get(course.id) ?? [],
+    rankSignal: rankSignals.get(course.id) ?? null
   }));
 }
 

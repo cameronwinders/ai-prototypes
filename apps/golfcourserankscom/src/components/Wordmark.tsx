@@ -1,30 +1,31 @@
+import { MarkIcon } from "@/components/MarkIcon";
+
 type WordmarkProps = {
   className?: string;
   title?: string;
+  withMark?: boolean;
 };
 
-export function Wordmark({ className = "h-8 w-auto", title = "Golf Course Ranks" }: WordmarkProps) {
+export function Wordmark({
+  className = "h-8 w-auto",
+  title = "Golf Course Ranks",
+  withMark = true
+}: WordmarkProps) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 520 80"
-      role="img"
-      aria-label={title}
-      className={className}
-    >
-      <text
-        x="0"
-        y="56"
-        fill="currentColor"
+    <span role="img" aria-label={title} className={`inline-flex items-center gap-2.5 text-current ${className}`}>
+      {withMark ? <MarkIcon className="h-[1.45rem] w-[1.45rem] shrink-0" title="" /> : null}
+      <span
+        className="whitespace-nowrap"
         style={{
           fontFamily: "var(--font-display)",
-          fontSize: "56px",
+          fontSize: "1.45rem",
           fontWeight: 600,
-          letterSpacing: "-0.05em"
+          letterSpacing: "-0.05em",
+          lineHeight: 1
         }}
       >
         Golf Course Ranks
-      </text>
-    </svg>
+      </span>
+    </span>
   );
 }

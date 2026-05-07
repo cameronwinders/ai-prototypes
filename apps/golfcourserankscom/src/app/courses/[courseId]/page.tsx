@@ -8,7 +8,7 @@ import { NoteEditor } from "@/components/NoteEditor";
 import { ShareButton } from "@/components/ShareButton";
 import { getCourseDetail } from "@/lib/data";
 import { EDITORIAL_LISTS, type CourseRecord } from "@/lib/types";
-import { formatLocation, pluralize } from "@/lib/ranking";
+import { formatCrowdScore, formatLocation, pluralize } from "@/lib/ranking";
 import { getSiteUrl } from "@/lib/supabase/env";
 import { getViewerContext } from "@/lib/viewer";
 
@@ -34,7 +34,7 @@ export async function generateMetadata({
   const title = `${detail.course.name} | Golf Course Ranks`;
   const description = `${formatLocation(detail.course)} - Crowd score ${score} on Golf Course Ranks.`;
   const url = `${getSiteUrl()}/courses/${detail.course.id}`;
-  const image = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Pebble_Beach_18th_hole.jpg/1280px-Pebble_Beach_18th_hole.jpg";
+  const image = `${url}/opengraph-image`;
 
   return {
     title,
@@ -76,7 +76,7 @@ export default async function CourseDetailPage({
   const siteUrl = getSiteUrl();
   const isEditorialOnly = (aggregate?.num_unique_golfers ?? 0) === 0;
   const crowdRank = aggregate?.rank ?? course.seed_rank;
-  const crowdScore = aggregate ? aggregate.normalized_score.toFixed(1) : "0.0";
+  const crowdScore = aggregate ? formatCrowdScore(aggregate.normalized_score) : "0.0";
   const golfersCount = aggregate?.num_unique_golfers ?? 0;
   const editorialLine = buildEditorialLine(course);
   const summaryLine = aiSummary.fit ?? aiSummary.loves[0] ?? "Golfers keep this one in the conversation for a reason.";
@@ -97,8 +97,7 @@ export default async function CourseDetailPage({
                 url={`${siteUrl}${courseUrl}?utm_source=share&utm_medium=course&utm_campaign=course_share`}
                 className="ghost-button sm min-h-11"
                 analyticsSurface="course-detail"
-                buttonChildren="Copy link"
-                hideSecondaryLinks
+                buttonChildren="Share course"
                 hideStatus
               />
             </div>

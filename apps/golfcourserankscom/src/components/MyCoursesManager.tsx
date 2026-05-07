@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
 import { addCourseToRanking, removeCourseFromRanking, saveCourseOrder, setCoursePlayed, setCourseWishlisted } from "@/app/actions";
+import { WantToPlayButton } from "@/components/PlayActions";
 import { ShareButton } from "@/components/ShareButton";
 import { formatLocation, formatUpdatedAt, splitPlayedCourses } from "@/lib/ranking";
 import type { CourseRecord, PlayedCourse } from "@/lib/types";
@@ -529,11 +530,11 @@ export function MyCoursesManager({
                           <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
                         </div>
                         <div className="flex flex-wrap gap-2">
-                          <button
-                            type="button"
-                            onClick={() => handleAddToRanking(course.id)}
-                            disabled={busyCourseId === course.id}
-                            className="solid-button sm md:hidden"
+                      <button
+                        type="button"
+                        onClick={() => handleAddToRanking(course.id)}
+                        disabled={busyCourseId === course.id}
+                        className="solid-button sm md:hidden"
                           >
                             {busyCourseId === course.id ? "Saving..." : "Add to ranking"}
                           </button>
@@ -612,14 +613,19 @@ export function MyCoursesManager({
                           >
                             {busyCourseId === course.id ? "Saving..." : "Mark played"}
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => handleWishlist(course.id, !isWishlisted)}
-                            disabled={wishlistBusyCourseId === course.id}
-                            className="ghost-button sm"
-                          >
-                            {wishlistBusyCourseId === course.id ? "Saving..." : isWishlisted ? "In wish list" : "Add to wish list"}
-                          </button>
+                          {wishlistBusyCourseId === course.id ? (
+                            <button type="button" disabled className="ghost-button sm">
+                              Saving...
+                            </button>
+                          ) : (
+                            <WantToPlayButton
+                              saved={isWishlisted}
+                              onClick={() => handleWishlist(course.id, !isWishlisted)}
+                              className="sm"
+                              labelOn="On your list"
+                              labelOff="Want to play"
+                            />
+                          )}
                         </>
                       )}
                     </div>

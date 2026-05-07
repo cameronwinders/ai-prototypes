@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 
 import { setCoursePlayed, setCourseWishlisted } from "@/app/actions";
+import { WantToPlayButton } from "@/components/PlayActions";
 import type { PlayedCourse } from "@/lib/types";
 
 type CourseDetailActionsProps = {
@@ -89,14 +90,19 @@ export function CourseDetailActions({
         </button>
       )}
       {!viewerNeedsOnboarding && !played ? (
-        <button
-          type="button"
-          onClick={onWishlistToggle}
-          disabled={wishlistPending}
-          className="ghost-button min-h-11 justify-center"
-        >
-          {wishlistPending ? "Saving..." : wishlisted ? "In wish list" : "Add to wish list"}
-        </button>
+        wishlistPending ? (
+          <button type="button" disabled className="ghost-button min-h-11 justify-center">
+            Saving...
+          </button>
+        ) : (
+          <WantToPlayButton
+            saved={wishlisted}
+            onClick={onWishlistToggle}
+            className="min-h-11 justify-center"
+            labelOn="On your list"
+            labelOff="Want to play"
+          />
+        )
       ) : null}
       {status ? <p className="text-sm text-[var(--muted)]">{status}</p> : null}
     </div>
