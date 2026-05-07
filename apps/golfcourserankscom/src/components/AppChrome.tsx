@@ -25,13 +25,15 @@ const desktopNav = [
 
 const courseSubnav = [
   { href: "/courses", label: "Browse courses" },
-  { href: "/me/courses", label: "My courses" }
+  { href: "/me/courses", label: "My courses" },
+  { href: "/me/wishlist", label: "Wish list" }
 ];
 
 const mobileMenuItems = [
   { href: "/leaderboard", label: "Leaderboard" },
   { href: "/courses", label: "Courses" },
   { href: "/me/courses", label: "My Courses" },
+  { href: "/me/wishlist", label: "Wish List" },
   { href: "/friends", label: "Friends" },
   { href: "/profile", label: "Profile" }
 ];
@@ -66,6 +68,7 @@ function toScreenName(pathname: string) {
     "/leaderboard": "Leaderboard",
     "/courses": "Courses",
     "/me/courses": "My Courses",
+    "/me/wishlist": "Wish List",
     "/friends": "Friends",
     "/feedback": "Feedback",
     "/profile": "Profile",
@@ -88,13 +91,22 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const currentUrl = pathname;
   const feedbackHref = `/feedback?screen=${encodeURIComponent(toScreenName(pathname))}&from=${encodeURIComponent(currentUrl)}`;
-  const inCourseSection = pathname === "/courses" || pathname === "/me/courses" || pathname.startsWith("/courses/");
+  const inCourseSection =
+    pathname === "/courses" ||
+    pathname === "/me/courses" ||
+    pathname === "/me/wishlist" ||
+    pathname.startsWith("/courses/");
   const profileHref = "/profile";
   const myCoursesHref = viewer.signedIn
     ? viewer.needsOnboarding
       ? "/onboarding?next=%2Fme%2Fcourses"
       : "/me/courses"
     : "/sign-in?next=%2Fme%2Fcourses";
+  const wishlistHref = viewer.signedIn
+    ? viewer.needsOnboarding
+      ? "/onboarding?next=%2Fme%2Fwishlist"
+      : "/me/wishlist"
+    : "/sign-in?next=%2Fme%2Fwishlist";
 
   useEffect(() => {
     setMenuOpen(false);
@@ -210,7 +222,12 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
               <span className="pill pill-pine">Courses</span>
               <div className="flex min-w-0 items-center gap-2 overflow-x-auto">
                 {courseSubnav.map((item) => {
-                  const href = item.href === "/me/courses" ? myCoursesHref : item.href;
+                  const href =
+                    item.href === "/me/courses"
+                      ? myCoursesHref
+                      : item.href === "/me/wishlist"
+                        ? wishlistHref
+                        : item.href;
                   const active = isCourseSubnavActive(item.href);
 
                   return (
@@ -267,7 +284,9 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                 const href =
                   item.href === "/me/courses"
                     ? myCoursesHref
-                    : item.href === "/profile"
+                    : item.href === "/me/wishlist"
+                      ? wishlistHref
+                      : item.href === "/profile"
                       ? profileHref
                       : item.href;
                 const active =

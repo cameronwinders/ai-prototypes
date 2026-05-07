@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 
 import { respondToFriendRequest, searchFriendProfilesAction, sendFriendRequest, sendFriendRequestToUser } from "@/app/actions";
+import { InitialsAvatar } from "@/components/InitialsAvatar";
 import type { DiscoverableProfile, FriendsPageData } from "@/lib/types";
 
 type FriendsManagerProps = {
@@ -158,14 +159,14 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle }: Friends
             <p className="mt-2 break-all text-sm font-semibold text-[var(--ink)]">{inviteUrl}</p>
           </div>
 
-          <div className="mt-5 flex flex-wrap gap-3">
-            <button type="button" onClick={handleCopyLink} className="solid-button">
+          <div className="mt-5 grid gap-3 sm:flex sm:flex-wrap">
+            <button type="button" onClick={handleCopyLink} className="solid-button justify-center">
               Copy link
             </button>
-            <button type="button" onClick={handleShareLink} disabled={sharing} className="ghost-button">
+            <button type="button" onClick={handleShareLink} disabled={sharing} className="ghost-button justify-center">
               {sharing ? "Sharing..." : "Share link"}
             </button>
-            <Link href={`/u/${viewerHandle}`} className="ghost-button">
+            <Link href={`/u/${viewerHandle}`} className="ghost-button justify-center">
               Open my public profile
             </Link>
           </div>
@@ -202,15 +203,18 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle }: Friends
             {searchResults.map((profile) => (
               <div key={profile.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <p className="h3 text-[1.15rem]">{profile.display_name ?? profile.handle}</p>
-                    <p className="mt-1 text-sm text-[var(--muted)]">
-                      @{profile.handle}
-                      {profile.home_state ? ` · ${profile.home_state}` : ""}
-                      {profile.email ? ` · ${profile.email}` : ""}
-                    </p>
+                  <div className="flex items-center gap-3">
+                    <InitialsAvatar displayName={profile.display_name} handle={profile.handle} />
+                    <div>
+                      <p className="h3 text-[1.15rem]">{profile.display_name ?? profile.handle}</p>
+                      <p className="mt-1 text-sm text-[var(--muted)]">
+                        @{profile.handle}
+                        {profile.home_state ? ` · ${profile.home_state}` : ""}
+                        {profile.email ? ` · ${profile.email}` : ""}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="grid gap-2 sm:flex sm:flex-wrap">
                     <Link href={`/u/${profile.handle}`} className="ghost-button sm">
                       View profile
                     </Link>
@@ -268,14 +272,17 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle }: Friends
               data.accepted.map((friend) => (
                 <div key={friend.friendshipId} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4">
                   <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                      <p className="h3 text-[1.15rem]">{friend.profile.display_name ?? friend.profile.handle}</p>
-                      <p className="mt-1 text-sm text-[var(--muted)]">
-                        {friend.overlapCount} shared courses · {friend.rankedCount} ranked
-                      </p>
+                    <div className="flex items-center gap-3">
+                      <InitialsAvatar displayName={friend.profile.display_name} handle={friend.profile.handle} />
+                      <div>
+                        <p className="h3 text-[1.15rem]">{friend.profile.display_name ?? friend.profile.handle}</p>
+                        <p className="mt-1 text-sm text-[var(--muted)]">
+                          {friend.overlapCount} shared courses · {friend.rankedCount} ranked
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Link href={`/compare/${friend.profile.id}`} className="solid-button sm">
+                    <div className="grid gap-2 sm:flex sm:flex-wrap sm:items-center">
+                      <Link href={`/compare/${friend.profile.handle}`} className="solid-button sm">
                         Compare
                       </Link>
                       <Link href={`/u/${friend.profile.handle}`} className="ghost-button sm">
@@ -299,8 +306,13 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle }: Friends
             ) : (
               data.incoming.map((request) => (
                 <div key={request.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4">
-                  <p className="h3 text-[1.15rem]">{request.profile.display_name ?? request.profile.handle}</p>
-                  <p className="mt-1 text-sm text-[var(--muted)]">@{request.profile.handle}</p>
+                  <div className="flex items-center gap-3">
+                    <InitialsAvatar displayName={request.profile.display_name} handle={request.profile.handle} />
+                    <div>
+                      <p className="h3 text-[1.15rem]">{request.profile.display_name ?? request.profile.handle}</p>
+                      <p className="mt-1 text-sm text-[var(--muted)]">@{request.profile.handle}</p>
+                    </div>
+                  </div>
                   <button
                     type="button"
                     onClick={() => handleAccept(request.id)}
@@ -325,8 +337,13 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle }: Friends
             ) : (
               data.outgoing.map((request) => (
                 <div key={request.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4">
-                  <p className="h3 text-[1.15rem]">{request.profile.display_name ?? request.profile.handle}</p>
-                  <p className="mt-1 text-sm text-[var(--muted)]">Awaiting acceptance</p>
+                  <div className="flex items-center gap-3">
+                    <InitialsAvatar displayName={request.profile.display_name} handle={request.profile.handle} />
+                    <div>
+                      <p className="h3 text-[1.15rem]">{request.profile.display_name ?? request.profile.handle}</p>
+                      <p className="mt-1 text-sm text-[var(--muted)]">Awaiting acceptance</p>
+                    </div>
+                  </div>
                 </div>
               ))
             )}

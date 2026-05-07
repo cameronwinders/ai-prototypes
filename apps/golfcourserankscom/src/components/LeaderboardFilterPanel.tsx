@@ -18,6 +18,8 @@ type LeaderboardFilterPanelProps = {
   selectedState: string;
   sort: string;
   states: string[];
+  activity: string;
+  showActivityFilter: boolean;
 };
 
 function sortLabel(sort: string) {
@@ -28,19 +30,22 @@ export function LeaderboardFilterPanel({
   band,
   selectedState,
   sort,
-  states
+  states,
+  activity,
+  showActivityFilter
 }: LeaderboardFilterPanelProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
 
-  function updateParams(next: { band?: string; state?: string; sort?: string }) {
+  function updateParams(next: { band?: string; state?: string; sort?: string; activity?: string }) {
     const params = new URLSearchParams(searchParams.toString());
 
     const nextBand = next.band ?? band;
     const nextState = next.state ?? selectedState;
     const nextSort = next.sort ?? sort;
+    const nextActivity = next.activity ?? activity;
 
     if (nextBand) {
       params.set("band", nextBand);
@@ -60,6 +65,12 @@ export function LeaderboardFilterPanel({
       params.delete("sort");
     }
 
+    if (showActivityFilter && nextActivity && nextActivity !== "all") {
+      params.set("played", nextActivity);
+    } else {
+      params.delete("played");
+    }
+
     params.delete("minSignals");
 
     const query = params.toString();
@@ -67,7 +78,7 @@ export function LeaderboardFilterPanel({
   }
 
   function resetFilters() {
-    updateParams({ band: "", state: "", sort: "rank" });
+    updateParams({ band: "", state: "", sort: "rank", activity: "all" });
     setOpen(false);
   }
 
@@ -111,6 +122,11 @@ export function LeaderboardFilterPanel({
           {selectedState ? <span className="pill pill-line pill-sentence">{selectedState}</span> : null}
           {sort !== "rank" ? <span className="pill pill-line pill-sentence">{sortLabel(sort)}</span> : null}
           {band ? <span className="pill pill-pine pill-sentence">Handicap {band}</span> : null}
+          {showActivityFilter && activity !== "all" ? (
+            <span className="pill pill-pine pill-sentence">
+              {activity === "played" ? "Played by me" : "Not played by me"}
+            </span>
+          ) : null}
 
           <button type="button" onClick={() => setOpen(true)} className="ghost-button sm ml-auto min-h-11">
             Filters
@@ -181,6 +197,21 @@ export function LeaderboardFilterPanel({
                   ))}
                 </select>
               </label>
+
+              {showActivityFilter ? (
+                <label className="grid gap-2 text-sm font-semibold text-ink">
+                  Course state
+                  <select
+                    value={activity}
+                    onChange={(event) => updateParams({ activity: event.target.value })}
+                    className="min-h-11 rounded-md border border-line bg-white px-4 py-3 text-sm font-normal text-ink outline-none transition focus:border-[rgba(49,107,83,0.45)]"
+                  >
+                    <option value="all">All courses</option>
+                    <option value="played">Played by me</option>
+                    <option value="not-played">Not played by me</option>
+                  </select>
+                </label>
+              ) : null}
             </div>
 
             <div className="mt-6 flex flex-wrap gap-3">

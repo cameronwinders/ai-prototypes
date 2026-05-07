@@ -89,6 +89,62 @@ export function pluralize(count: number, singular: string, plural = `${singular}
   return `${count} ${count === 1 ? singular : plural}`;
 }
 
+export function splitDisplayName(displayName: string | null | undefined, fallbackHandle = "") {
+  const source = (displayName ?? "").trim();
+
+  if (!source) {
+    return {
+      firstName: "",
+      lastName: ""
+    };
+  }
+
+  const parts = source.split(/\s+/).filter(Boolean);
+  if (parts.length === 1) {
+    return {
+      firstName: parts[0],
+      lastName: ""
+    };
+  }
+
+  return {
+    firstName: parts[0] ?? "",
+    lastName: parts.slice(1).join(" ") || fallbackHandle
+  };
+}
+
+export function getGolferDisplayName(displayName: string | null | undefined, handle: string | null | undefined) {
+  const trimmed = displayName?.trim();
+  if (trimmed) {
+    return trimmed;
+  }
+
+  if (!handle) {
+    return "Golf Course Ranks member";
+  }
+
+  return handle
+    .split(/[-_.]+/)
+    .filter(Boolean)
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join(" ");
+}
+
+export function getGolferInitials(displayName: string | null | undefined, handle: string | null | undefined) {
+  const name = getGolferDisplayName(displayName, handle);
+  const parts = name.split(/\s+/).filter(Boolean);
+
+  if (parts.length === 0) {
+    return "GC";
+  }
+
+  if (parts.length === 1) {
+    return parts[0].slice(0, 2).toUpperCase();
+  }
+
+  return `${parts[0][0] ?? ""}${parts[parts.length - 1][0] ?? ""}`.toUpperCase();
+}
+
 export function formatUpdatedAt(iso: string | null) {
   if (!iso) {
     return "Not saved yet";

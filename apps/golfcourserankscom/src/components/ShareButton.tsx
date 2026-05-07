@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type ShareButtonProps = {
   title: string;
@@ -24,7 +24,12 @@ export function ShareButton({
   hideStatus = false
 }: ShareButtonProps) {
   const [status, setStatus] = useState<string | null>(null);
+  const [canNativeShare, setCanNativeShare] = useState(false);
   const shareMessage = text ? `${text}\n${url}` : url;
+
+  useEffect(() => {
+    setCanNativeShare(typeof navigator !== "undefined" && typeof navigator.share === "function");
+  }, []);
 
   async function trackShare(method: string) {
     try {
@@ -47,7 +52,7 @@ export function ShareButton({
     }
   }
 
-  async function handleShare() {
+  async function handleCopy() {
     setStatus(null);
 
     try {
@@ -61,24 +66,43 @@ export function ShareButton({
         return;
       }
 
-      if (nav?.share) {
-        await nav.share({ title, text, url });
-        await trackShare("native");
-        setStatus("Link shared.");
-        return;
-      }
-
       setStatus("Copy is not available on this device.");
     } catch {
       setStatus("Copy cancelled.");
     }
   }
 
+  async function handleNativeShare() {
+    setStatus(null);
+
+    try {
+      const nav = typeof window !== "undefined" ? window.navigator : undefined;
+
+      if (!nav?.share) {
+        setStatus("Share is not available on this device.");
+        return;
+      }
+
+      await nav.share({ title, text, url });
+      await trackShare("native");
+      setStatus("Link shared.");
+    } catch {
+      setStatus("Share cancelled.");
+    }
+  }
+
   return (
-    <div className="flex flex-col gap-2">
-      <button type="button" onClick={handleShare} className={className ?? "ghost-button min-h-11"}>
-        {buttonChildren ?? "Copy link"}
-      </button>
+    <div className="flex flex-col gap-2.5">
+      <div className="flex flex-wrap gap-2.5">
+        <button type="button" onClick={handleCopy} className={className ?? "ghost-button min-h-11"}>
+          {buttonChildren ?? "Copy link"}
+        </button>
+        {canNativeShare ? (
+          <button type="button" onClick={handleNativeShare} className="ghost-button min-h-11">
+            Share
+          </button>
+        ) : null}
+      </div>
       {hideSecondaryLinks ? null : (
         <div className="flex flex-wrap gap-2 text-sm">
           <a

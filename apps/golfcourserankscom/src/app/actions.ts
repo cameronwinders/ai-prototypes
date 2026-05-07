@@ -62,6 +62,7 @@ function appPaths(handle?: string | null) {
     "/leaderboard",
     "/courses",
     "/me/courses",
+    "/me/wishlist",
     "/friends",
     "/feedback",
     "/profile",
@@ -180,11 +181,15 @@ export async function updateProfileSettingsAction(formData: FormData) {
   const viewer = await requireOnboardedViewer("/profile");
   const next = typeof formData.get("next") === "string" ? String(formData.get("next")) : "/profile";
   const profileVisibility = String(formData.get("profile_visibility") ?? "public") as ProfileVisibility;
+  const firstName = String(formData.get("first_name") ?? "").trim();
+  const lastName = String(formData.get("last_name") ?? "").trim();
+  const displayNameInput = String(formData.get("display_name") ?? "").trim();
+  const displayName = [firstName, lastName].filter(Boolean).join(" ").trim() || displayNameInput || null;
 
   try {
     const updated = await upsertProfileSettings({
       userId: viewer.user!.id,
-      displayName: String(formData.get("display_name") ?? "").trim() || null,
+      displayName,
       handle: String(formData.get("handle") ?? viewer.profile?.handle ?? "golfer"),
       homeState: String(formData.get("home_state") ?? "").trim() || null,
       profileVisibility,
@@ -291,21 +296,31 @@ export async function setCoursePlayed(courseId: string, played: boolean): Promis
   const userId = viewer.user!.id;
 
   if (played) {
-    const result = await admin.from("played_courses").upsert(
-      {
-        user_id: userId,
-        course_id: courseId
-      },
-      {
-        onConflict: "user_id,course_id",
-        ignoreDuplicates: false
-      }
-    );
+    const [result, wishlistDelete] = await Promise.all([
+      admin.from("played_courses").upsert(
+        {
+          user_id: userId,
+          course_id: courseId
+        },
+        {
+          onConflict: "user_id,course_id",
+          ignoreDuplicates: false
+        }
+      ),
+      admin.from("wishlist_courses").delete().eq("user_id", userId).eq("course_id", courseId)
+    ]);
 
     if (result.error) {
       return {
         ok: false,
         message: result.error.message
+      };
+    }
+
+    if (wishlistDelete.error) {
+      return {
+        ok: false,
+        message: wishlistDelete.error.message
       };
     }
   } else {
@@ -337,6 +352,71 @@ export async function setCoursePlayed(courseId: string, played: boolean): Promis
   return {
     ok: true,
     data: updated
+  };
+}
+
+export async function setCourseWishlisted(
+  courseId: string,
+  wishlisted: boolean
+): Promise<ActionResult<{ wishlisted: boolean }>> {
+  const viewer = await requireOnboardedViewer("/courses");
+  const admin = createAdminClient();
+  const userId = viewer.user!.id;
+
+  if (wishlisted) {
+    const existingPlayed = await admin
+      .from("played_courses")
+      .select("course_id")
+      .eq("user_id", userId)
+      .eq("course_id", courseId)
+      .maybeSingle();
+
+    if (existingPlayed.error) {
+      return {
+        ok: false,
+        message: existingPlayed.error.message
+      };
+    }
+
+    if (existingPlayed.data) {
+      return {
+        ok: false,
+        message: "Played courses do not need a wish list spot."
+      };
+    }
+
+    const result = await admin.from("wishlist_courses").upsert(
+      {
+        user_id: userId,
+        course_id: courseId
+      },
+      {
+        onConflict: "user_id,course_id",
+        ignoreDuplicates: false
+      }
+    );
+
+    if (result.error) {
+      return {
+        ok: false,
+        message: result.error.message
+      };
+    }
+  } else {
+    const result = await admin.from("wishlist_courses").delete().eq("user_id", userId).eq("course_id", courseId);
+
+    if (result.error) {
+      return {
+        ok: false,
+        message: result.error.message
+      };
+    }
+  }
+
+  revalidateApp(viewer.profile?.handle);
+  return {
+    ok: true,
+    data: { wishlisted }
   };
 }
 

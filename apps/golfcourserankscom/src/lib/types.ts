@@ -89,6 +89,13 @@ export type PlayedCourseRecord = {
   updated_at: string;
 };
 
+export type WishlistCourseRecord = {
+  user_id: string;
+  course_id: string;
+  created_at: string;
+  updated_at: string;
+};
+
 export type RankedCourse = CourseRecord & {
   rankPosition: number;
   note: string | null;
@@ -101,6 +108,16 @@ export type PlayedCourse = CourseRecord & {
   rankPosition: number | null;
 };
 
+export type WishlistCourse = CourseRecord & {
+  wishlistedAt: string;
+};
+
+export type FriendPresence = {
+  id: string;
+  handle: string;
+  display_name: string | null;
+};
+
 export type LeaderboardCourse = CourseRecord & {
   leaderboardRank: number;
   normalizedScore: number;
@@ -111,6 +128,8 @@ export type LeaderboardCourse = CourseRecord & {
   wins: number;
   losses: number;
   isEarly: boolean;
+  viewerPlayed?: boolean;
+  friendPlayers?: FriendPresence[];
 };
 
 export type ViewerContext = {
@@ -137,6 +156,7 @@ export type CourseDetail = {
   aggregate: CourseAggregateRecord | null;
   aiSummary: CourseAiSummary;
   viewerPlayed: PlayedCourse | null;
+  viewerWishlisted: boolean;
 };
 
 export type FriendshipRecord = {

@@ -22,6 +22,7 @@ import type {
   EmailNotificationType,
   FeedbackRecord,
   FriendCard,
+  FriendPresence,
   FriendshipRecord,
   FriendsPageData,
   EditorialKey,
@@ -34,7 +35,9 @@ import type {
   PublicProfileOverview,
   RankedCourse,
   UnrankedReminderCandidate,
-  UserProfile
+  UserProfile,
+  WishlistCourse,
+  WishlistCourseRecord
 } from "@/lib/types";
 
 type LeaderboardSort =
@@ -45,6 +48,8 @@ type LeaderboardSort =
   | "golf-digest-public"
   | "golf-top-100"
   | "golfweek-you-can-play";
+
+type CourseActivityFilter = "all" | "played" | "not-played";
 
 function ensureConfigured() {
   const env = getServerSupabaseEnv();
@@ -184,6 +189,95 @@ function buildPlayedCourses(
       };
     })
     .filter(Boolean) as PlayedCourse[];
+}
+
+function buildWishlistCourses(courses: CourseRecord[], wishlistRows: WishlistCourseRecord[]) {
+  const courseById = new Map(courses.map((course) => [course.id, course]));
+
+  return wishlistRows
+    .map<WishlistCourse | null>((row) => {
+      const course = courseById.get(row.course_id);
+      if (!course) {
+        return null;
+      }
+
+      return {
+        ...course,
+        wishlistedAt: row.created_at
+      };
+    })
+    .filter(Boolean) as WishlistCourse[];
+}
+
+async function getAcceptedFriendPresenceMap(viewerId: string, courseIds: string[]) {
+  if (courseIds.length === 0) {
+    return new Map<string, FriendPresence[]>();
+  }
+
+  const admin = createAdminClient();
+  const { data: friendshipsData, error: friendshipsError } = await admin
+    .from("friendships")
+    .select("*")
+    .eq("status", "accepted")
+    .or(`requester_user_id.eq.${viewerId},addressee_user_id.eq.${viewerId}`);
+
+  if (friendshipsError) {
+    throw new Error(friendshipsError.message);
+  }
+
+  const otherIds = Array.from(
+    new Set(
+      ((friendshipsData ?? []) as FriendshipRecord[]).map((friendship) =>
+        friendship.requester_user_id === viewerId ? friendship.addressee_user_id : friendship.requester_user_id
+      )
+    )
+  );
+
+  if (otherIds.length === 0) {
+    return new Map<string, FriendPresence[]>();
+  }
+
+  const [{ data: profilesData, error: profilesError }, { data: playedData, error: playedError }] = await Promise.all([
+    admin.from("users").select("id, handle, display_name").in("id", otherIds),
+    admin.from("played_courses").select("user_id, course_id").in("user_id", otherIds).in("course_id", courseIds)
+  ]);
+
+  if (profilesError) {
+    throw new Error(profilesError.message);
+  }
+
+  if (playedError) {
+    throw new Error(playedError.message);
+  }
+
+  const profileById = new Map(
+    ((profilesData ?? []) as FriendPresence[]).map((profile) => [profile.id, profile])
+  );
+  const presenceByCourse = new Map<string, FriendPresence[]>();
+
+  for (const row of (playedData ?? []) as Array<{ user_id: string; course_id: string }>) {
+    const profile = profileById.get(row.user_id);
+    if (!profile) {
+      continue;
+    }
+
+    const current = presenceByCourse.get(row.course_id) ?? [];
+    current.push(profile);
+    presenceByCourse.set(row.course_id, current);
+  }
+
+  for (const [courseId, profiles] of presenceByCourse) {
+    presenceByCourse.set(
+      courseId,
+      profiles
+        .sort((left, right) =>
+          (left.display_name ?? left.handle).localeCompare(right.display_name ?? right.handle)
+        )
+        .slice(0, 4)
+    );
+  }
+
+  return presenceByCourse;
 }
 
 export async function ensureProfileForUser(user: User) {
@@ -358,6 +452,51 @@ export async function getPlayedCoursesForUser(userId: string) {
   return buildPlayedCourses(courses, played, ranks);
 }
 
+export async function getPlayedCourseIdsForUser(userId: string) {
+  const played = await getPlayedCoursesForUser(userId);
+  return new Set(played.map((course) => course.id));
+}
+
+export async function getWishlistCourseIdsForUser(userId: string) {
+  const { configured } = ensureConfigured();
+
+  if (!configured) {
+    return new Set<string>();
+  }
+
+  const admin = createAdminClient();
+  const { data, error } = await admin.from("wishlist_courses").select("course_id").eq("user_id", userId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return new Set(((data ?? []) as Array<{ course_id: string }>).map((row) => row.course_id));
+}
+
+export async function getWishlistCoursesForUser(userId: string) {
+  const { configured } = ensureConfigured();
+
+  if (!configured) {
+    return [] as WishlistCourse[];
+  }
+
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("wishlist_courses")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const wishlistRows = (data ?? []) as WishlistCourseRecord[];
+  const courses = await getCoursesByIds(wishlistRows.map((row) => row.course_id));
+  return buildWishlistCourses(courses, wishlistRows);
+}
+
 export async function getRankedCoursesForUser(userId: string) {
   const played = await getPlayedCoursesForUser(userId);
   return played
@@ -510,6 +649,8 @@ export async function getLeaderboardCourses(options?: {
   state?: string | null;
   sort?: LeaderboardSort;
   limit?: number;
+  viewerId?: string | null;
+  activity?: CourseActivityFilter;
 }) {
   const { configured } = ensureConfigured();
 
@@ -522,13 +663,32 @@ export async function getLeaderboardCourses(options?: {
   const selectedState = options?.state?.trim().toUpperCase() ?? null;
   const sort = options?.sort ?? "rank";
   const limit = options?.limit ?? 100;
+  const viewerId = options?.viewerId ?? null;
+  const activity = options?.activity ?? "all";
 
   if (handicapBand) {
     const filteredByBand = await buildFilteredLeaderboard(handicapBand, minSignals, 250);
-    const filteredByState = selectedState
+    let filteredByState = selectedState
       ? filteredByBand.filter((course) => course.state.toUpperCase() === selectedState)
       : filteredByBand;
-    return sortLeaderboardRows(filteredByState, sort).slice(0, limit);
+    const playedIds = viewerId ? await getPlayedCourseIdsForUser(viewerId) : null;
+
+    if (playedIds && activity !== "all") {
+      filteredByState = filteredByState.filter((course) =>
+        activity === "played" ? playedIds.has(course.id) : !playedIds.has(course.id)
+      );
+    }
+
+    const rankedRows = sortLeaderboardRows(filteredByState, sort).slice(0, limit);
+    const friendPresence = viewerId
+      ? await getAcceptedFriendPresenceMap(viewerId, rankedRows.map((course) => course.id))
+      : new Map<string, FriendPresence[]>();
+
+    return rankedRows.map((course) => ({
+      ...course,
+      viewerPlayed: playedIds?.has(course.id) ?? false,
+      friendPlayers: friendPresence.get(course.id) ?? []
+    }));
   }
 
   const admin = createAdminClient();
@@ -545,12 +705,28 @@ export async function getLeaderboardCourses(options?: {
     ((aggregateRows.data ?? []) as CourseAggregateRecord[]).map((row) => [row.course_id, row])
   );
 
-  const leaderboard = courses
+  let leaderboard = courses
     .map((course) => toLeaderboardCourse(course, aggregateByCourse.get(course.id) ?? null))
     .filter((course) => course.numSignals >= minSignals)
     .filter((course) => (selectedState ? course.state.toUpperCase() === selectedState : true));
+  const playedIds = viewerId ? await getPlayedCourseIdsForUser(viewerId) : null;
 
-  return sortLeaderboardRows(leaderboard, sort).slice(0, limit);
+  if (playedIds && activity !== "all") {
+    leaderboard = leaderboard.filter((course) =>
+      activity === "played" ? playedIds.has(course.id) : !playedIds.has(course.id)
+    );
+  }
+
+  const rankedRows = sortLeaderboardRows(leaderboard, sort).slice(0, limit);
+  const friendPresence = viewerId
+    ? await getAcceptedFriendPresenceMap(viewerId, rankedRows.map((course) => course.id))
+    : new Map<string, FriendPresence[]>();
+
+  return rankedRows.map((course) => ({
+    ...course,
+    viewerPlayed: playedIds?.has(course.id) ?? false,
+    friendPlayers: friendPresence.get(course.id) ?? []
+  }));
 }
 
 export async function getCourseDetail(
@@ -575,7 +751,7 @@ export async function getCourseDetail(
   }
 
   const admin = createAdminClient();
-  const [courseRes, aggregateRes, noteRows, viewerPlayedRows, viewerRankRows] = await Promise.all([
+  const [courseRes, aggregateRes, noteRows, viewerPlayedRows, viewerRankRows, viewerWishlistRows] = await Promise.all([
     admin.from("courses").select("*").eq("id", resolvedCourseId).maybeSingle<CourseRecord>(),
     admin.from("course_aggregates").select("*").eq("course_id", resolvedCourseId).maybeSingle<CourseAggregateRecord>(),
     admin
@@ -589,6 +765,9 @@ export async function getCourseDetail(
       : Promise.resolve({ data: [], error: null }),
     viewerId
       ? admin.from("user_course_ranks").select("*").eq("user_id", viewerId).eq("course_id", resolvedCourseId)
+      : Promise.resolve({ data: [], error: null }),
+    viewerId
+      ? admin.from("wishlist_courses").select("course_id").eq("user_id", viewerId).eq("course_id", resolvedCourseId)
       : Promise.resolve({ data: [], error: null })
   ]);
 
@@ -612,6 +791,10 @@ export async function getCourseDetail(
     throw new Error(viewerRankRows.error.message);
   }
 
+  if (viewerWishlistRows.error) {
+    throw new Error(viewerWishlistRows.error.message);
+  }
+
   const course = courseRes.data as CourseRecord | null;
 
   if (!course) {
@@ -631,7 +814,8 @@ export async function getCourseDetail(
     course,
     aggregate: (aggregateRes.data as CourseAggregateRecord | null) ?? null,
     aiSummary: buildAiCourseStory(course, (aggregateRes.data as CourseAggregateRecord | null) ?? null, noteSamples, viewerBand),
-    viewerPlayed
+    viewerPlayed,
+    viewerWishlisted: ((viewerWishlistRows.data ?? []) as Array<{ course_id: string }>).length > 0
   };
 }
 
@@ -829,27 +1013,33 @@ export async function getPublicProfileOverview(
   };
 }
 
-export async function getCompareOverview(viewerId: string, friendUserId: string): Promise<CompareOverview | null> {
-  const friendship = await getFriendshipBetweenUsers(viewerId, friendUserId);
+export async function getCompareOverview(
+  viewerId: string,
+  friendUserIdOrHandle: string
+): Promise<CompareOverview | null> {
+  const friendProfile = isUuidLike(friendUserIdOrHandle)
+    ? await getProfileById(friendUserIdOrHandle)
+    : await getProfileByHandle(friendUserIdOrHandle);
+
+  if (!friendProfile) {
+    return null;
+  }
+
+  const friendship = await getFriendshipBetweenUsers(viewerId, friendProfile.id);
 
   if (!friendship || friendship.status !== "accepted") {
     return null;
   }
 
-  const [friend, selfCourses, friendCourses] = await Promise.all([
-    getProfileById(friendUserId),
+  const [selfCourses, friendCourses] = await Promise.all([
     getRankedCoursesForUser(viewerId),
-    getRankedCoursesForUser(friendUserId)
+    getRankedCoursesForUser(friendProfile.id)
   ]);
-
-  if (!friend) {
-    return null;
-  }
 
   const comparison = compareRankings(selfCourses, friendCourses);
 
   return {
-    friend,
+    friend: friendProfile,
     overlap: comparison.overlap,
     selfOnlyCount: comparison.selfOnlyCount,
     friendOnlyCount: comparison.friendOnlyCount
@@ -1054,17 +1244,19 @@ export async function getUnrankedReminderCandidates() {
 }
 
 export async function getProfileSummary(viewerId: string) {
-  const [profile, played, ranked, friends] = await Promise.all([
+  const [profile, played, ranked, friends, wishlist] = await Promise.all([
     getProfileById(viewerId),
     getPlayedCoursesForUser(viewerId),
     getRankedCoursesForUser(viewerId),
-    getFriendsPageData(viewerId)
+    getFriendsPageData(viewerId),
+    getWishlistCoursesForUser(viewerId)
   ]);
 
   return {
     profile,
     playedCount: played.length,
     rankedCount: ranked.length,
+    wishlistCount: wishlist.length,
     acceptedFriends: friends.accepted.length,
     incomingRequests: friends.incoming.length
   };

@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
-import { setCoursePlayed } from "@/app/actions";
+import { setCoursePlayed, setCourseWishlisted } from "@/app/actions";
+import { PlayedMarkIcon } from "@/components/PlayedMarkIcon";
 import { formatLocation } from "@/lib/ranking";
 import type { CourseRecord, PlayedCourse } from "@/lib/types";
 
@@ -63,6 +64,7 @@ const STATE_NAME_BY_CODE: Record<string, string> = {
 type CoursesBrowserProps = {
   courses: CourseRecord[];
   initialPlayedCourses: PlayedCourse[];
+  initialWishlistIds: string[];
   viewerSignedIn: boolean;
   viewerNeedsOnboarding: boolean;
   defaultVisibleCount?: number;
@@ -96,13 +98,16 @@ function choosePreferredCourse(existing: CourseRecord, candidate: CourseRecord) 
 export function CoursesBrowser({
   courses,
   initialPlayedCourses,
+  initialWishlistIds,
   viewerSignedIn,
   viewerNeedsOnboarding,
   defaultVisibleCount = 30
 }: CoursesBrowserProps) {
   const [playedCourses, setPlayedCourses] = useState(initialPlayedCourses);
+  const [wishlistIds, setWishlistIds] = useState(new Set(initialWishlistIds));
   const [query, setQuery] = useState("");
   const [busyCourseId, setBusyCourseId] = useState<string | null>(null);
+  const [wishlistBusyCourseId, setWishlistBusyCourseId] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(defaultVisibleCount);
   const playedIds = useMemo(() => new Set(playedCourses.map((course) => course.id)), [playedCourses]);
@@ -138,6 +143,10 @@ export function CoursesBrowser({
     setVisibleCount(defaultVisibleCount);
   }, [defaultVisibleCount, query]);
 
+  useEffect(() => {
+    setWishlistIds(new Set(initialWishlistIds));
+  }, [initialWishlistIds]);
+
   async function handleToggle(courseId: string, nextPlayed: boolean) {
     if (!viewerSignedIn || viewerNeedsOnboarding) {
       return;
@@ -154,7 +163,41 @@ export function CoursesBrowser({
     }
 
     setPlayedCourses(result.data);
+    setWishlistIds((current) => {
+      const next = new Set(current);
+      if (nextPlayed) {
+        next.delete(courseId);
+      }
+      return next;
+    });
     setStatus(nextPlayed ? "Added to your played list." : "Removed from your played list.");
+  }
+
+  async function handleWishlist(courseId: string, nextWishlisted: boolean) {
+    if (!viewerSignedIn || viewerNeedsOnboarding) {
+      return;
+    }
+
+    setWishlistBusyCourseId(courseId);
+    setStatus(null);
+    const result = await setCourseWishlisted(courseId, nextWishlisted);
+    setWishlistBusyCourseId(null);
+
+    if (!result.ok) {
+      setStatus(result.message ?? "We could not update that wish list state.");
+      return;
+    }
+
+    setWishlistIds((current) => {
+      const next = new Set(current);
+      if (nextWishlisted) {
+        next.add(courseId);
+      } else {
+        next.delete(courseId);
+      }
+      return next;
+    });
+    setStatus(nextWishlisted ? "Added to your wish list." : "Removed from your wish list.");
   }
 
   const visibleCourses = filteredCourses.slice(0, visibleCount);
@@ -190,6 +233,7 @@ export function CoursesBrowser({
           <div className="grid gap-3">
             {visibleCourses.map((course) => {
               const isPlayed = playedIds.has(course.id);
+              const isWishlisted = wishlistIds.has(course.id);
 
               return (
                 <Link
@@ -207,8 +251,16 @@ export function CoursesBrowser({
                             {course.num_unique_golfers === 0 ? "Starting score" : "Crowd score"} {course.normalized_score.toFixed(1)}
                           </span>
                         ) : null}
+                        {isPlayed ? (
+                          <span className="pill pill-pine gap-1.5">
+                            <PlayedMarkIcon className="h-3.5 w-3.5" />
+                            Played
+                          </span>
+                        ) : isWishlisted ? (
+                          <span className="pill pill-line">Wish list</span>
+                        ) : null}
                       </div>
-                      <h3 className="mt-3 text-[1.2rem] font-semibold tracking-[var(--tracking-tight)] text-ink">{course.name}</h3>
+                      <h3 className="mt-3 text-[1.12rem] font-semibold tracking-[var(--tracking-tight)] text-ink sm:text-[1.2rem]">{course.name}</h3>
                       <p className="meta mt-1">{formatLocation(course)}</p>
                     </div>
 
@@ -218,9 +270,9 @@ export function CoursesBrowser({
                   </div>
 
                   {viewerSignedIn ? (
-                    <div className="mt-4 flex flex-wrap gap-2" onClick={(event) => event.preventDefault()}>
+                    <div className="mt-4 grid gap-2 sm:flex sm:flex-wrap" onClick={(event) => event.preventDefault()}>
                       {viewerNeedsOnboarding ? (
-                        <Link href={`/onboarding?next=${encodeURIComponent(`/courses/${course.id}`)}`} className="solid-button sm min-h-11">
+                        <Link href={`/onboarding?next=${encodeURIComponent(`/courses/${course.id}`)}`} className="solid-button sm min-h-11 justify-center">
                           Finish profile
                         </Link>
                       ) : (
@@ -229,11 +281,23 @@ export function CoursesBrowser({
                           onClick={() => handleToggle(course.id, !isPlayed)}
                           disabled={busyCourseId === course.id}
                           data-testid={`course-play-toggle-${course.id}`}
-                          className={isPlayed ? "ghost-button sm min-h-11" : "solid-button sm min-h-11"}
+                          className={isPlayed ? "ghost-button sm min-h-11 justify-center gap-2" : "solid-button sm min-h-11 justify-center gap-2"}
                         >
+                          <PlayedMarkIcon className="h-3.5 w-3.5" />
                           {busyCourseId === course.id ? "Saving..." : isPlayed ? "Played" : "Mark played"}
                         </button>
                       )}
+                      {!viewerNeedsOnboarding && !isPlayed ? (
+                        <button
+                          type="button"
+                          onClick={() => handleWishlist(course.id, !isWishlisted)}
+                          disabled={wishlistBusyCourseId === course.id}
+                          data-testid={`course-wishlist-toggle-${course.id}`}
+                          className="ghost-button sm min-h-11 justify-center"
+                        >
+                            {wishlistBusyCourseId === course.id ? "Saving..." : isWishlisted ? "In wish list" : "Add to wish list"}
+                        </button>
+                      ) : null}
                     </div>
                   ) : null}
                 </Link>

@@ -1,12 +1,13 @@
 import { CoursesBrowser } from "@/components/CoursesBrowser";
-import { getAllCourses, getPlayedCoursesForUser } from "@/lib/data";
+import { getAllCourses, getPlayedCoursesForUser, getWishlistCourseIdsForUser } from "@/lib/data";
 import { getViewerContext } from "@/lib/viewer";
 
 export default async function CoursesPage() {
   const viewer = await getViewerContext();
-  const [courses, playedCourses] = await Promise.all([
+  const [courses, playedCourses, wishlistIds] = await Promise.all([
     getAllCourses(),
-    viewer.user ? getPlayedCoursesForUser(viewer.user.id) : Promise.resolve([])
+    viewer.user ? getPlayedCoursesForUser(viewer.user.id) : Promise.resolve([]),
+    viewer.user ? getWishlistCourseIdsForUser(viewer.user.id) : Promise.resolve(new Set<string>())
   ]);
 
   return (
@@ -14,6 +15,7 @@ export default async function CoursesPage() {
       <CoursesBrowser
         courses={courses}
         initialPlayedCourses={playedCourses}
+        initialWishlistIds={Array.from(wishlistIds)}
         viewerSignedIn={Boolean(viewer.user)}
         viewerNeedsOnboarding={Boolean(viewer.user && !viewer.profile?.onboarding_completed)}
       />

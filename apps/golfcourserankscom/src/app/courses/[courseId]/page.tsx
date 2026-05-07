@@ -78,7 +78,6 @@ export default async function CourseDetailPage({
   const crowdRank = aggregate?.rank ?? course.seed_rank;
   const crowdScore = aggregate ? aggregate.normalized_score.toFixed(1) : "0.0";
   const golfersCount = aggregate?.num_unique_golfers ?? 0;
-  const comparisonsCount = aggregate?.num_signals ?? 0;
   const editorialLine = buildEditorialLine(course);
   const summaryLine = aiSummary.fit ?? aiSummary.loves[0] ?? "Golfers keep this one in the conversation for a reason.";
 
@@ -116,10 +115,6 @@ export default async function CourseDetailPage({
                 |
               </span>
               <span>{pluralize(golfersCount, "golfer")}</span>
-              <span aria-hidden="true" className="text-muted">
-                |
-              </span>
-              <span>{pluralize(comparisonsCount, "comparison")}</span>
             </div>
 
             <p className="meta mt-3">Editorial: {editorialLine}</p>
@@ -129,6 +124,7 @@ export default async function CourseDetailPage({
               <CourseDetailActions
                 courseId={course.id}
                 initialPlayed={viewerPlayed}
+                initialWishlisted={detail.viewerWishlisted}
                 viewerSignedIn={Boolean(viewer.user)}
                 viewerNeedsOnboarding={Boolean(viewer.user && !viewer.profile?.onboarding_completed)}
               />

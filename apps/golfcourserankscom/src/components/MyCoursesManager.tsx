@@ -3,13 +3,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
-import { addCourseToRanking, removeCourseFromRanking, saveCourseOrder, setCoursePlayed } from "@/app/actions";
+import { addCourseToRanking, removeCourseFromRanking, saveCourseOrder, setCoursePlayed, setCourseWishlisted } from "@/app/actions";
 import { ShareButton } from "@/components/ShareButton";
 import { formatLocation, formatUpdatedAt, splitPlayedCourses } from "@/lib/ranking";
 import type { CourseRecord, PlayedCourse } from "@/lib/types";
 
 type MyCoursesManagerProps = {
   initialPlayedCourses: PlayedCourse[];
+  initialWishlistIds: string[];
   allCourses: CourseRecord[];
   siteUrl: string;
   viewerHandle: string;
@@ -81,12 +82,20 @@ function mergePlayedCourses(current: PlayedCourse[], ranked: Array<{ id: string;
   }));
 }
 
-export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl, viewerHandle }: MyCoursesManagerProps) {
+export function MyCoursesManager({
+  initialPlayedCourses,
+  initialWishlistIds,
+  allCourses,
+  siteUrl,
+  viewerHandle
+}: MyCoursesManagerProps) {
   const [playedCourses, setPlayedCourses] = useState(initialPlayedCourses);
+  const [wishlistIds, setWishlistIds] = useState(new Set(initialWishlistIds));
   const [status, setStatus] = useState<string>("Drag favorites into order. Top means favorite.");
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(new Date().toISOString());
   const [saveError, setSaveError] = useState<string | null>(null);
   const [busyCourseId, setBusyCourseId] = useState<string | null>(null);
+  const [wishlistBusyCourseId, setWishlistBusyCourseId] = useState<string | null>(null);
   const [catalogQuery, setCatalogQuery] = useState("");
   const [announcement, setAnnouncement] = useState("");
   const [dragState, setDragState] = useState<DragState>(null);
@@ -98,6 +107,10 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl, vi
   useEffect(() => {
     latestState.current = playedCourses;
   }, [playedCourses]);
+
+  useEffect(() => {
+    setWishlistIds(new Set(initialWishlistIds));
+  }, [initialWishlistIds]);
 
   const { ranked, unranked } = useMemo(() => splitPlayedCourses(playedCourses), [playedCourses]);
   const rankedIds = useMemo(() => new Set(ranked.map((course) => course.id)), [ranked]);
@@ -285,8 +298,35 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl, vi
 
     latestServerState.current = result.data;
     setPlayedCourses(result.data);
+    setWishlistIds((current) => {
+      const next = new Set(current);
+      next.delete(courseId);
+      return next;
+    });
     setLastSavedAt(new Date().toISOString());
     setStatus("Added to your played list.");
+  }
+
+  async function handleWishlist(courseId: string, nextWishlisted: boolean) {
+    setWishlistBusyCourseId(courseId);
+    const result = await setCourseWishlisted(courseId, nextWishlisted);
+    setWishlistBusyCourseId(null);
+
+    if (!result.ok) {
+      setSaveError(result.message ?? "We could not update that wish list spot.");
+      return;
+    }
+
+    setWishlistIds((current) => {
+      const next = new Set(current);
+      if (nextWishlisted) {
+        next.add(courseId);
+      } else {
+        next.delete(courseId);
+      }
+      return next;
+    });
+    setStatus(nextWishlisted ? "Added to your wish list." : "Removed from your wish list.");
   }
 
   return (
@@ -335,6 +375,9 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl, vi
             />
             <Link href="/courses" className="ghost-button justify-center whitespace-nowrap">
               Browse courses
+            </Link>
+            <Link href="/me/wishlist" className="ghost-button justify-center whitespace-nowrap">
+              Open wish list
             </Link>
             <Link href="/leaderboard" className="ghost-button justify-center whitespace-nowrap">
               See leaderboard
@@ -537,6 +580,7 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl, vi
             {filteredCatalog.map((course) => {
               const isRanked = rankedIds.has(course.id);
               const isPlayed = playedIds.has(course.id);
+              const isWishlisted = wishlistIds.has(course.id);
 
               return (
                 <div key={course.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4">
@@ -559,14 +603,24 @@ export function MyCoursesManager({ initialPlayedCourses, allCourses, siteUrl, vi
                       ) : isPlayed ? (
                         <span className="pill pill-line">In played list</span>
                       ) : (
-                        <button
-                          type="button"
-                          onClick={() => handleMarkPlayed(course.id)}
-                          disabled={busyCourseId === course.id}
-                          className="solid-button sm"
-                        >
-                          {busyCourseId === course.id ? "Saving..." : "Mark played"}
-                        </button>
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => handleMarkPlayed(course.id)}
+                            disabled={busyCourseId === course.id}
+                            className="solid-button sm"
+                          >
+                            {busyCourseId === course.id ? "Saving..." : "Mark played"}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleWishlist(course.id, !isWishlisted)}
+                            disabled={wishlistBusyCourseId === course.id}
+                            className="ghost-button sm"
+                          >
+                            {wishlistBusyCourseId === course.id ? "Saving..." : isWishlisted ? "In wish list" : "Add to wish list"}
+                          </button>
+                        </>
                       )}
                     </div>
                   </div>

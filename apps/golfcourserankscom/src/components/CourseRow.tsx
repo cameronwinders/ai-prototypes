@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { InitialsAvatar } from "@/components/InitialsAvatar";
+import { PlayedMarkIcon } from "@/components/PlayedMarkIcon";
 import { EDITORIAL_LISTS, type LeaderboardCourse } from "@/lib/types";
 
 type CourseRowProps = {
@@ -34,6 +36,12 @@ export function CourseRow({ course, href, actionLabel }: CourseRowProps) {
           <span className={`pill ${course.isEarly ? "pill-warning" : "pill-pine"}`}>
             {course.isEarly ? "Starting score" : "Crowd score"} {course.normalizedScore.toFixed(1)}
           </span>
+          {course.viewerPlayed ? (
+            <span className="pill pill-pine gap-1.5">
+              <PlayedMarkIcon className="h-3.5 w-3.5" />
+              Played
+            </span>
+          ) : null}
           {EDITORIAL_LISTS.map((editorial) => (
             <span key={editorial.key} className="pill pill-line">
               {editorial.label} {formatEditorialPosition(course.editorialRanks?.[editorial.key])}
@@ -41,8 +49,21 @@ export function CourseRow({ course, href, actionLabel }: CourseRowProps) {
           ))}
         </div>
 
-        <div className="min-w-[90px] text-right text-sm text-muted">
+        <div className="min-w-[90px] text-left text-sm text-muted md:text-right">
           {actionLabel ?? (course.numUniqueGolfers === 0 ? "No golfers yet" : `${course.numUniqueGolfers} golfers`)}
+          {course.friendPlayers?.length ? (
+            <div className="mt-2 flex -space-x-2 md:justify-end">
+              {course.friendPlayers.map((friend) => (
+                <InitialsAvatar
+                  key={friend.id}
+                  displayName={friend.display_name}
+                  handle={friend.handle}
+                  title={friend.display_name ?? friend.handle}
+                  className="border-[rgba(255,255,255,0.9)]"
+                />
+              ))}
+            </div>
+          ) : null}
         </div>
       </div>
     </Link>

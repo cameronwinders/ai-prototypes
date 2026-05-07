@@ -26,7 +26,7 @@ export default async function HomePage() {
 
             <div className="mt-6 flex flex-wrap gap-2.5">
               <span className="pill pill-pine pill-sentence">{pluralize(stats.golferCount, "golfer")} on the board</span>
-              <span className="pill pill-line pill-sentence">{pluralize(stats.signalCount, "comparison")} saved so far</span>
+              <span className="pill pill-line pill-sentence">3 editorial lists in view</span>
               <span className="pill pill-line pill-sentence">{pluralize(stats.courseCount, "course")} in the national lineup</span>
             </div>
 

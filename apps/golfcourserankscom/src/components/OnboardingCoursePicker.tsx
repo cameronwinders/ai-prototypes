@@ -69,7 +69,7 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
           <button
             type="button"
             onClick={() => setScope("all")}
@@ -84,12 +84,12 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
           >
             Top 50
           </button>
-          <label className="text-sm font-medium text-[var(--ink)]">
+          <label className="col-span-2 text-sm font-medium text-[var(--ink)] sm:col-auto">
             <span className="sr-only">Filter by state</span>
             <select
               value={stateFilter}
               onChange={(event) => setStateFilter(event.target.value)}
-              className="min-h-11 rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-3 text-sm"
+              className="min-h-11 w-full rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-3 text-sm"
             >
               <option value="ALL">All states</option>
               {states.map((state) => (
@@ -129,10 +129,10 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
                       : "border-[var(--line)] bg-white text-[var(--muted)]"
                   }`}
                 >
-                  {selected ? "✓" : "+"}
+                  {selected ? "\u2713" : "+"}
                 </span>
               </div>
-              <h3 className="h3 mt-4 text-[1.35rem]">{course.name}</h3>
+              <h3 className="h3 mt-4 text-[1.25rem] sm:text-[1.35rem]">{course.name}</h3>
               <p className="mt-2 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
             </button>
           );
@@ -142,16 +142,16 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
       {hasMore ? (
         <div className="flex justify-center">
           <button type="button" onClick={() => setVisibleCount((count) => count + PAGE_SIZE)} className="ghost-button">
-            More courses ▾
+            More courses {"\u25BE"}
           </button>
         </div>
       ) : null}
 
-      <div className="sticky bottom-4 z-20 rounded-[var(--radius-lg)] border border-[var(--line)] bg-[rgba(255,253,249,0.96)] p-4 shadow-[var(--shadow-panel)] backdrop-blur">
+      <div className="sticky bottom-3 z-20 rounded-[var(--radius-lg)] border border-[var(--line)] bg-[rgba(255,253,249,0.96)] p-4 shadow-[var(--shadow-panel)] backdrop-blur sm:bottom-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-semibold text-[var(--ink)]">
-              Continue with {selectedIds.length} {selectedIds.length === 1 ? "course" : "courses"} →
+              Continue with {selectedIds.length} {selectedIds.length === 1 ? "course" : "courses"} {"\u2192"}
             </p>
             <p className="mt-1 text-sm text-[var(--muted)]">Pick 5 to 15 to get the most out of ranking.</p>
           </div>

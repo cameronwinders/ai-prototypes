@@ -54,7 +54,7 @@ export function CoursePreviewPanel({
         </div>
 
         <div className="rounded-lg border border-white/70 bg-white/78 p-4 shadow-[0_24px_60px_rgba(24,39,31,0.12)] backdrop-blur-sm">
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span className="pill pill-pine">#{hero.leaderboardRank}</span>
@@ -75,7 +75,7 @@ export function CoursePreviewPanel({
               </div>
             </div>
 
-            <div className="rounded-md border border-[rgba(49,107,83,0.12)] bg-[rgba(216,231,221,0.76)] px-3 py-2 text-right">
+            <div className="w-full rounded-md border border-[rgba(49,107,83,0.12)] bg-[rgba(216,231,221,0.76)] px-3 py-2 text-left sm:w-auto sm:text-right">
               <p className="eyebrow text-[10px]">{scoreEyebrow}</p>
               <p className="mt-1 text-2xl font-semibold tracking-[var(--tracking-tight)] text-ink">
                 {hero.normalizedScore.toFixed(1)}

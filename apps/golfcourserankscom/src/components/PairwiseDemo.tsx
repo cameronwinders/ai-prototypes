@@ -83,8 +83,8 @@ export function PairwiseDemo() {
           <p className="meta mt-4 leading-6">
             Sign up to save them and build your full public-course stack.
           </p>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <Link href="/sign-in?next=/me/courses" className="solid-button">
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Link href="/sign-in?next=/me/courses" className="solid-button justify-center">
               Start ranking for real
             </Link>
             <button
@@ -93,7 +93,7 @@ export function PairwiseDemo() {
                 setChoices([]);
                 setStep(0);
               }}
-              className="ghost-button"
+              className="ghost-button justify-center"
             >
               Run it again
             </button>
@@ -106,7 +106,7 @@ export function PairwiseDemo() {
               key={`${step}-${course.name}`}
               type="button"
               onClick={() => chooseCourse(course)}
-              className="rounded-lg border border-line bg-white/92 p-5 text-left transition-[background-color,transform] duration-150 hover:-translate-y-px hover:bg-white"
+              className="min-h-[11.25rem] rounded-lg border border-line bg-white/92 p-5 text-left transition-[background-color,transform] duration-150 hover:-translate-y-px hover:bg-white"
             >
               <span className="pill pill-pine">Tap to choose</span>
               <h3 className="mt-4 text-[1.4rem] font-semibold tracking-[var(--tracking-tight)] text-ink">{course.name}</h3>

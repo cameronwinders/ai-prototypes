@@ -3,12 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 
-import { setCoursePlayed } from "@/app/actions";
+import { setCoursePlayed, setCourseWishlisted } from "@/app/actions";
 import type { PlayedCourse } from "@/lib/types";
 
 type CourseDetailActionsProps = {
   courseId: string;
   initialPlayed: PlayedCourse | null;
+  initialWishlisted: boolean;
   viewerSignedIn: boolean;
   viewerNeedsOnboarding: boolean;
 };
@@ -16,11 +17,14 @@ type CourseDetailActionsProps = {
 export function CourseDetailActions({
   courseId,
   initialPlayed,
+  initialWishlisted,
   viewerSignedIn,
   viewerNeedsOnboarding
 }: CourseDetailActionsProps) {
   const [played, setPlayed] = useState(Boolean(initialPlayed));
+  const [wishlisted, setWishlisted] = useState(initialWishlisted);
   const [pending, setPending] = useState(false);
+  const [wishlistPending, setWishlistPending] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
 
   async function onToggle() {
@@ -35,7 +39,25 @@ export function CourseDetailActions({
     }
 
     setPlayed(!played);
+    if (!played) {
+      setWishlisted(false);
+    }
     setStatus(!played ? "Added to your played list." : "Removed from your played list.");
+  }
+
+  async function onWishlistToggle() {
+    setWishlistPending(true);
+    setStatus(null);
+    const result = await setCourseWishlisted(courseId, !wishlisted);
+    setWishlistPending(false);
+
+    if (!result.ok) {
+      setStatus(result.message ?? "We could not update your wish list.");
+      return;
+    }
+
+    setWishlisted(!wishlisted);
+    setStatus(!wishlisted ? "Added to your wish list." : "Removed from your wish list.");
   }
 
   if (!viewerSignedIn) {
@@ -66,6 +88,16 @@ export function CourseDetailActions({
           {pending ? "Saving..." : played ? "Marked played" : "Mark as played"}
         </button>
       )}
+      {!viewerNeedsOnboarding && !played ? (
+        <button
+          type="button"
+          onClick={onWishlistToggle}
+          disabled={wishlistPending}
+          className="ghost-button min-h-11 justify-center"
+        >
+          {wishlistPending ? "Saving..." : wishlisted ? "In wish list" : "Add to wish list"}
+        </button>
+      ) : null}
       {status ? <p className="text-sm text-[var(--muted)]">{status}</p> : null}
     </div>
   );

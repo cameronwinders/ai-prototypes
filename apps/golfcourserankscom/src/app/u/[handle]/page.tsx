@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { InitialsAvatar } from "@/components/InitialsAvatar";
 import { ShareButton } from "@/components/ShareButton";
 import { getPublicProfileOverview, logAnalyticsEvent } from "@/lib/data";
 import { formatLocation } from "@/lib/ranking";
@@ -23,7 +24,7 @@ export async function generateMetadata({
   }
 
   const title = `${overview.profile.display_name ?? overview.profile.handle} | Golf Course Ranks`;
-  const description = `${overview.stats.playedCount} played · ${overview.stats.rankedCount} ranked · ${overview.stats.topHundredPlayedCount} of the Top 100 played.`;
+  const description = `${overview.stats.playedCount} played | ${overview.stats.rankedCount} ranked | ${overview.stats.topHundredPlayedCount} of the Top 100 played.`;
   const url = `${getSiteUrl()}/u/${overview.profile.handle}`;
 
   return {
@@ -70,16 +71,27 @@ export default async function PublicProfilePage({
     });
   }
 
+  const profileMeta = [
+    `@${overview.profile.handle}`,
+    overview.profile.handicap_visibility && overview.profile.handicap_band
+      ? `Handicap ${overview.profile.handicap_band}`
+      : null,
+    overview.profile.home_state || null
+  ].filter(Boolean);
+
   return (
     <div className="space-y-6">
       <section className="shell-panel p-6 sm:p-8">
         <p className="eyebrow">PUBLIC PROFILE</p>
-        <h1 className="h2 mt-4">{overview.profile.display_name ?? overview.profile.handle}</h1>
-        <p className="subhed mt-4">
-          @{overview.profile.handle}
-          {overview.profile.handicap_visibility && overview.profile.handicap_band ? ` · Handicap ${overview.profile.handicap_band}` : ""}
-          {overview.profile.home_state ? ` · ${overview.profile.home_state}` : ""}
-        </p>
+        <div className="mt-4 flex flex-wrap items-center gap-4">
+          <InitialsAvatar
+            displayName={overview.profile.display_name}
+            handle={overview.profile.handle}
+            size="md"
+          />
+          <h1 className="h2">{overview.profile.display_name ?? overview.profile.handle}</h1>
+        </div>
+        <p className="subhed mt-4">{profileMeta.join(" | ")}</p>
 
         <div className="mt-6 flex flex-wrap gap-3">
           <ShareButton

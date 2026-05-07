@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { InitialsAvatar } from "@/components/InitialsAvatar";
 import { updateProfileSettingsAction } from "@/app/actions";
 import { ShareButton } from "@/components/ShareButton";
+import { splitDisplayName } from "@/lib/ranking";
 import { getProfileSummary } from "@/lib/data";
 import { getSiteUrl } from "@/lib/supabase/env";
 import { PROFILE_VISIBILITY_OPTIONS } from "@/lib/types";
@@ -31,12 +33,20 @@ export default async function ProfilePage({
   }
 
   const publicProfileUrl = `${siteUrl}/u/${summary.profile?.handle ?? viewer.profile?.handle}`;
+  const { firstName, lastName } = splitDisplayName(summary.profile?.display_name, summary.profile?.handle ?? "golfer");
 
   return (
     <div className="space-y-6">
       <section className="shell-panel p-6 sm:p-8">
         <p className="eyebrow">ACCOUNT SETTINGS</p>
-        <h1 className="h2 mt-4">{summary.profile?.display_name ?? summary.profile?.handle ?? "Your account"}</h1>
+        <div className="mt-4 flex flex-wrap items-center gap-4">
+          <InitialsAvatar
+            displayName={summary.profile?.display_name}
+            handle={summary.profile?.handle}
+            size="md"
+          />
+          <h1 className="h2">{summary.profile?.display_name ?? summary.profile?.handle ?? "Your account"}</h1>
+        </div>
         <p className="subhed mt-4">
           Keep your public profile clean, decide what other golfers can see, and share one canonical URL.
         </p>
@@ -59,6 +69,7 @@ export default async function ProfilePage({
           {[
             { label: "Played courses", value: summary.playedCount },
             { label: "Ranked courses", value: summary.rankedCount },
+            { label: "Wish list", value: summary.wishlistCount },
             { label: "Accepted friends", value: summary.acceptedFriends },
             { label: "Incoming requests", value: summary.incomingRequests }
           ].map((item) => (
@@ -85,15 +96,27 @@ export default async function ProfilePage({
 
           <form action={updateProfileSettingsAction} className="mt-6 grid gap-5">
             <input type="hidden" name="next" value="/profile" />
-            <label className="grid gap-2 text-sm font-medium text-[var(--ink)]">
-              Display name
-              <input
-                type="text"
-                name="display_name"
-                defaultValue={summary.profile?.display_name ?? ""}
-                className="min-h-11 rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-3 text-sm font-normal outline-none focus:border-[rgba(49,107,83,0.45)]"
-              />
-            </label>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="grid gap-2 text-sm font-medium text-[var(--ink)]">
+                First name
+                <input
+                  type="text"
+                  name="first_name"
+                  defaultValue={firstName}
+                  className="min-h-11 rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-3 text-sm font-normal outline-none focus:border-[rgba(49,107,83,0.45)]"
+                />
+              </label>
+
+              <label className="grid gap-2 text-sm font-medium text-[var(--ink)]">
+                Last name
+                <input
+                  type="text"
+                  name="last_name"
+                  defaultValue={lastName}
+                  className="min-h-11 rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-3 text-sm font-normal outline-none focus:border-[rgba(49,107,83,0.45)]"
+                />
+              </label>
+            </div>
 
             <label className="grid gap-2 text-sm font-medium text-[var(--ink)]">
               Handle
@@ -188,6 +211,9 @@ export default async function ProfilePage({
           <div className="mt-5 grid gap-3">
             <Link href="/friends" className="ghost-button justify-center">
               Open friends
+            </Link>
+            <Link href="/me/wishlist" className="ghost-button justify-center">
+              Open wish list
             </Link>
             <Link href="/me/courses" className="ghost-button justify-center">
               Keep ranking

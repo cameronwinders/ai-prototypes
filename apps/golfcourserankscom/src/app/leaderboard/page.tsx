@@ -1,9 +1,11 @@
 import Link from "next/link";
 
+import { InitialsAvatar } from "@/components/InitialsAvatar";
 import { LeaderboardFilterPanel } from "@/components/LeaderboardFilterPanel";
 import { getAllCourses, getAppOverviewStats, getLeaderboardCourses } from "@/lib/data";
 import { formatLocation, pluralize } from "@/lib/ranking";
 import { EDITORIAL_LISTS, HANDICAP_OPTIONS } from "@/lib/types";
+import { getViewerContext } from "@/lib/viewer";
 
 const SORT_OPTIONS = [
   { value: "rank", label: "Crowd rank" },
@@ -37,6 +39,9 @@ export default async function LeaderboardPage({
   const bandParam = Array.isArray(params.band) ? params.band[0] : params.band;
   const stateParam = Array.isArray(params.state) ? params.state[0] : params.state;
   const sortParam = Array.isArray(params.sort) ? params.sort[0] : params.sort;
+  const playedParam = Array.isArray(params.played) ? params.played[0] : params.played;
+  const activity = playedParam === "played" || playedParam === "not-played" ? playedParam : "all";
+  const viewer = await getViewerContext();
 
   const band = HANDICAP_OPTIONS.includes(bandParam as (typeof HANDICAP_OPTIONS)[number])
     ? (bandParam as (typeof HANDICAP_OPTIONS)[number])
@@ -53,7 +58,9 @@ export default async function LeaderboardPage({
       minSignals: 0,
       state: selectedState || null,
       sort,
-      limit: 400
+      limit: 400,
+      viewerId: viewer.user?.id ?? null,
+      activity
     }),
     getAllCourses()
   ]);
@@ -73,7 +80,14 @@ export default async function LeaderboardPage({
           </div>
         </div>
 
-        <LeaderboardFilterPanel band={band ?? ""} selectedState={selectedState} sort={sort} states={states} />
+        <LeaderboardFilterPanel
+          band={band ?? ""}
+          selectedState={selectedState}
+          sort={sort}
+          states={states}
+          activity={activity}
+          showActivityFilter={Boolean(viewer.user)}
+        />
 
         {courses.length === 0 ? (
           <div className="rounded-lg border border-dashed border-line px-5 py-10 text-sm leading-6 text-muted">
@@ -97,6 +111,22 @@ export default async function LeaderboardPage({
                             {course.name}
                           </h2>
                           <p className="meta mt-2">{formatLocation(course)}</p>
+                          {course.friendPlayers?.length ? (
+                            <div className="mt-3 flex flex-wrap items-center gap-2">
+                              <span className="meta">Friends played</span>
+                              <div className="flex -space-x-2">
+                                {course.friendPlayers.map((friend) => (
+                                  <InitialsAvatar
+                                    key={friend.id}
+                                    displayName={friend.display_name}
+                                    handle={friend.handle}
+                                    title={friend.display_name ?? friend.handle}
+                                    className="border-[rgba(255,255,255,0.9)]"
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          ) : null}
                         </div>
                       </div>
                     </div>
@@ -111,6 +141,7 @@ export default async function LeaderboardPage({
                         {course.isEarly ? "Starting score" : "Crowd score"} {course.normalizedScore.toFixed(1)}
                       </span>
                       <span className="pill pill-line pill-sentence">{golferSignalLabel(course.numUniqueGolfers)}</span>
+                      {course.viewerPlayed ? <span className="pill pill-pine pill-sentence">Played by you</span> : null}
                     </div>
 
                     <div className="overflow-hidden rounded-md border border-line bg-[rgba(246,243,236,0.92)]">
@@ -182,6 +213,23 @@ export default async function LeaderboardPage({
                         </td>
                         <td className="px-5 py-5 align-top">
                           <div className="text-base font-semibold text-ink">{golferSignalLabel(course.numUniqueGolfers)}</div>
+                          {course.viewerPlayed ? <div className="mt-2 text-sm text-pine">Played by you</div> : null}
+                          {course.friendPlayers?.length ? (
+                            <div className="mt-3 flex items-center gap-2">
+                              <div className="flex -space-x-2">
+                                {course.friendPlayers.map((friend) => (
+                                  <InitialsAvatar
+                                    key={friend.id}
+                                    displayName={friend.display_name}
+                                    handle={friend.handle}
+                                    title={friend.display_name ?? friend.handle}
+                                    className="border-[rgba(255,255,255,0.9)]"
+                                  />
+                                ))}
+                              </div>
+                              <span className="text-xs uppercase tracking-[0.12em] text-muted">Friends played</span>
+                            </div>
+                          ) : null}
                         </td>
                         {EDITORIAL_LISTS.map((editorial) => (
                           <td key={editorial.key} className="px-5 py-5 align-top">
