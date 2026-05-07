@@ -27,7 +27,19 @@ const supabase = createClient(url, serviceRoleKey, {
 });
 
 function buildCourseIdentity(record) {
-  return `${record.name}::${record.city}::${record.state}`.toLowerCase();
+  return `${normalizeCourseName(record.name)}::${record.city.trim().toLowerCase()}::${record.state.trim().toLowerCase()}`;
+}
+
+function normalizeCourseName(name) {
+  return name
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/^the\s+/i, "")
+    .replace(/\b(golf\s+and\s+beach\s+club|golf\s+club|golf\s+course|country\s+club)\b$/i, "")
+    .replace(/\bcourse\b$/i, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function parseCsvLine(line) {
@@ -88,7 +100,40 @@ const records = rows.map((row) => {
   };
 });
 
-const { error } = await supabase.from("courses").upsert(records, {
+const mergedRecords = [];
+const recordsByIdentity = new Map();
+
+for (const record of records) {
+  const identity = buildCourseIdentity(record);
+  const existing = recordsByIdentity.get(identity);
+
+  if (!existing) {
+    recordsByIdentity.set(identity, record);
+    mergedRecords.push(record);
+    continue;
+  }
+
+  for (const key of ["par", "slope", "rating", "price_band"]) {
+    if ((existing[key] === null || existing[key] === undefined) && record[key] !== null && record[key] !== undefined) {
+      existing[key] = record[key];
+    }
+  }
+
+  existing.seed_source = {
+    ...existing.seed_source,
+    lists: Array.from(new Set([...(existing.seed_source.lists ?? []), ...(record.seed_source.lists ?? [])])),
+    editorial_ranks: {
+      ...(record.seed_source.editorial_ranks ?? {}),
+      ...(existing.seed_source.editorial_ranks ?? {})
+    }
+  };
+
+  if ((!existing.seed_source.notes || existing.seed_source.notes === "Added from refreshed editorial source coverage") && record.seed_source.notes) {
+    existing.seed_source.notes = record.seed_source.notes;
+  }
+}
+
+const { error } = await supabase.from("courses").upsert(mergedRecords, {
   onConflict: "name,city,state"
 });
 
@@ -113,7 +158,7 @@ if (existingCoursesError) {
   process.exit(1);
 }
 
-const validIdentities = new Set(records.map(buildCourseIdentity));
+const validIdentities = new Set(mergedRecords.map(buildCourseIdentity));
 const staleCourses = existingCourses.filter((course) => !validIdentities.has(buildCourseIdentity(course)));
 
 if (staleCourses.length > 0) {
@@ -130,7 +175,37 @@ if (staleCourses.length > 0) {
     process.exit(1);
   }
 
-  const referencedCourseIds = new Set(playedRefs.map((row) => row.course_id));
+  const { data: rankedRefs, error: rankedRefsError } = await supabase
+    .from("user_course_ranks")
+    .select("course_id")
+    .in(
+      "course_id",
+      staleCourses.map((course) => course.id)
+    );
+
+  if (rankedRefsError) {
+    console.error(rankedRefsError);
+    process.exit(1);
+  }
+
+  const { data: wishlistRefs, error: wishlistRefsError } = await supabase
+    .from("wishlist_courses")
+    .select("course_id")
+    .in(
+      "course_id",
+      staleCourses.map((course) => course.id)
+    );
+
+  if (wishlistRefsError && wishlistRefsError.code !== "42P01") {
+    console.error(wishlistRefsError);
+    process.exit(1);
+  }
+
+  const referencedCourseIds = new Set([
+    ...playedRefs.map((row) => row.course_id),
+    ...rankedRefs.map((row) => row.course_id),
+    ...((wishlistRefs ?? []).map((row) => row.course_id))
+  ]);
   const removableCourses = staleCourses.filter((course) => !referencedCourseIds.has(course.id));
 
   if (removableCourses.length > 0) {
@@ -146,7 +221,14 @@ if (staleCourses.length > 0) {
       console.error(deleteError);
       process.exit(1);
     }
+
+    const refreshAfterDelete = await supabase.rpc("refresh_course_aggregates");
+
+    if (refreshAfterDelete.error) {
+      console.error(refreshAfterDelete.error);
+      process.exit(1);
+    }
   }
 }
 
-console.log(`Seeded ${records.length} courses from ${csvPath}.`);
+console.log(`Seeded ${mergedRecords.length} courses from ${csvPath}.`);

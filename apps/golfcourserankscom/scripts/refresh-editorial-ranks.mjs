@@ -483,6 +483,13 @@ const COURSE_METADATA_OVERRIDES = {
     rating: "73.8",
     price_band: "5"
   },
+  "Links at Spanish Bay": {
+    name: "The Links at Spanish Bay",
+    par: "72",
+    slope: "143",
+    rating: "73.8",
+    price_band: "5"
+  },
   "The Dunes": {
     name: "The Dunes Golf and Beach Club",
     city: "Myrtle Beach",
@@ -497,6 +504,42 @@ const COURSE_METADATA_OVERRIDES = {
     slope: "132",
     rating: "76.1",
     price_band: "5"
+  },
+  "Big Cedar Lodge: Buffalo Ridge": {
+    name: "Big Cedar Lodge (Buffalo Ridge)"
+  },
+  "Ak-Chin Southern Dunes": {
+    name: "Ak Chin Southern Dunes"
+  },
+  "Grayhawk Raptor Course": {
+    name: "Grayhawk Raptor"
+  },
+  "Grayhawk Talon Course": {
+    name: "Grayhawk Talon"
+  },
+  "Paiute Snow Mountain Course": {
+    name: "Paiute Snow Mountain"
+  },
+  "Sunriver Resort Meadows Course": {
+    name: "Sunriver Resort Meadows"
+  },
+  "Sunriver Resort Woodlands Course": {
+    name: "Sunriver Resort Woodlands"
+  },
+  "Troon North Monument Course": {
+    name: "Troon North Monument"
+  },
+  "Troon North Pinnacle Course": {
+    name: "Troon North Pinnacle"
+  },
+  "Ventana Canyon Mountain Course": {
+    name: "Ventana Canyon Mountain"
+  },
+  "We-Ko-Pa Cholla Course": {
+    name: "We Ko Pa Cholla"
+  },
+  "We-Ko-Pa Saguaro Course": {
+    name: "We Ko Pa Saguaro"
   },
   "Karsten Creek": {
     name: "Karsten Creek Golf Club",

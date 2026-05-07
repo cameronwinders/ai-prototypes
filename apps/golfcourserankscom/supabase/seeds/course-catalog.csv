@@ -63,7 +63,7 @@ seed_rank,name,city,state,par,slope,rating,price_band,source_lists,seed_tier,sou
 62,Wild Horse Golf Club,Gothenburg,NE,,,,,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,84,44,43
 63,Hanalei Golf Course,Princeville,HI,72,137,74.0,5,Golf Digest Public|Golfweek You Can Play,Tier A,Kauai resort seed,73,,41
 64,Blackwolf Run River Course,Kohler,WI,72,144,75.6,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier A,Kohler river seed,92,29,52
-65,Big Cedar Lodge (Buffalo Ridge),Hollister,MO,,,,,Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,,,58
+65,Big Cedar Lodge (Buffalo Ridge),Hollister,MO,,,,,Golf Digest Public|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,94,,58
 66,Palmetto Bluff (May River),Bluffton,SC,,,,,GOLF Top 100,Tier C,Added from refreshed editorial source coverage,,58,
 67,PGA West Stadium Course,La Quinta,CA,72,148,76.1,4,Golf Digest Public|GOLF Top 100,Tier A,Desert event seed,62,56,
 68,Wolf Creek Golf Club,Mesquite,NV,72,154,75.4,4,Golf Digest Public,Tier A,Desert drama seed,59,,
@@ -112,7 +112,6 @@ seed_rank,name,city,state,par,slope,rating,price_band,source_lists,seed_tier,sou
 111,The Broadmoor East Course,Colorado Springs,CO,72,142,75.0,5,Golf Digest Public|GOLF Top 100|Golfweek You Can Play,Tier B,Historic resort public windows,47,97,99
 112,Paynes Valley Golf Course,Hollister,MO,72,139,73.9,5,Golf Digest Public,Tier A,Ozarks destination public,81,,
 113,Pumpkin Ridge Ghost Creek,North Plains,OR,72,143,75.0,4,Golfweek You Can Play,Tier B,Portland area public prestige,,,81
-114,Big Cedar Lodge: Buffalo Ridge,Hollister,MO,,,,,Golf Digest Public|Golfweek You Can Play,Tier C,Added from refreshed editorial source coverage,94,,69
 115,Trump National Doral: Blue Monster,Miami,FL,,,,,Golf Digest Public|GOLF Top 100,Tier C,Added from refreshed editorial source coverage,86,77,
 116,Black Mesa Golf Club,Espanola,NM,72,141,73.9,4,Golf Digest Public|GOLF Top 100,Tier C,Added from refreshed editorial source coverage,85,79,
 117,No 6 at Pinehurst,Pinehurst,NC,72,139,74.0,4,GOLF Top 100,Tier B,Pinehurst depth seed,,82,
@@ -147,7 +146,6 @@ seed_rank,name,city,state,par,slope,rating,price_band,source_lists,seed_tier,sou
 146,The McLemore Club (Highlands),Rising Fawn,GA,,,,,GOLF Top 100,Tier C,Added from refreshed editorial source coverage,,99,
 147,The Links Quarry at Bay Harbor,Bay Harbor,MI,72,138,73.8,5,Golf Digest Public,Tier B,Northern Michigan resort seed,100,,
 148,Ak Chin Southern Dunes,Maricopa,AZ,72,145,75.3,4,,Tier A,Arizona value prestige,,,
-149,Ak-Chin Southern Dunes,Maricopa,AZ,72,144,75.2,3,,Tier A,Core desert ranking seed,,,
 150,Arrowhead Golf Club,Littleton,CO,70,141,73.9,4,,Tier B,Red rock foothills public,,,
 151,Aviara Golf Club,Carlsbad,CA,72,144,75.5,5,,Tier B,Resort prestige seed,,,
 152,Bali Hai Golf Club,Las Vegas,NV,71,131,71.3,4,,Tier C,Las Vegas strip-adjacent public,,,
@@ -169,9 +167,7 @@ seed_rank,name,city,state,par,slope,rating,price_band,source_lists,seed_tier,sou
 168,Genoa Lakes Ranch Course,Genoa,NV,72,139,74.3,3,,Tier C,Tahoe area ranchland public,,,
 169,Gold Mountain Olympic Course,Bremerton,WA,72,140,74.6,3,,Tier B,Value championship public,,,
 170,Grayhawk Raptor,Scottsdale,AZ,72,140,74.8,4,,Tier B,Tour adjacent public,,,
-171,Grayhawk Raptor Course,Scottsdale,AZ,72,145,75.9,4,,Tier B,Scottsdale tournament feel,,,
 172,Grayhawk Talon,Scottsdale,AZ,72,138,73.9,4,,Tier B,Scottsdale staple,,,
-173,Grayhawk Talon Course,Scottsdale,AZ,72,140,74.3,4,,Tier B,Scottsdale resort depth,,,
 174,Half Moon Bay Ocean Course,Half Moon Bay,CA,72,139,74.8,4,,Tier B,Coastal resort public,,,
 175,Hokuala Ocean Course,Lihue,HI,72,139,74.1,5,,Tier B,Kauai resort seed,,,
 176,Industry Hills Babe Course,City of Industry,CA,72,140,74.0,3,,Tier C,Big municipal companion,,,
@@ -189,7 +185,6 @@ seed_rank,name,city,state,par,slope,rating,price_band,source_lists,seed_tier,sou
 188,Omni Tucson National Catalina Course,Tucson,AZ,72,142,75.7,4,,Tier A,Historic tour venue public,,,
 189,Omni Tucson National Sonoran Course,Tucson,AZ,72,136,73.1,4,,Tier B,Historic tour venue companion,,,
 190,Paiute Snow Mountain,Las Vegas,NV,72,137,73.5,4,,Tier B,Vegas resort depth,,,
-191,Paiute Snow Mountain Course,Las Vegas,NV,72,142,75.1,3,,Tier B,Desert resort depth,,,
 192,Paiute Sun Mountain Course,Las Vegas,NV,72,140,74.4,3,,Tier B,Desert resort depth,,,
 193,Paiute Wolf Course,Las Vegas,NV,72,149,76.3,4,,Tier B,Vegas challenge seed,,,
 194,Pasadera Country Club Public Access,Monterey,CA,72,141,74.9,4,,Tier C,Monterey depth seed,,,
@@ -221,9 +216,7 @@ seed_rank,name,city,state,par,slope,rating,price_band,source_lists,seed_tier,sou
 220,Starr Pass Rattler Course,Tucson,AZ,72,138,73.4,4,,Tier C,Desert resort trio,,,
 221,Suncadia Rope Rider,Cle Elum,WA,70,133,72.5,4,,Tier B,Mountain resort seed,,,
 222,Sunriver Resort Meadows,Sunriver,OR,71,134,72.8,4,,Tier C,Central Oregon resort depth,,,
-223,Sunriver Resort Meadows Course,Sunriver,OR,72,136,72.8,4,,Tier C,Central Oregon resort depth,,,
 224,Sunriver Resort Woodlands,Sunriver,OR,72,132,72.2,4,,Tier C,Central Oregon resort depth,,,
-225,Sunriver Resort Woodlands Course,Sunriver,OR,72,134,72.2,4,,Tier C,Central Oregon resort depth,,,
 226,Tabernash Golf Club,Tabernash,CO,72,137,73.8,3,,Tier C,Rocky Mountain public,,,
 227,Talking Stick Oodham Course,Scottsdale,AZ,71,134,72.1,3,,Tier C,Walkable desert value,,,
 228,Talking Stick Piipaash Course,Scottsdale,AZ,72,138,73.8,3,,Tier C,Walkable desert value,,,
@@ -233,7 +226,6 @@ seed_rank,name,city,state,par,slope,rating,price_band,source_lists,seed_tier,sou
 232,The Boulders South Course,Carefree,AZ,71,140,74.3,4,,Tier B,Granite boulder desert resort,,,
 233,The Broadmoor Mountain Course,Colorado Springs,CO,72,139,74.2,5,,Tier B,Historic resort public windows,,,
 234,The Crossings at Carlsbad,Carlsbad,CA,72,139,73.9,3,,Tier C,North County public value,,,
-235,The Dunes Golf & Beach Club,Myrtle Beach,SC,,,,,,Tier C,Added from refreshed editorial source coverage,,,
 236,The Gallery South,Tucson,AZ,72,144,75.7,4,,Tier B,Tucson destination public,,,
 237,The Golf Club at Redlands Mesa,Grand Junction,CO,71,139,74.5,4,,Tier B,Cliffside western slope,,,
 238,The Phoenician Golf Club,Scottsdale,AZ,71,133,72.4,4,,Tier C,Resort public depth,,,
@@ -247,20 +239,15 @@ seed_rank,name,city,state,par,slope,rating,price_band,source_lists,seed_tier,sou
 246,TPC Scottsdale Stadium Course,Scottsdale,AZ,71,142,74.4,4,,Tier A,Tour venue public,,,
 247,TPC Summerlin,Las Vegas,NV,72,139,73.8,4,,Tier B,Tour venue public windows,,,
 248,Troon North Monument,Scottsdale,AZ,72,143,75.8,4,,Tier B,Scottsdale staple,,,
-249,Troon North Monument Course,Scottsdale,AZ,72,147,76.1,4,,Tier B,Scottsdale prestige public,,,
 250,Troon North Pinnacle,Scottsdale,AZ,72,141,75.0,4,,Tier B,Scottsdale staple,,,
-251,Troon North Pinnacle Course,Scottsdale,AZ,72,144,75.7,4,,Tier B,Scottsdale prestige public,,,
 252,Tubac Golf Resort Anza Course,Tubac,AZ,72,136,72.8,4,,Tier C,Historic Arizona resort public,,,
 253,Ventana Canyon Canyon Course,Tucson,AZ,72,139,74.1,4,,Tier B,Tucson resort mountain golf,,,
 254,Ventana Canyon Mountain,Tucson,AZ,72,138,74.0,4,,Tier C,Tucson scenic resort,,,
-255,Ventana Canyon Mountain Course,Tucson,AZ,72,143,75.6,4,,Tier B,Tucson resort mountain golf,,,
 256,Verrado Founders Course,Buckeye,AZ,72,138,73.7,3,,Tier C,West Valley desert public,,,
 257,Wailea Gold Course,Kihei,HI,72,138,74.0,5,,Tier B,Maui resort depth,,,
 258,Wasatch Mountain Lake Course,Midway,UT,72,135,72.8,3,,Tier C,State park mountain golf,,,
 259,Wasatch Mountain Mountain Course,Midway,UT,72,136,73.1,3,,Tier C,State park mountain golf,,,
 260,We Ko Pa Cholla,Fort McDowell,AZ,72,144,75.2,4,,Tier B,Desert challenge companion,,,
-261,We-Ko-Pa Cholla Course,Fort McDowell,AZ,72,144,75.0,4,,Tier B,Scottsdale area destination,,,
-262,We-Ko-Pa Saguaro Course,Fort McDowell,AZ,71,137,72.7,4,,Tier A,Minimalist desert standout,,,
 263,Wickenburg Ranch Big Wick,Wickenburg,AZ,72,138,73.9,4,,Tier B,Arizona modern public,,,
 264,Widgi Creek Golf Club,Bend,OR,72,135,73.3,3,,Tier C,Bend value public,,,
 265,Wildhorse Resort Golf Course,Pendleton,OR,72,144,75.6,3,,Tier B,Eastern Oregon value standout,,,
