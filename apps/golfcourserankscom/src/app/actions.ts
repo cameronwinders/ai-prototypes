@@ -44,6 +44,19 @@ type ActionResult<T> = {
 
 type AuthMode = "sign-in" | "sign-up";
 
+function isMissingWishlistTableError(error: { code?: string; message?: string } | null | undefined) {
+  if (!error) {
+    return false;
+  }
+
+  return (
+    error.code === "42P01" ||
+    error.message?.includes("wishlist_courses") ||
+    error.message?.includes("does not exist") ||
+    false
+  );
+}
+
 function isHandicapBand(value: string): value is (typeof HANDICAP_OPTIONS)[number] {
   return HANDICAP_OPTIONS.includes(value as (typeof HANDICAP_OPTIONS)[number]);
 }
@@ -317,7 +330,7 @@ export async function setCoursePlayed(courseId: string, played: boolean): Promis
       };
     }
 
-    if (wishlistDelete.error) {
+    if (wishlistDelete.error && !isMissingWishlistTableError(wishlistDelete.error)) {
       return {
         ok: false,
         message: wishlistDelete.error.message
@@ -396,16 +409,28 @@ export async function setCourseWishlisted(
       }
     );
 
-    if (result.error) {
-      return {
-        ok: false,
-        message: result.error.message
+      if (result.error) {
+        if (isMissingWishlistTableError(result.error)) {
+          return {
+            ok: false,
+            message: "Wish lists are not available until the latest database update finishes."
+          };
+        }
+        return {
+          ok: false,
+          message: result.error.message
       };
     }
   } else {
     const result = await admin.from("wishlist_courses").delete().eq("user_id", userId).eq("course_id", courseId);
 
     if (result.error) {
+      if (isMissingWishlistTableError(result.error)) {
+        return {
+          ok: true,
+          data: { wishlisted: false }
+        };
+      }
       return {
         ok: false,
         message: result.error.message

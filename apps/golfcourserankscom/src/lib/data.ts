@@ -82,6 +82,19 @@ function isUuidLike(value: string) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 }
 
+function isMissingWishlistTableError(error: { code?: string; message?: string } | null | undefined) {
+  if (!error) {
+    return false;
+  }
+
+  return (
+    error.code === "42P01" ||
+    error.message?.includes("wishlist_courses") ||
+    error.message?.includes("does not exist") ||
+    false
+  );
+}
+
 function canViewerSeeProfile(
   profile: UserProfile,
   viewerId: string | null,
@@ -468,6 +481,9 @@ export async function getWishlistCourseIdsForUser(userId: string) {
   const { data, error } = await admin.from("wishlist_courses").select("course_id").eq("user_id", userId);
 
   if (error) {
+    if (isMissingWishlistTableError(error)) {
+      return new Set<string>();
+    }
     throw new Error(error.message);
   }
 
@@ -489,6 +505,9 @@ export async function getWishlistCoursesForUser(userId: string) {
     .order("created_at", { ascending: false });
 
   if (error) {
+    if (isMissingWishlistTableError(error)) {
+      return [] as WishlistCourse[];
+    }
     throw new Error(error.message);
   }
 
@@ -791,7 +810,7 @@ export async function getCourseDetail(
     throw new Error(viewerRankRows.error.message);
   }
 
-  if (viewerWishlistRows.error) {
+  if (viewerWishlistRows.error && !isMissingWishlistTableError(viewerWishlistRows.error)) {
     throw new Error(viewerWishlistRows.error.message);
   }
 
