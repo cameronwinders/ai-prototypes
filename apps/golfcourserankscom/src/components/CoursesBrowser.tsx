@@ -5,7 +5,6 @@ import Link from "next/link";
 
 import { setCoursePlayed, setCourseWishlisted } from "@/app/actions";
 import { PlayedButton, WantToPlayButton } from "@/components/PlayActions";
-import { WishlistIcon } from "@/components/WishlistIcon";
 import { formatLocation } from "@/lib/ranking";
 import type { CourseRecord, PlayedCourse } from "@/lib/types";
 
@@ -251,14 +250,6 @@ export function CoursesBrowser({
                             {course.num_unique_golfers === 0 ? "Starting score" : "Crowd score"} {course.normalized_score.toFixed(1)}
                           </span>
                         ) : null}
-                        {isPlayed ? (
-                          <PlayedButton className="pointer-events-none" />
-                        ) : isWishlisted ? (
-                          <span className="pill pill-line gap-1.5">
-                            <WishlistIcon className="h-3.5 w-3.5" filled />
-                            Wish list
-                          </span>
-                        ) : null}
                       </div>
                       <Link href={`/courses/${course.id}`} className="block">
                         <h3 className="mt-3 text-[1.12rem] font-semibold tracking-[var(--tracking-tight)] text-ink sm:text-[1.2rem]">
@@ -280,15 +271,24 @@ export function CoursesBrowser({
                           Finish profile
                         </Link>
                       ) : (
-                        <button
-                          type="button"
-                          onClick={() => handleToggle(course.id, !isPlayed)}
-                          disabled={busyCourseId === course.id}
-                          data-testid={`course-play-toggle-${course.id}`}
-                          className={isPlayed ? "ghost-button sm min-h-11 justify-center" : "solid-button sm min-h-11 justify-center"}
-                        >
-                          {busyCourseId === course.id ? "Saving..." : isPlayed ? "Played" : "Mark played"}
-                        </button>
+                        <>
+                          {busyCourseId === course.id ? (
+                            <button type="button" disabled className="ghost-button sm min-h-11 justify-center">
+                              Saving...
+                            </button>
+                          ) : isPlayed ? (
+                            <PlayedButton className="min-h-11 justify-center px-4 py-2.5" />
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => handleToggle(course.id, true)}
+                              data-testid={`course-play-toggle-${course.id}`}
+                              className="solid-button sm min-h-11 justify-center"
+                            >
+                              Mark played
+                            </button>
+                          )}
+                        </>
                       )}
                       {!viewerNeedsOnboarding && !isPlayed ? (
                         wishlistBusyCourseId === course.id ? (
