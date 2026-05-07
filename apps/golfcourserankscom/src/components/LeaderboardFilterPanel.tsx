@@ -155,14 +155,14 @@ export function LeaderboardFilterPanel({
       </div>
 
       {open ? (
-        <div className="fixed inset-0 z-50">
+        <div className="fixed inset-0 z-50 flex items-end sm:block">
           <button
             type="button"
             aria-label="Close filters"
             className="absolute inset-0 bg-[rgba(18,28,25,0.36)]"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute inset-x-0 bottom-0 rounded-t-xl border border-line bg-[rgba(255,252,246,0.98)] p-5 shadow-[0_-20px_60px_rgba(18,28,25,0.22)] sm:inset-y-0 sm:right-0 sm:left-auto sm:w-[26rem] sm:rounded-none sm:rounded-l-xl">
+          <div className="relative z-10 w-full rounded-t-xl border border-line bg-[rgba(255,252,246,0.98)] p-5 shadow-[0_-20px_60px_rgba(18,28,25,0.22)] sm:absolute sm:inset-y-0 sm:right-0 sm:left-auto sm:w-[26rem] sm:rounded-none sm:rounded-l-xl">
             <div className="flex items-center justify-between gap-3">
               <h2 className="h2 text-[1.65rem] text-ink">Filters</h2>
               <button type="button" onClick={() => setOpen(false)} className="ghost-button sm min-h-11">

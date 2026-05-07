@@ -362,7 +362,7 @@ export function MyCoursesManager({
             </div>
             <div className="pill pill-line pill-sentence self-start">
               {status}
-              {lastSavedAt ? ` · Last saved ${formatUpdatedAt(lastSavedAt)}` : ""}
+              {lastSavedAt ? ` | Last saved ${formatUpdatedAt(lastSavedAt)}` : ""}
             </div>
           </div>
 
@@ -409,7 +409,7 @@ export function MyCoursesManager({
             <p className="eyebrow">START YOUR LIST</p>
             <h2 className="h3 mt-4">Add your first course</h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)]">
-              Mark the public courses you have already played, then drag the best ones into order.
+              Mark the public courses you have already played, then rank the best ones into order.
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
               <Link href="/courses" className="solid-button justify-center">
@@ -428,7 +428,7 @@ export function MyCoursesManager({
               <p className="eyebrow">RANKING</p>
               <h2 className="h3 mt-4">Rank the public courses you have actually played</h2>
               <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
-                On mobile, use Top, Up, and Down to set the order. On larger screens, you can still drag the stack directly.
+                On mobile, use Top, Up, and Down to set the order. The top slot is your favorite.
               </p>
             </div>
             <div className="pill pill-line pill-sentence self-start">{ranked.length} ranked</div>
@@ -448,8 +448,8 @@ export function MyCoursesManager({
                   className="mt-4 rounded-[var(--radius-lg)] border border-dashed border-[var(--line)] bg-white/70 px-5 py-8 text-sm leading-7 text-[var(--muted)]"
                 >
                   {playedCourses.length === 0
-                    ? "Once you add a course you have played, drag it here to start your ranking."
-                    : "Drag a played course here once it deserves a spot. Your first drop becomes rank #1."}
+                    ? "Once you add a course you have played, use Add to ranking below to start your list."
+                    : "Use Add to ranking below when a played course deserves a spot. Your first addition becomes rank #1."}
                 </div>
               ) : (
                 <div className="mt-4 grid gap-3">
@@ -476,7 +476,6 @@ export function MyCoursesManager({
                             </div>
 
                             <div className="flex flex-wrap items-center gap-2">
-                              <span className="pill pill-line hidden md:inline-flex">Drag</span>
                               <button type="button" onClick={() => handleMoveToTop(course.id)} className="ghost-button sm md:hidden">
                                 Top
                               </button>
@@ -506,7 +505,7 @@ export function MyCoursesManager({
                     onDrop={() => commitRankDrop(null)}
                     className="rounded-[var(--radius-md)] border border-dashed border-[rgba(24,37,43,0.1)] bg-white/66 px-4 py-4 text-sm text-[var(--muted)]"
                   >
-                    On mobile, use Top, Up, and Down. On larger screens, drop here to place a course at the end of your ranking.
+                    Use Top, Up, and Down to keep this order honest.
                   </div>
                 </div>
               )}
@@ -518,7 +517,7 @@ export function MyCoursesManager({
                 <span className="meta">{unranked.length} waiting</span>
               </div>
               <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--muted)]">
-                These courses are already in your played list. On mobile, use Add to ranking. On larger screens, you can drag them upward whenever they earn a spot.
+                These courses are already in your played list. Use Add to ranking whenever one earns a place in your ordered list.
               </p>
 
               {unranked.length === 0 ? (
@@ -541,7 +540,6 @@ export function MyCoursesManager({
                       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="pill pill-line hidden md:inline-flex">Drag up</span>
                             <h3 className="h3 text-[1.35rem]">{course.name}</h3>
                           </div>
                           <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
@@ -656,3 +654,4 @@ export function MyCoursesManager({
     </section>
   );
 }
+
