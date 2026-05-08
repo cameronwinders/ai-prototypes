@@ -3,8 +3,8 @@ import Link from "next/link";
 import { AvatarStack } from "@/components/InitialsAvatar";
 import { LeaderboardFilterPanel } from "@/components/LeaderboardFilterPanel";
 import { RankSignal } from "@/components/RankSignal";
-import { getAllCourses, getAppOverviewStats, getLeaderboardCourses } from "@/lib/data";
-import { formatCrowdScore, formatLocation, formatRankPosition, getRankDeltaDisplay, pluralize } from "@/lib/ranking";
+import { getLeaderboardCourses } from "@/lib/data";
+import { formatCrowdScore, formatLocation, formatRankPosition, getRankDeltaDisplay } from "@/lib/ranking";
 import { EDITORIAL_LISTS, HANDICAP_OPTIONS, RANK_SIGNAL_OPTIONS, type RankSignalFilter } from "@/lib/types";
 import { getViewerContext } from "@/lib/viewer";
 
@@ -52,10 +52,6 @@ function GapBadge({ delta }: { delta: number | null }) {
   );
 }
 
-function golferSignalLabel(count: number) {
-  return count === 0 ? "No golfers yet" : pluralize(count, "golfer");
-}
-
 export default async function LeaderboardPage({
   searchParams
 }: {
@@ -82,23 +78,16 @@ export default async function LeaderboardPage({
     ? (sortParam as (typeof SORT_OPTIONS)[number]["value"])
     : "rank";
 
-  const [courses, allCourses] = await Promise.all([
-    getLeaderboardCourses({
-      handicapBand: band,
-      minSignals: 0,
-      state: selectedState || null,
-      sort,
-      limit: 400,
-      viewerId: viewer.user?.id ?? null,
-      activity,
-      signal
-    }),
-    getAllCourses()
-  ]);
-
-  const states = Array.from(new Set(allCourses.map((course) => course.state))).sort((left, right) =>
-    left.localeCompare(right)
-  );
+  const courses = await getLeaderboardCourses({
+    handicapBand: band,
+    minSignals: 0,
+    state: selectedState || null,
+    sort,
+    limit: 400,
+    viewerId: viewer.user?.id ?? null,
+    activity,
+    signal
+  });
 
   return (
     <section className="shell-panel shell-panel-contrast p-6 sm:p-8">
@@ -110,15 +99,7 @@ export default async function LeaderboardPage({
           </p>
         </div>
 
-        <LeaderboardFilterPanel
-          band={band ?? ""}
-          selectedState={selectedState}
-          sort={sort}
-          states={states}
-          activity={activity}
-          signal={signal}
-          showActivityFilter={Boolean(viewer.user)}
-        />
+        <LeaderboardFilterPanel sort={sort} />
 
         {courses.length === 0 ? (
           <div className="rounded-lg border border-dashed border-line px-5 py-10 text-sm leading-6 text-muted">
@@ -156,16 +137,12 @@ export default async function LeaderboardPage({
                     </span>
                   </div>
 
-                    <div className="mt-4 grid gap-3 sm:grid-cols-[minmax(0,1fr)_10.5rem]">
+                  <div className="mt-4 grid gap-3 sm:grid-cols-[minmax(0,1fr)_10.5rem]">
                       <div className="min-w-0 space-y-3">
                         <span className={`pill ${course.isEarly ? "pill-warning" : "pill-pine"} pill-sentence`}>
                           {course.isEarly ? "Starting score" : "Crowd score"} {formatCrowdScore(course.normalizedScore)}
                         </span>
-                        <span className="pill pill-line pill-sentence">
-                          Editorial avg {formatRankPosition(course.editorialAverageRank)}
-                        </span>
                         <GapBadge delta={course.editorialGap} />
-                        <span className="pill pill-line pill-sentence">{golferSignalLabel(course.numUniqueGolfers)}</span>
                         {course.viewerPlayed ? <span className="pill pill-pine pill-sentence">Played by you</span> : null}
                         {course.rankSignal ? (
                           <div>
@@ -174,7 +151,7 @@ export default async function LeaderboardPage({
                         ) : null}
                       </div>
 
-                    <div className="overflow-hidden rounded-md border border-line bg-[rgba(246,243,236,0.92)]">
+                      <div className="overflow-hidden rounded-md border border-line bg-[rgba(246,243,236,0.92)]">
                       {MOBILE_RANK_STACK.map((entry, index) => {
                         const value =
                           entry.key === "crowd"
@@ -216,30 +193,37 @@ export default async function LeaderboardPage({
                           </div>
                         );
                       })}
-                    </div>
+                      </div>
                   </div>
                 </Link>
               ))}
             </div>
 
             <div className="hidden overflow-hidden rounded-xl border border-line bg-white/90 lg:block">
-              <div className="overflow-x-auto">
-                <table className="min-w-[980px] w-full">
+                <table className="w-full table-fixed">
+                  <colgroup>
+                    <col className="w-[16%]" />
+                    <col className="w-[27%]" />
+                    <col className="w-[11%]" />
+                    <col className="w-[12%]" />
+                    <col className="w-[11%]" />
+                    <col className="w-[11%]" />
+                    <col className="w-[12%]" />
+                  </colgroup>
                   <thead>
                     <tr className="border-b border-line bg-[rgba(255,255,255,0.92)] text-left text-xs font-semibold uppercase tracking-[0.18em] text-muted">
-                      <th className="px-5 py-4" title="Crowd score = how golfers actually rank it.">
+                      <th className="sticky top-[9.1rem] z-20 bg-[rgba(255,255,255,0.96)] px-4 py-4 backdrop-blur xl:top-[10.4rem]" title="Crowd score = how golfers actually rank it.">
                         Crowd
                       </th>
-                      <th className="px-5 py-4">Course</th>
-                      <th className="px-5 py-4">Golfers</th>
+                      <th className="sticky top-[9.1rem] z-20 bg-[rgba(255,255,255,0.96)] px-4 py-4 backdrop-blur xl:top-[10.4rem]">Course</th>
                       <th
-                        className="px-5 py-4"
+                        className="sticky top-[9.1rem] z-20 bg-[rgba(255,255,255,0.96)] px-4 py-4 backdrop-blur xl:top-[10.4rem]"
                         title="Average of the available editorial rankings for this course."
                       >
                         Editorial avg
                       </th>
                       <th
-                        className="px-5 py-4"
+                        className="sticky top-[9.1rem] z-20 bg-[rgba(255,255,255,0.96)] px-4 py-4 backdrop-blur xl:top-[10.4rem]"
                         title="How many ranking spots better or worse the crowd has this course versus the editorial average."
                       >
                         Crowd vs editorial
@@ -247,7 +231,7 @@ export default async function LeaderboardPage({
                       {EDITORIAL_LISTS.map((editorial) => (
                         <th
                           key={editorial.key}
-                          className="px-5 py-4"
+                          className="sticky top-[9.1rem] z-20 bg-[rgba(255,255,255,0.96)] px-4 py-4 backdrop-blur xl:top-[10.4rem]"
                           title={`${editorial.label} position from the seeded editorial lists.`}
                         >
                           {editorial.label}
@@ -258,8 +242,8 @@ export default async function LeaderboardPage({
                   <tbody>
                     {courses.map((course) => (
                       <tr key={course.id} className="border-b border-line last:border-b-0">
-                        <td className="px-5 py-5 align-top">
-                          <Link href={`/courses/${course.id}`} className="block min-w-[126px]">
+                        <td className="px-4 py-5 align-top">
+                          <Link href={`/courses/${course.id}`} className="block min-w-0">
                             <div className="font-display text-[2.2rem] font-semibold tracking-[var(--tracking-tighter)] text-ink">
                               #{course.leaderboardRank}
                             </div>
@@ -271,45 +255,33 @@ export default async function LeaderboardPage({
                                 <RankSignal signal={course.rankSignal} />
                               </div>
                             ) : null}
+                            {course.viewerPlayed ? <div className="mt-2 text-sm text-pine">Played by you</div> : null}
+                            {course.friendPlayers?.length ? (
+                              <div className="mt-3 flex items-center gap-2">
+                                <AvatarStack people={course.friendPlayers} size="sm" max={3} />
+                                <span className="text-xs uppercase tracking-[0.12em] text-muted">Friends played</span>
+                              </div>
+                            ) : null}
                           </Link>
                         </td>
-                        <td className="px-5 py-5 align-top">
+                        <td className="px-4 py-5 align-top">
                           <Link href={`/courses/${course.id}`} className="block">
                             <h2 className="text-[1.28rem] font-semibold tracking-[var(--tracking-tight)] text-ink">{course.name}</h2>
                             <p className="meta mt-1">{formatLocation(course)}</p>
                           </Link>
                         </td>
-                        <td className="px-5 py-5 align-top">
-                          <div className="text-base font-semibold text-ink">{golferSignalLabel(course.numUniqueGolfers)}</div>
-                          {course.viewerPlayed ? <div className="mt-2 text-sm text-pine">Played by you</div> : null}
-                          {course.friendPlayers?.length ? (
-                            <div className="mt-3 flex items-center gap-2">
-                              <AvatarStack people={course.friendPlayers} size="sm" max={3} />
-                              <span className="text-xs uppercase tracking-[0.12em] text-muted">Friends played</span>
-                            </div>
-                          ) : null}
-                        </td>
-                        <td className="px-5 py-5 align-top">
+                        <td className="px-4 py-5 align-top">
                           <div className="text-base font-semibold text-ink">
                             {formatRankPosition(course.editorialAverageRank)}
                           </div>
-                          <div className="mt-2 text-xs uppercase tracking-[0.14em] text-muted">
-                            Avg of listed editorials
-                          </div>
                         </td>
-                        <td className="px-5 py-5 align-top">
+                        <td className="px-4 py-5 align-top">
                           <GapBadge delta={course.editorialGap} />
-                          <div className="mt-2 text-xs uppercase tracking-[0.14em] text-muted">
-                            Crowd rank vs avg editorial
-                          </div>
                         </td>
                         {EDITORIAL_LISTS.map((editorial) => (
-                          <td key={editorial.key} className="px-5 py-5 align-top">
+                          <td key={editorial.key} className="px-4 py-5 align-top">
                             <div className="text-base font-semibold text-ink">
                               {formatEditorialPosition(course.editorialRanks?.[editorial.key])}
-                            </div>
-                            <div className="mt-2 text-xs uppercase tracking-[0.14em] text-muted">
-                              {course.editorialRanks?.[editorial.key] ? editorial.label : "Not listed"}
                             </div>
                           </td>
                         ))}
@@ -317,7 +289,6 @@ export default async function LeaderboardPage({
                     ))}
                   </tbody>
                 </table>
-              </div>
             </div>
           </>
         )}
