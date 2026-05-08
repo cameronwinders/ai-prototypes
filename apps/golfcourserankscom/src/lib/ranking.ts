@@ -229,7 +229,7 @@ export function buildRankSignal(input: {
     };
   }
 
-  if (editorialGap !== null && input.numUniqueGolfers >= 5) {
+  if (editorialGap !== null) {
     if (editorialGap >= 4) {
       return {
         variant: "underrated",
