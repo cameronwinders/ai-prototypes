@@ -18,6 +18,7 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [scope, setScope] = useState<"all" | "top50">("all");
   const [stateFilter, setStateFilter] = useState("ALL");
+  const [searchQuery, setSearchQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const states = useMemo(
@@ -26,6 +27,8 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
   );
 
   const filteredCourses = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
     return courses.filter((course) => {
       if (scope === "top50" && (course.leaderboard_rank ?? course.seed_rank) > 50) {
         return false;
@@ -35,15 +38,22 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
         return false;
       }
 
+      if (
+        normalizedQuery &&
+        ![course.name, course.city, course.state].some((value) => value.toLowerCase().includes(normalizedQuery))
+      ) {
+        return false;
+      }
+
       return true;
     });
-  }, [courses, scope, stateFilter]);
+  }, [courses, scope, searchQuery, stateFilter]);
 
   const visibleCourses = useMemo(() => filteredCourses.slice(0, visibleCount), [filteredCourses, visibleCount]);
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
-  }, [scope, stateFilter]);
+  }, [scope, stateFilter, searchQuery]);
 
   function toggleCourse(courseId: string) {
     setSelectedIds((current) =>
@@ -66,6 +76,9 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
           <h2 className="h3 mt-4">Pick the public courses you have already played</h2>
           <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
             Pick 5 to 15 to get the most out of ranking. We will save them as played first, then bring you straight into your list.
+          </p>
+          <p className="mt-2 text-sm leading-7 text-[var(--muted)]">
+            Rank the courses based on which were your overall favorite to play.
           </p>
         </div>
 
@@ -103,6 +116,16 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
       </div>
 
       {error ? <div className="pill pill-warning pill-sentence">{error}</div> : null}
+
+      <label className="block text-sm font-medium text-[var(--ink)]">
+        <span className="sr-only">Search played courses</span>
+        <input
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          placeholder="Search by course, city, or state"
+          className="min-h-11 w-full rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-3 text-sm outline-none focus:border-[rgba(49,107,83,0.45)]"
+        />
+      </label>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {visibleCourses.map((course) => {
@@ -153,7 +176,9 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
             <p className="text-sm font-semibold text-[var(--ink)]">
               Continue with {selectedIds.length} {selectedIds.length === 1 ? "course" : "courses"} {"\u2192"}
             </p>
-            <p className="mt-1 text-sm text-[var(--muted)]">Pick 5 to 15 to get the most out of ranking.</p>
+            <p className="mt-1 text-sm text-[var(--muted)]">
+              Pick 5 to 15 to get the most out of ranking, then order them by your overall favorite to play.
+            </p>
           </div>
           <button
             type="submit"

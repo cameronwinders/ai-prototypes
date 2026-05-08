@@ -357,7 +357,7 @@ export function MyCoursesManager({
               <p className="eyebrow">MY COURSES</p>
               <h1 className="h2 mt-4">Your public-course stack</h1>
               <p className="subhed mt-4">
-                Keep the list honest. Rank the rounds you would book again first.
+                Rank the courses based on which were your overall favorite to play.
               </p>
             </div>
             <div className="pill pill-line pill-sentence self-start">
