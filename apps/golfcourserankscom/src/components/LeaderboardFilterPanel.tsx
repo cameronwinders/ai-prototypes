@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { HANDICAP_OPTIONS, RANK_SIGNAL_OPTIONS, type RankSignalFilter } from "@/lib/types";
@@ -25,10 +24,6 @@ type LeaderboardFilterPanelProps = {
   showActivityFilter: boolean;
 };
 
-function sortLabel(sort: string) {
-  return SORT_OPTIONS.find((option) => option.value === sort)?.label ?? "Crowd rank";
-}
-
 export function LeaderboardFilterPanel({
   band,
   selectedState,
@@ -41,7 +36,6 @@ export function LeaderboardFilterPanel({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [open, setOpen] = useState(false);
 
   function updateParams(next: { band?: string; state?: string; sort?: string; activity?: string; signal?: RankSignalFilter }) {
     const params = new URLSearchParams(searchParams.toString());
@@ -90,7 +84,6 @@ export function LeaderboardFilterPanel({
 
   function resetFilters() {
     updateParams({ band: "", state: "", sort: "rank", activity: "all", signal: "all" });
-    setOpen(false);
   }
 
   return (
@@ -129,10 +122,6 @@ export function LeaderboardFilterPanel({
               ) : null}
             </div>
           </div>
-
-          <button type="button" onClick={() => setOpen(true)} className="ghost-button sm min-h-11 shrink-0">
-            Filters
-          </button>
         </div>
 
         <div className="hidden flex-wrap items-center gap-2.5 sm:flex">
@@ -164,101 +153,13 @@ export function LeaderboardFilterPanel({
               {activity === "played" ? "Played by me" : "Not played by me"}
             </span>
           ) : null}
-
-          <button type="button" onClick={() => setOpen(true)} className="ghost-button sm ml-auto min-h-11">
-            Filters
+        </div>
+        {selectedState || band || signal !== "all" || (showActivityFilter && activity !== "all") ? (
+          <button type="button" onClick={resetFilters} className="ghost-button sm ml-auto min-h-11">
+            Reset filters
           </button>
-        </div>
+        ) : null}
       </div>
-
-      {open ? (
-        <div className="fixed inset-0 z-50">
-          <button
-            type="button"
-            aria-label="Close filters"
-            className="absolute inset-0 bg-[rgba(18,28,25,0.36)]"
-            onClick={() => setOpen(false)}
-          />
-          <div className="absolute inset-x-0 bottom-0 z-10 max-h-[85vh] overflow-y-auto rounded-t-xl border border-line bg-[rgba(255,252,246,0.98)] p-5 shadow-[0_-20px_60px_rgba(18,28,25,0.22)] sm:inset-y-0 sm:right-0 sm:left-auto sm:max-h-none sm:w-[26rem] sm:rounded-none sm:rounded-l-xl">
-            <div className="flex items-center justify-between gap-3">
-              <h2 className="h2 text-[1.65rem] text-ink">Filters</h2>
-              <button type="button" onClick={() => setOpen(false)} className="ghost-button sm min-h-11">
-                Close
-              </button>
-            </div>
-
-            <div className="mt-6 grid gap-4">
-              <label className="grid gap-2 text-sm font-semibold text-ink">
-                Handicap band
-                <select
-                  value={band}
-                  onChange={(event) => updateParams({ band: event.target.value })}
-                  className="min-h-11 rounded-md border border-line bg-white px-4 py-3 text-sm font-normal text-ink outline-none transition focus:border-[rgba(49,107,83,0.45)]"
-                >
-                  <option value="">All golfers</option>
-                  {HANDICAP_OPTIONS.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="grid gap-2 text-sm font-semibold text-ink">
-                State
-                <select
-                  value={selectedState}
-                  onChange={(event) => updateParams({ state: event.target.value })}
-                  className="min-h-11 rounded-md border border-line bg-white px-4 py-3 text-sm font-normal text-ink outline-none transition focus:border-[rgba(49,107,83,0.45)]"
-                >
-                  <option value="">All states</option>
-                  {states.map((state) => (
-                    <option key={state} value={state}>
-                      {state}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="grid gap-2 text-sm font-semibold text-ink">
-                Tags
-                <select
-                  value={signal}
-                  onChange={(event) => updateParams({ signal: event.target.value as RankSignalFilter })}
-                  className="min-h-11 rounded-md border border-line bg-white px-4 py-3 text-sm font-normal text-ink outline-none transition focus:border-[rgba(49,107,83,0.45)]"
-                >
-                  {RANK_SIGNAL_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              {showActivityFilter ? (
-                <label className="grid gap-2 text-sm font-semibold text-ink">
-                  Course state
-                  <select
-                    value={activity}
-                    onChange={(event) => updateParams({ activity: event.target.value })}
-                    className="min-h-11 rounded-md border border-line bg-white px-4 py-3 text-sm font-normal text-ink outline-none transition focus:border-[rgba(49,107,83,0.45)]"
-                  >
-                    <option value="all">All courses</option>
-                    <option value="played">Played by me</option>
-                    <option value="not-played">Not played by me</option>
-                  </select>
-                </label>
-              ) : null}
-            </div>
-
-            <div className="mt-6 flex flex-wrap gap-3">
-              <button type="button" onClick={resetFilters} className="ghost-button min-h-11">
-                Reset filters
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
     </>
   );
 }

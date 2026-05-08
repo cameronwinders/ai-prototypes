@@ -188,14 +188,14 @@ export function getRankDeltaDisplay(delta: number | null | undefined) {
     return {
       direction: "flat" as const,
       value: 0,
-      label: "Even with editorials"
+      label: "All square with editorials"
     };
   }
 
   return {
     direction: rounded > 0 ? ("up" as const) : ("down" as const),
     value: Math.abs(rounded),
-    label: rounded > 0 ? `${Math.abs(rounded)} better than editorials` : `${Math.abs(rounded)} behind editorials`
+    label: rounded > 0 ? `${Math.abs(rounded)} up on editorials` : `${Math.abs(rounded)} down on editorials`
   };
 }
 

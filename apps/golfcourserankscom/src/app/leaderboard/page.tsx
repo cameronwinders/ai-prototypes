@@ -47,8 +47,7 @@ function GapBadge({ delta }: { delta: number | null }) {
       }`}
       title={display.label}
     >
-      {isFlat ? "Even" : isUp ? "\u2191" : "\u2193"} {display.value}
-      {!isFlat ? ` ${isUp ? "better" : "behind"}` : ""}
+      {isFlat ? "All Square" : `${display.value} ${isUp ? "Up" : "Down"}`}
     </span>
   );
 }
@@ -83,8 +82,7 @@ export default async function LeaderboardPage({
     ? (sortParam as (typeof SORT_OPTIONS)[number]["value"])
     : "rank";
 
-  const [stats, courses, allCourses] = await Promise.all([
-    getAppOverviewStats(),
+  const [courses, allCourses] = await Promise.all([
     getLeaderboardCourses({
       handicapBand: band,
       minSignals: 0,
@@ -106,11 +104,10 @@ export default async function LeaderboardPage({
     <section className="shell-panel shell-panel-contrast p-6 sm:p-8">
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-3">
-          <h1 className="h2 text-[2rem] text-ink sm:text-[2.3rem]">National leaderboard</h1>
-          <div className="flex flex-wrap gap-2.5">
-            <span className="pill pill-pine pill-sentence">{pluralize(stats.golferCount, "golfer")}</span>
-            <span className="pill pill-line pill-sentence">{pluralize(stats.courseCount, "public course")}</span>
-          </div>
+          <h1 className="h2 text-[2rem] text-ink sm:text-[2.3rem]">National Rankings</h1>
+          <p className="subhed max-w-3xl">
+            Use "Sort by" to see crowd rankings, golf media rankings, or where they differ most.
+          </p>
         </div>
 
         <LeaderboardFilterPanel

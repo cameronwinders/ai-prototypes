@@ -28,7 +28,7 @@ function GapBadge({ delta }: { delta: number | null }) {
 
   return (
     <span className={`pill ${isFlat ? "pill-line" : isUp ? "pill-pine" : "pill-warning"}`}>
-      {isFlat ? "Even" : isUp ? "\u2191" : "\u2193"} {display.value}
+      {isFlat ? "All Square" : `${display.value} ${isUp ? "Up" : "Down"}`}
     </span>
   );
 }
@@ -55,7 +55,7 @@ export function CourseRow({ course, href, actionLabel }: CourseRowProps) {
           <span className={`pill ${course.isEarly ? "pill-warning" : "pill-pine"}`}>
             {course.isEarly ? "Starting score" : "Crowd score"} {formatCrowdScore(course.normalizedScore)}
           </span>
-          <span className="pill pill-line">Editorial avg {formatRankPosition(course.editorialConsensusRank)}</span>
+          <span className="pill pill-line">Editorial avg {formatRankPosition(course.editorialAverageRank)}</span>
           <GapBadge delta={course.editorialGap} />
           {course.rankSignal ? <RankSignal signal={course.rankSignal} /> : null}
           {course.viewerPlayed ? <PlayedButton /> : null}
