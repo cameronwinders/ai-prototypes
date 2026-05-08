@@ -16,7 +16,7 @@ export default async function OnboardingPage({
   const nextParam = params.next;
   const stepParam = params.step;
   const errorParam = params.error;
-  const next = Array.isArray(nextParam) ? nextParam[0] : nextParam ?? "/leaderboard";
+  const next = Array.isArray(nextParam) ? nextParam[0] : nextParam ?? "/rankings";
   const step = Array.isArray(stepParam) ? stepParam[0] : stepParam ?? "handicap";
   const error = Array.isArray(errorParam) ? errorParam[0] : errorParam;
   const playedCourses = viewer.user ? await getPlayedCoursesForUser(viewer.user.id) : [];
@@ -24,7 +24,7 @@ export default async function OnboardingPage({
   const shouldShowPicker = hasHandicap && playedCourses.length === 0;
 
   if (hasHandicap && playedCourses.length > 0) {
-    redirect(next.startsWith("/") ? next : "/leaderboard");
+    redirect(next.startsWith("/") ? next : "/rankings");
   }
 
   if (shouldShowPicker || step === "picker") {

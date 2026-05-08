@@ -76,7 +76,7 @@ export async function requireAdminViewer(nextPath: string) {
   const viewer = await requireViewer(nextPath);
 
   if (!viewer.isAdmin) {
-    redirect("/leaderboard");
+    redirect("/rankings");
   }
 
   return viewer;

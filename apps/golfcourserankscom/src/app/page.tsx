@@ -101,7 +101,7 @@ function GolfDigestPreview({
       </div>
 
       <div className="mt-6">
-        <Link href="/leaderboard?sort=golf-digest-public" className="solid-button min-h-11">
+        <Link href="/rankings?sort=golf-digest-public" className="solid-button min-h-11">
           Open Golf Digest board
         </Link>
       </div>
@@ -134,7 +134,7 @@ export default async function HomePage() {
             >
               {viewer.user ? "Rank my courses" : "Start ranking"}
             </Link>
-            <Link href="/leaderboard" className="ghost-button min-h-11">
+            <Link href="/rankings" className="ghost-button min-h-11">
               Explore overall rankings
             </Link>
             <Link
@@ -151,7 +151,7 @@ export default async function HomePage() {
         title="National crowd rankings"
         subhed="This is the crowd-sourced board: real golfers rank the public courses they actually played, and you can compare that directly against the golf media."
         courses={crowdBoard}
-        href="/leaderboard"
+        href="/rankings"
         cta="Open full board"
       />
 

@@ -122,7 +122,7 @@ export default async function PublicProfilePage({
             You can still explore the leaderboard, save courses you have played, and share your own profile once your list is ready.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
-            <Link href="/leaderboard" className="solid-button">
+            <Link href="/rankings" className="solid-button">
               Explore leaderboard
             </Link>
             {viewer.user ? (

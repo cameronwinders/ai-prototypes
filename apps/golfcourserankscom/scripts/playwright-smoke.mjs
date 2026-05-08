@@ -199,7 +199,7 @@ async function run() {
     throw new Error(`Rank order did not persist after refresh. Before: ${savedOrder.join(" | ")} After: ${refreshedOrder.join(" | ")}`);
   }
 
-  await userPage.goto(`${siteUrl}/leaderboard?band=6-10&minSignals=0`, { waitUntil: "networkidle" });
+  await userPage.goto(`${siteUrl}/rankings?band=6-10&minSignals=0`, { waitUntil: "networkidle" });
   await userPage.getByText(/Early read/i).first().waitFor();
 
   await userPage.goto(`${siteUrl}/courses/${await getCourseIdByName("Pebble Beach Golf Links")}`, {
@@ -225,7 +225,7 @@ async function run() {
 
   const friendContext = await browser.newContext({ viewport: { width: 1365, height: 960 } });
   const friendPage = await friendContext.newPage();
-  await loginWithMagicLink(friendContext, friendPage, friendEmail, "/leaderboard", "11-18");
+  await loginWithMagicLink(friendContext, friendPage, friendEmail, "/rankings", "11-18");
   await markPlayed(friendPage, "Pebble", "Pebble Beach Golf Links");
   await markPlayed(friendPage, "Pacific", "Pacific Dunes");
   await markPlayed(friendPage, "Pinehurst", "Pinehurst No 2");
@@ -246,7 +246,7 @@ async function run() {
   await friendPage.getByRole("button", { name: /Accept request/i }).click();
   await friendPage.getByText(/Friend request accepted/i).waitFor();
   await friendPage.goto(`${siteUrl}/admin/feedback`, { waitUntil: "networkidle" });
-  if (!friendPage.url().includes("/leaderboard")) {
+  if (!friendPage.url().includes("/rankings")) {
     throw new Error("Non-admin user should not remain on /admin/feedback");
   }
 
@@ -256,8 +256,8 @@ async function run() {
 
   const mobileContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
   const mobilePage = await mobileContext.newPage();
-  await loginWithMagicLink(mobileContext, mobilePage, testEmail, "/leaderboard", "6-10");
-  await mobilePage.goto(`${siteUrl}/leaderboard`, { waitUntil: "networkidle" });
+  await loginWithMagicLink(mobileContext, mobilePage, testEmail, "/rankings", "6-10");
+  await mobilePage.goto(`${siteUrl}/rankings`, { waitUntil: "networkidle" });
   await mobilePage.locator("nav").last().getByRole("link", { name: /^Board$/i }).waitFor();
   await mobilePage.goto(`${siteUrl}/me/courses`, { waitUntil: "networkidle" });
   await mobilePage.getByText(/Drag to reorder/i).waitFor();

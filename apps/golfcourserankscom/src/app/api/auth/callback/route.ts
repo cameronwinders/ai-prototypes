@@ -14,8 +14,8 @@ export async function GET(request: NextRequest) {
   const type = requestUrl.searchParams.get("type") as EmailOtpType | null;
   const accessToken = requestUrl.searchParams.get("access_token");
   const refreshToken = requestUrl.searchParams.get("refresh_token");
-  const requestedNext = requestUrl.searchParams.get("next") ?? "/leaderboard";
-  const next = requestedNext.startsWith("/") ? requestedNext : "/leaderboard";
+  const requestedNext = requestUrl.searchParams.get("next") ?? "/rankings";
+  const next = requestedNext.startsWith("/") ? requestedNext : "/rankings";
   const authError = requestUrl.searchParams.get("error_description");
 
   if (!env.url || !env.publicKey) {

@@ -69,7 +69,7 @@ function normalizeNextPath(input: string) {
     // Fall back below.
   }
 
-  return "/leaderboard";
+  return "/rankings";
 }
 
 async function createEmailSignInLink(email: string, next: string) {

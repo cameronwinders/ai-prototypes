@@ -16,7 +16,7 @@ Golf Course Ranks is a leaderboard-first MVP for U.S. public golf courses. Golfe
 ## Core Routes
 
 - `/` home with leaderboard preview and quick search
-- `/leaderboard` national leaderboard with handicap/min-signal filters
+- `/rankings` national rankings board with handicap/min-signal filters
 - `/courses` seeded course browse and played toggles
 - `/courses/[courseId]` course detail with trust cues, AI summary, and note editor
 - `/me/courses` personal played/ranked list with drag-and-drop and keyboard reorder

@@ -52,7 +52,7 @@ export function InviteLanding({
         <Link href={`/sign-in?next=${encodeURIComponent(`/invite/${handle}?accept=1`)}`} className="solid-button min-h-11">
           Sign in to connect
         </Link>
-        <Link href="/leaderboard" className="ghost-button min-h-11">
+        <Link href="/rankings" className="ghost-button min-h-11">
           Explore leaderboard first
         </Link>
       </div>

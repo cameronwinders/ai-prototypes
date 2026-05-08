@@ -394,7 +394,7 @@ export function MyCoursesManager({
             <Link href="/me/wishlist" className="ghost-button justify-center whitespace-nowrap">
               Open wish list
             </Link>
-            <Link href="/leaderboard" className="ghost-button justify-center whitespace-nowrap">
+            <Link href="/rankings" className="ghost-button justify-center whitespace-nowrap">
               See leaderboard
             </Link>
           </div>
@@ -415,7 +415,7 @@ export function MyCoursesManager({
               <Link href="/courses" className="solid-button justify-center">
                 Browse courses
               </Link>
-              <Link href="/leaderboard" className="ghost-button justify-center">
+              <Link href="/rankings" className="ghost-button justify-center">
                 See the leaderboard
               </Link>
             </div>

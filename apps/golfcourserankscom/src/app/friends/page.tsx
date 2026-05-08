@@ -27,7 +27,7 @@ export default async function FriendsPage() {
             <Link href="/sign-in?next=/friends" className="solid-button min-h-11">
               Sign in to follow friends
             </Link>
-            <Link href="/leaderboard" className="ghost-button min-h-11">
+            <Link href="/rankings" className="ghost-button min-h-11">
               Explore the leaderboard first
             </Link>
           </div>

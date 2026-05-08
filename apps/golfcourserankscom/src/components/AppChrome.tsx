@@ -18,7 +18,7 @@ type AppChromeProps = {
 };
 
 const desktopNav = [
-  { href: "/leaderboard", label: "Overall Rankings" },
+  { href: "/rankings", label: "Overall Rankings" },
   { href: "/courses", label: "Browse Courses" },
   { href: "/me/courses", label: "My Courses" },
   { href: "/friends", label: "Friends" }
@@ -31,7 +31,7 @@ const courseSubnav = [
 ];
 
 const mobileMenuItems = [
-  { href: "/leaderboard", label: "Overall Rankings" },
+  { href: "/rankings", label: "Overall Rankings" },
   { href: "/courses", label: "Browse Courses" },
   { href: "/me/courses", label: "My Courses" },
   { href: "/me/wishlist", label: "My Wishlist" },
@@ -66,7 +66,7 @@ function toScreenName(pathname: string) {
 
   const labels: Record<string, string> = {
     "/": "Home",
-    "/leaderboard": "Overall Rankings",
+    "/rankings": "Overall Rankings",
     "/courses": "Browse Courses",
     "/me/courses": "My Courses",
     "/me/wishlist": "My Wishlist",

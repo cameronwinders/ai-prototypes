@@ -7,7 +7,7 @@ import { requestSignInLink } from "@/app/actions";
 
 export function SignInForm() {
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") ?? "/leaderboard";
+  const next = searchParams.get("next") ?? "/rankings";
   const signedOut = searchParams.get("signed_out") === "1";
   const callbackError = searchParams.get("error");
   const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");

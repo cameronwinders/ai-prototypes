@@ -8,7 +8,7 @@ const requiredFiles = [
   "next-env.d.ts",
   "tsconfig.json",
   "src/app/layout.tsx",
-  "src/app/leaderboard/page.tsx",
+  "src/app/rankings/page.tsx",
   "src/lib/supabase/env.ts",
   "src/app/actions.ts",
   "supabase/migrations/0001_app_schema.sql",

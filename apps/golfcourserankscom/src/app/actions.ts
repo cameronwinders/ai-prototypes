@@ -72,7 +72,7 @@ function isFriendshipStatus(value: string) {
 function appPaths(handle?: string | null) {
   return [
     "/",
-    "/leaderboard",
+    "/rankings",
     "/courses",
     "/me/courses",
     "/me/wishlist",
@@ -102,7 +102,7 @@ async function rebuildSignalsForUser(userId: string) {
 }
 
 export async function completeOnboarding(formData: FormData) {
-  const next = typeof formData.get("next") === "string" ? String(formData.get("next")) : "/leaderboard";
+  const next = typeof formData.get("next") === "string" ? String(formData.get("next")) : "/rankings";
   const handicapBandValue = formData.get("handicap_band");
 
   if (typeof handicapBandValue !== "string" || !isHandicapBand(handicapBandValue)) {
@@ -132,7 +132,7 @@ export async function completeOnboarding(formData: FormData) {
     }
   });
   revalidateApp(viewer.profile?.handle);
-  redirect(`/onboarding?step=picker&next=${encodeURIComponent(next.startsWith("/") ? next : "/leaderboard")}`);
+  redirect(`/onboarding?step=picker&next=${encodeURIComponent(next.startsWith("/") ? next : "/rankings")}`);
 }
 
 export async function completeOnboardingCourseSelection(formData: FormData) {
@@ -225,7 +225,7 @@ export async function requestSignInLink(input: {
   mode: AuthMode;
 }): Promise<ActionResult<null>> {
   const email = input.email.trim().toLowerCase();
-  const next = input.next.startsWith("/") ? input.next : "/leaderboard";
+  const next = input.next.startsWith("/") ? input.next : "/rankings";
 
   if (!email.includes("@")) {
     return {

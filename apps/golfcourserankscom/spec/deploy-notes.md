@@ -17,7 +17,7 @@ Target app: `apps/golfcourserankscom`
 ## Live Checks
 
 - `/` returns `200`
-- `/leaderboard` returns `200`
+- `/rankings` returns `200`
 - `/courses` returns `200`
 - `/feedback` returns `200`
 - `/admin/feedback` stays guarded and redirects anonymous traffic to sign-in
