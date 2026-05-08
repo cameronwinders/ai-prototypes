@@ -138,7 +138,7 @@ export default async function LeaderboardPage({
                   </div>
 
                   <div className="mt-4 grid gap-3 sm:grid-cols-[minmax(0,1fr)_10.5rem]">
-                      <div className="min-w-0 space-y-3">
+                    <div className="min-w-0 space-y-3">
                         <span className={`pill ${course.isEarly ? "pill-warning" : "pill-pine"} pill-sentence`}>
                           {course.isEarly ? "Starting score" : "Crowd score"} {formatCrowdScore(course.normalizedScore)}
                         </span>
@@ -149,9 +149,9 @@ export default async function LeaderboardPage({
                             <RankSignal signal={course.rankSignal} />
                           </div>
                         ) : null}
-                      </div>
+                    </div>
 
-                      <div className="overflow-hidden rounded-md border border-line bg-[rgba(246,243,236,0.92)]">
+                    <div className="overflow-hidden rounded-md border border-line bg-[rgba(246,243,236,0.92)]">
                       {MOBILE_RANK_STACK.map((entry, index) => {
                         const value =
                           entry.key === "crowd"
@@ -193,37 +193,37 @@ export default async function LeaderboardPage({
                           </div>
                         );
                       })}
-                      </div>
+                    </div>
                   </div>
                 </Link>
               ))}
             </div>
 
             <div className="hidden overflow-hidden rounded-xl border border-line bg-white/90 lg:block">
-                <table className="w-full table-fixed">
-                  <colgroup>
-                    <col className="w-[16%]" />
-                    <col className="w-[27%]" />
-                    <col className="w-[11%]" />
-                    <col className="w-[12%]" />
-                    <col className="w-[11%]" />
-                    <col className="w-[11%]" />
-                    <col className="w-[12%]" />
-                  </colgroup>
-                  <thead>
-                    <tr className="border-b border-line bg-[rgba(255,255,255,0.92)] text-left text-xs font-semibold uppercase tracking-[0.18em] text-muted">
-                      <th className="sticky top-[9.1rem] z-20 bg-[rgba(255,255,255,0.96)] px-4 py-4 backdrop-blur xl:top-[10.4rem]" title="Crowd score = how golfers actually rank it.">
+              <table className="w-full table-fixed">
+                <colgroup>
+                  <col className="w-[16%]" />
+                  <col className="w-[27%]" />
+                  <col className="w-[11%]" />
+                  <col className="w-[12%]" />
+                  <col className="w-[11%]" />
+                  <col className="w-[11%]" />
+                  <col className="w-[12%]" />
+                </colgroup>
+                <thead>
+                  <tr className="border-b border-line bg-[rgba(255,255,255,0.92)] text-left text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                      <th className="sticky top-[5.4rem] z-20 bg-[rgba(255,255,255,0.98)] px-4 py-4 shadow-[0_1px_0_rgba(28,41,36,0.08)] backdrop-blur xl:top-[6rem]" title="Crowd score = how golfers actually rank it.">
                         Crowd
                       </th>
-                      <th className="sticky top-[9.1rem] z-20 bg-[rgba(255,255,255,0.96)] px-4 py-4 backdrop-blur xl:top-[10.4rem]">Course</th>
+                      <th className="sticky top-[5.4rem] z-20 bg-[rgba(255,255,255,0.98)] px-4 py-4 shadow-[0_1px_0_rgba(28,41,36,0.08)] backdrop-blur xl:top-[6rem]">Course</th>
                       <th
-                        className="sticky top-[9.1rem] z-20 bg-[rgba(255,255,255,0.96)] px-4 py-4 backdrop-blur xl:top-[10.4rem]"
+                        className="sticky top-[5.4rem] z-20 bg-[rgba(255,255,255,0.98)] px-4 py-4 shadow-[0_1px_0_rgba(28,41,36,0.08)] backdrop-blur xl:top-[6rem]"
                         title="Average of the available editorial rankings for this course."
                       >
                         Editorial avg
                       </th>
                       <th
-                        className="sticky top-[9.1rem] z-20 bg-[rgba(255,255,255,0.96)] px-4 py-4 backdrop-blur xl:top-[10.4rem]"
+                        className="sticky top-[5.4rem] z-20 bg-[rgba(255,255,255,0.98)] px-4 py-4 shadow-[0_1px_0_rgba(28,41,36,0.08)] backdrop-blur xl:top-[6rem]"
                         title="How many ranking spots better or worse the crowd has this course versus the editorial average."
                       >
                         Crowd vs editorial
@@ -231,64 +231,64 @@ export default async function LeaderboardPage({
                       {EDITORIAL_LISTS.map((editorial) => (
                         <th
                           key={editorial.key}
-                          className="sticky top-[9.1rem] z-20 bg-[rgba(255,255,255,0.96)] px-4 py-4 backdrop-blur xl:top-[10.4rem]"
+                          className="sticky top-[5.4rem] z-20 bg-[rgba(255,255,255,0.98)] px-4 py-4 shadow-[0_1px_0_rgba(28,41,36,0.08)] backdrop-blur xl:top-[6rem]"
                           title={`${editorial.label} position from the seeded editorial lists.`}
                         >
                           {editorial.label}
                         </th>
                       ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {courses.map((course) => (
-                      <tr key={course.id} className="border-b border-line last:border-b-0">
-                        <td className="px-4 py-5 align-top">
-                          <Link href={`/courses/${course.id}`} className="block min-w-0">
-                            <div className="font-display text-[2.2rem] font-semibold tracking-[var(--tracking-tighter)] text-ink">
-                              #{course.leaderboardRank}
+                  </tr>
+                </thead>
+                <tbody>
+                  {courses.map((course) => (
+                    <tr key={course.id} className="border-b border-line last:border-b-0">
+                      <td className="px-4 py-5 align-top">
+                        <Link href={`/courses/${course.id}`} className="block min-w-0">
+                          <div className="font-display text-[2.2rem] font-semibold tracking-[var(--tracking-tighter)] text-ink">
+                            #{course.leaderboardRank}
+                          </div>
+                          <div className={`mt-2 inline-flex ${course.isEarly ? "pill pill-warning" : "pill pill-pine"} pill-sentence`}>
+                            {course.isEarly ? "Starting score" : "Crowd score"} {formatCrowdScore(course.normalizedScore)}
+                          </div>
+                          {course.rankSignal ? (
+                            <div className="mt-2">
+                              <RankSignal signal={course.rankSignal} />
                             </div>
-                            <div className={`mt-2 inline-flex ${course.isEarly ? "pill pill-warning" : "pill pill-pine"} pill-sentence`}>
-                              {course.isEarly ? "Starting score" : "Crowd score"} {formatCrowdScore(course.normalizedScore)}
+                          ) : null}
+                          {course.viewerPlayed ? <div className="mt-2 text-sm text-pine">Played by you</div> : null}
+                          {course.friendPlayers?.length ? (
+                            <div className="mt-3 flex items-center gap-2">
+                              <AvatarStack people={course.friendPlayers} size="sm" max={3} />
+                              <span className="text-xs uppercase tracking-[0.12em] text-muted">Friends played</span>
                             </div>
-                            {course.rankSignal ? (
-                              <div className="mt-2">
-                                <RankSignal signal={course.rankSignal} />
-                              </div>
-                            ) : null}
-                            {course.viewerPlayed ? <div className="mt-2 text-sm text-pine">Played by you</div> : null}
-                            {course.friendPlayers?.length ? (
-                              <div className="mt-3 flex items-center gap-2">
-                                <AvatarStack people={course.friendPlayers} size="sm" max={3} />
-                                <span className="text-xs uppercase tracking-[0.12em] text-muted">Friends played</span>
-                              </div>
-                            ) : null}
-                          </Link>
-                        </td>
-                        <td className="px-4 py-5 align-top">
-                          <Link href={`/courses/${course.id}`} className="block">
-                            <h2 className="text-[1.28rem] font-semibold tracking-[var(--tracking-tight)] text-ink">{course.name}</h2>
-                            <p className="meta mt-1">{formatLocation(course)}</p>
-                          </Link>
-                        </td>
-                        <td className="px-4 py-5 align-top">
+                          ) : null}
+                        </Link>
+                      </td>
+                      <td className="px-4 py-5 align-top">
+                        <Link href={`/courses/${course.id}`} className="block">
+                          <h2 className="text-[1.28rem] font-semibold tracking-[var(--tracking-tight)] text-ink">{course.name}</h2>
+                          <p className="meta mt-1">{formatLocation(course)}</p>
+                        </Link>
+                      </td>
+                      <td className="px-4 py-5 align-top">
+                        <div className="text-base font-semibold text-ink">
+                          {formatRankPosition(course.editorialAverageRank)}
+                        </div>
+                      </td>
+                      <td className="px-4 py-5 align-top">
+                        <GapBadge delta={course.editorialGap} />
+                      </td>
+                      {EDITORIAL_LISTS.map((editorial) => (
+                        <td key={editorial.key} className="px-4 py-5 align-top">
                           <div className="text-base font-semibold text-ink">
-                            {formatRankPosition(course.editorialAverageRank)}
+                            {formatEditorialPosition(course.editorialRanks?.[editorial.key])}
                           </div>
                         </td>
-                        <td className="px-4 py-5 align-top">
-                          <GapBadge delta={course.editorialGap} />
-                        </td>
-                        {EDITORIAL_LISTS.map((editorial) => (
-                          <td key={editorial.key} className="px-4 py-5 align-top">
-                            <div className="text-base font-semibold text-ink">
-                              {formatEditorialPosition(course.editorialRanks?.[editorial.key])}
-                            </div>
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </>
         )}
