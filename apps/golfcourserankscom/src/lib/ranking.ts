@@ -230,7 +230,7 @@ export function buildRankSignal(input: {
   }
 
   if (editorialGap !== null && input.numUniqueGolfers >= 5) {
-    if (editorialGap >= 8) {
+    if (editorialGap >= 4) {
       return {
         variant: "underrated",
         label: "Underrated",
@@ -238,7 +238,7 @@ export function buildRankSignal(input: {
       };
     }
 
-    if (editorialGap <= -8) {
+    if (editorialGap <= -4) {
       return {
         variant: "overrated",
         label: "Overrated",
