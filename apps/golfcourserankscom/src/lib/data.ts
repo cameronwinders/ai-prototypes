@@ -7,7 +7,6 @@ import {
   buildRankSignal,
   compareRankings,
   computeCourseScore,
-  getEditorialGap,
   getEditorialConsensusRank,
   matchesRankSignalFilter,
   slugifyCourseName,
@@ -51,6 +50,8 @@ type LeaderboardSort =
   | "score"
   | "most-played"
   | "most-compared"
+  | "editorial-average"
+  | "crowd-vs-editorial"
   | "golf-digest-public"
   | "golf-top-100"
   | "golfweek-you-can-play";
@@ -740,6 +741,7 @@ async function buildFilteredLeaderboard(handicapBand: HandicapBand, minSignals: 
   ).map((course, index) => ({
     ...course,
     leaderboardRank: index + 1,
+    editorialAverageRank: null,
     editorialGap:
       course.editorialConsensusRank === null
         ? null
@@ -749,16 +751,60 @@ async function buildFilteredLeaderboard(handicapBand: HandicapBand, minSignals: 
   return normalized.slice(0, limit);
 }
 
-function sortLeaderboardRows(
-  courses: LeaderboardCourse[],
-  sort: LeaderboardSort
-) {
+function assignEditorialAverageRanks(courses: LeaderboardCourse[]) {
+  const rankedEditorials = [...courses]
+    .filter((course) => course.editorialConsensusRank !== null)
+    .sort((left, right) => {
+      if ((left.editorialConsensusRank ?? Number.MAX_SAFE_INTEGER) !== (right.editorialConsensusRank ?? Number.MAX_SAFE_INTEGER)) {
+        return (left.editorialConsensusRank ?? Number.MAX_SAFE_INTEGER) - (right.editorialConsensusRank ?? Number.MAX_SAFE_INTEGER);
+      }
+
+      const nameCompare = left.name.localeCompare(right.name);
+      if (nameCompare !== 0) {
+        return nameCompare;
+      }
+
+      const stateCompare = left.state.localeCompare(right.state);
+      if (stateCompare !== 0) {
+        return stateCompare;
+      }
+
+      return left.city.localeCompare(right.city);
+    });
+
+  const editorialAverageRankById = new Map(rankedEditorials.map((course, index) => [course.id, index + 1]));
+
+  return courses.map((course) => {
+    const editorialAverageRank = editorialAverageRankById.get(course.id) ?? null;
+    return {
+      ...course,
+      editorialAverageRank,
+      editorialGap: editorialAverageRank === null ? null : editorialAverageRank - course.leaderboardRank
+    };
+  });
+}
+
+function sortLeaderboardRows(courses: LeaderboardCourse[], sort: LeaderboardSort) {
   const ranked = [...courses];
 
   ranked.sort((left, right) => {
     if (sort === "score") {
       if (right.normalizedScore !== left.normalizedScore) {
         return right.normalizedScore - left.normalizedScore;
+      }
+    } else if (sort === "editorial-average") {
+      const leftAverageRank = left.editorialAverageRank ?? Number.MAX_SAFE_INTEGER;
+      const rightAverageRank = right.editorialAverageRank ?? Number.MAX_SAFE_INTEGER;
+
+      if (leftAverageRank !== rightAverageRank) {
+        return leftAverageRank - rightAverageRank;
+      }
+    } else if (sort === "crowd-vs-editorial") {
+      const leftGap = left.editorialGap ?? Number.NEGATIVE_INFINITY;
+      const rightGap = right.editorialGap ?? Number.NEGATIVE_INFINITY;
+
+      if (leftGap !== rightGap) {
+        return rightGap - leftGap;
       }
     } else if (sort === "most-played") {
       if (right.numUniqueGolfers !== left.numUniqueGolfers) {
@@ -783,13 +829,15 @@ function sortLeaderboardRows(
       return right.normalizedScore - left.normalizedScore;
     }
 
+    const nameCompare = left.name.localeCompare(right.name);
+    if (nameCompare !== 0) {
+      return nameCompare;
+    }
+
     return left.seed_rank - right.seed_rank;
   });
 
-  return ranked.map((course, index) => ({
-    ...course,
-    leaderboardRank: index + 1
-  }));
+  return ranked;
 }
 
 export async function getLeaderboardCourses(options?: {
@@ -830,7 +878,8 @@ export async function getLeaderboardCourses(options?: {
       );
     }
 
-    const sortedRows = sortLeaderboardRows(filteredByState, sort);
+    const preparedRows = assignEditorialAverageRanks(filteredByState);
+    const sortedRows = sortLeaderboardRows(preparedRows, sort);
     const [friendPresence, rankSignals] = await Promise.all([
       viewerId
         ? getAcceptedFriendPresenceMap(viewerId, sortedRows.map((course) => course.id))
@@ -838,14 +887,9 @@ export async function getLeaderboardCourses(options?: {
       getRankSignalMap(sortedRows)
     ]);
 
-  return sortedRows
+    return sortedRows
       .map((course) => ({
         ...course,
-        editorialConsensusRank: getEditorialConsensusRank(course),
-        editorialGap: getEditorialGap({
-          editorialConsensusRank: getEditorialConsensusRank(course),
-          leaderboardRank: course.leaderboardRank
-        }),
         viewerPlayed: playedIds?.has(course.id) ?? false,
         friendPlayers: friendPresence.get(course.id) ?? [],
         rankSignal: rankSignals.get(course.id) ?? null
@@ -880,7 +924,8 @@ export async function getLeaderboardCourses(options?: {
     );
   }
 
-  const sortedRows = sortLeaderboardRows(leaderboard, sort);
+  const preparedRows = assignEditorialAverageRanks(leaderboard);
+  const sortedRows = sortLeaderboardRows(preparedRows, sort);
   const [friendPresence, rankSignals] = await Promise.all([
     viewerId
       ? getAcceptedFriendPresenceMap(viewerId, sortedRows.map((course) => course.id))
@@ -891,11 +936,6 @@ export async function getLeaderboardCourses(options?: {
   return sortedRows
     .map((course) => ({
       ...course,
-      editorialConsensusRank: getEditorialConsensusRank(course),
-      editorialGap: getEditorialGap({
-        editorialConsensusRank: getEditorialConsensusRank(course),
-        leaderboardRank: course.leaderboardRank
-      }),
       viewerPlayed: playedIds?.has(course.id) ?? false,
       friendPlayers: friendPresence.get(course.id) ?? [],
       rankSignal: rankSignals.get(course.id) ?? null

@@ -147,6 +147,7 @@ export type LeaderboardCourse = CourseRecord & {
   score: number;
   crowdScore: number;
   editorialConsensusRank: number | null;
+  editorialAverageRank: number | null;
   editorialGap: number | null;
   numSignals: number;
   numUniqueGolfers: number;

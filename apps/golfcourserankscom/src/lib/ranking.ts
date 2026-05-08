@@ -316,8 +316,9 @@ export function toLeaderboardCourse(
 ): LeaderboardCourse {
   const editorialConsensusRank = getEditorialConsensusRank(course);
   const leaderboardRank = aggregate?.rank ?? fallback.leaderboardRank ?? course.seed_rank;
+  const editorialAverageRank = fallback.editorialAverageRank ?? null;
   const editorialGap =
-    fallback.editorialGap ?? (editorialConsensusRank === null ? null : Number((editorialConsensusRank - leaderboardRank).toFixed(1)));
+    fallback.editorialGap ?? (editorialAverageRank === null ? null : editorialAverageRank - leaderboardRank);
 
   return {
     ...course,
@@ -326,6 +327,7 @@ export function toLeaderboardCourse(
     score: aggregate?.score ?? fallback.score ?? course.seed_score,
     crowdScore: aggregate?.crowd_score ?? fallback.crowdScore ?? 0,
     editorialConsensusRank,
+    editorialAverageRank,
     editorialGap,
     numSignals: aggregate?.num_signals ?? fallback.numSignals ?? 0,
     numUniqueGolfers: aggregate?.num_unique_golfers ?? fallback.numUniqueGolfers ?? 0,

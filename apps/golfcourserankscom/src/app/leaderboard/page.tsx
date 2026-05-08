@@ -10,10 +10,12 @@ import { getViewerContext } from "@/lib/viewer";
 
 const SORT_OPTIONS = [
   { value: "rank", label: "Crowd rank" },
+  { value: "editorial-average", label: "Editorial average" },
+  { value: "crowd-vs-editorial", label: "Crowd vs. editorial" },
   { value: "golf-digest-public", label: "Golf Digest" },
   { value: "golf-top-100", label: "GOLF.com" },
-  { value: "golfweek-you-can-play", label: "Golfweek" },
-  { value: "most-played", label: "Most golfers" }
+  { value: "golfweek-you-can-play", label: "Golf Week" },
+  { value: "most-played", label: "Most played" }
 ] as const;
 
 const MOBILE_RANK_STACK = [
@@ -163,7 +165,7 @@ export default async function LeaderboardPage({
                           {course.isEarly ? "Starting score" : "Crowd score"} {formatCrowdScore(course.normalizedScore)}
                         </span>
                         <span className="pill pill-line pill-sentence">
-                          Editorial avg {formatRankPosition(course.editorialConsensusRank)}
+                          Editorial avg {formatRankPosition(course.editorialAverageRank)}
                         </span>
                         <GapBadge delta={course.editorialGap} />
                         <span className="pill pill-line pill-sentence">{golferSignalLabel(course.numUniqueGolfers)}</span>
@@ -181,8 +183,8 @@ export default async function LeaderboardPage({
                           entry.key === "crowd"
                             ? formatRankPosition(course.leaderboardRank)
                             : entry.key === "editorial"
-                              ? formatRankPosition(course.editorialConsensusRank)
-                            : formatEditorialPosition(course.editorialRanks?.[entry.key]);
+                              ? formatRankPosition(course.editorialAverageRank)
+                              : formatEditorialPosition(course.editorialRanks?.[entry.key]);
 
                         const isCrowd = entry.key === "crowd";
                         const isEditorial = entry.key === "editorial";
@@ -292,7 +294,7 @@ export default async function LeaderboardPage({
                         </td>
                         <td className="px-5 py-5 align-top">
                           <div className="text-base font-semibold text-ink">
-                            {formatRankPosition(course.editorialConsensusRank)}
+                            {formatRankPosition(course.editorialAverageRank)}
                           </div>
                           <div className="mt-2 text-xs uppercase tracking-[0.14em] text-muted">
                             Avg of listed editorials

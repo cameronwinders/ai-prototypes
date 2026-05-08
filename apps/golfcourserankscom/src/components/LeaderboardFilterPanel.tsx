@@ -7,10 +7,12 @@ import { HANDICAP_OPTIONS, RANK_SIGNAL_OPTIONS, type RankSignalFilter } from "@/
 
 const SORT_OPTIONS = [
   { value: "rank", label: "Crowd rank" },
+  { value: "editorial-average", label: "Editorial average" },
+  { value: "crowd-vs-editorial", label: "Crowd vs. editorial" },
   { value: "golf-digest-public", label: "Golf Digest" },
   { value: "golf-top-100", label: "GOLF.com" },
-  { value: "golfweek-you-can-play", label: "Golfweek" },
-  { value: "most-played", label: "Most golfers" }
+  { value: "golfweek-you-can-play", label: "Golf Week" },
+  { value: "most-played", label: "Most played" }
 ] as const;
 
 type LeaderboardFilterPanelProps = {
@@ -96,10 +98,24 @@ export function LeaderboardFilterPanel({
       <div className="sticky top-[4.7rem] z-30 rounded-lg border border-line bg-[rgba(255,252,246,0.96)] px-4 py-3 shadow-panel backdrop-blur xl:top-[6.1rem]">
         <div className="flex items-center justify-between gap-3 sm:hidden">
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-ink">Filter the leaderboard</p>
+            <p className="text-sm font-semibold text-ink">Sort by</p>
+            <label className="sr-only" htmlFor="leaderboard-sort-mobile">
+              Sort by
+            </label>
+            <select
+              id="leaderboard-sort-mobile"
+              value={sort}
+              onChange={(event) => updateParams({ sort: event.target.value })}
+              className="mt-2 min-h-11 w-full rounded-xs border border-line bg-white px-4 py-2 text-sm font-semibold text-ink outline-none transition focus:border-[rgba(49,107,83,0.45)]"
+            >
+              {SORT_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
             <div className="mt-1 flex flex-wrap gap-2">
               {selectedState ? <span className="pill pill-line pill-sentence">{selectedState}</span> : null}
-              <span className="pill pill-line pill-sentence">{sortLabel(sort)}</span>
               {band ? <span className="pill pill-pine pill-sentence">Handicap {band}</span> : null}
               {signal !== "all" ? (
                 <span className="pill pill-line pill-sentence">
@@ -120,23 +136,6 @@ export function LeaderboardFilterPanel({
         </div>
 
         <div className="hidden flex-wrap items-center gap-2.5 sm:flex">
-          <label className="sr-only" htmlFor="leaderboard-state-inline">
-            State
-          </label>
-          <select
-            id="leaderboard-state-inline"
-            value={selectedState}
-            onChange={(event) => updateParams({ state: event.target.value })}
-            className="min-h-11 rounded-xs border border-line bg-white px-4 py-2 text-sm font-semibold text-ink outline-none transition focus:border-[rgba(49,107,83,0.45)]"
-          >
-            <option value="">All states</option>
-            {states.map((state) => (
-              <option key={state} value={state}>
-                {state}
-              </option>
-            ))}
-          </select>
-
           <label className="sr-only" htmlFor="leaderboard-sort-inline">
             Sort by
           </label>
@@ -154,7 +153,6 @@ export function LeaderboardFilterPanel({
           </select>
 
           {selectedState ? <span className="pill pill-line pill-sentence">{selectedState}</span> : null}
-          {sort !== "rank" ? <span className="pill pill-line pill-sentence">{sortLabel(sort)}</span> : null}
           {band ? <span className="pill pill-pine pill-sentence">Handicap {band}</span> : null}
           {signal !== "all" ? (
             <span className="pill pill-line pill-sentence">
@@ -174,14 +172,14 @@ export function LeaderboardFilterPanel({
       </div>
 
       {open ? (
-        <div className="fixed inset-0 z-50 flex items-end sm:block">
+        <div className="fixed inset-0 z-50">
           <button
             type="button"
             aria-label="Close filters"
             className="absolute inset-0 bg-[rgba(18,28,25,0.36)]"
             onClick={() => setOpen(false)}
           />
-          <div className="relative z-10 w-full rounded-t-xl border border-line bg-[rgba(255,252,246,0.98)] p-5 shadow-[0_-20px_60px_rgba(18,28,25,0.22)] sm:absolute sm:inset-y-0 sm:right-0 sm:left-auto sm:w-[26rem] sm:rounded-none sm:rounded-l-xl">
+          <div className="absolute inset-x-0 bottom-0 z-10 max-h-[85vh] overflow-y-auto rounded-t-xl border border-line bg-[rgba(255,252,246,0.98)] p-5 shadow-[0_-20px_60px_rgba(18,28,25,0.22)] sm:inset-y-0 sm:right-0 sm:left-auto sm:max-h-none sm:w-[26rem] sm:rounded-none sm:rounded-l-xl">
             <div className="flex items-center justify-between gap-3">
               <h2 className="h2 text-[1.65rem] text-ink">Filters</h2>
               <button type="button" onClick={() => setOpen(false)} className="ghost-button sm min-h-11">
@@ -217,21 +215,6 @@ export function LeaderboardFilterPanel({
                   {states.map((state) => (
                     <option key={state} value={state}>
                       {state}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="grid gap-2 text-sm font-semibold text-ink">
-                Sort by
-                <select
-                  value={sort}
-                  onChange={(event) => updateParams({ sort: event.target.value })}
-                  className="min-h-11 rounded-md border border-line bg-white px-4 py-3 text-sm font-normal text-ink outline-none transition focus:border-[rgba(49,107,83,0.45)]"
-                >
-                  {SORT_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
                     </option>
                   ))}
                 </select>
