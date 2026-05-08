@@ -18,22 +18,23 @@ type AppChromeProps = {
 };
 
 const desktopNav = [
-  { href: "/leaderboard", label: "Rankings" },
-  { href: "/courses", label: "Courses" },
+  { href: "/leaderboard", label: "Overall Rankings" },
+  { href: "/courses", label: "Browse Courses" },
+  { href: "/me/courses", label: "My Courses" },
   { href: "/friends", label: "Friends" }
 ];
 
 const courseSubnav = [
-  { href: "/courses", label: "Browse courses" },
-  { href: "/me/courses", label: "My courses" },
-  { href: "/me/wishlist", label: "Wish list" }
+  { href: "/courses", label: "Browse Courses" },
+  { href: "/me/courses", label: "My Courses" },
+  { href: "/me/wishlist", label: "My Wishlist" }
 ];
 
 const mobileMenuItems = [
-  { href: "/leaderboard", label: "Rankings" },
-  { href: "/courses", label: "Courses" },
+  { href: "/leaderboard", label: "Overall Rankings" },
+  { href: "/courses", label: "Browse Courses" },
   { href: "/me/courses", label: "My Courses" },
-  { href: "/me/wishlist", label: "Wish List" },
+  { href: "/me/wishlist", label: "My Wishlist" },
   { href: "/friends", label: "Friends" },
   { href: "/profile", label: "Profile" }
 ];
@@ -65,10 +66,10 @@ function toScreenName(pathname: string) {
 
   const labels: Record<string, string> = {
     "/": "Home",
-    "/leaderboard": "Rankings",
-    "/courses": "Courses",
+    "/leaderboard": "Overall Rankings",
+    "/courses": "Browse Courses",
     "/me/courses": "My Courses",
-    "/me/wishlist": "Wish List",
+    "/me/wishlist": "My Wishlist",
     "/friends": "Friends",
     "/feedback": "Feedback",
     "/profile": "Profile",
@@ -114,7 +115,17 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
 
   function isDesktopNavActive(href: string) {
     if (href === "/courses") {
-      return pathname === "/courses" || pathname === "/me/courses" || pathname.startsWith("/courses/");
+      return pathname === "/courses" || pathname.startsWith("/courses/");
+    }
+
+    if (href === "/me/courses") {
+      return (
+        pathname === "/me/courses" ||
+        pathname === "/me/wishlist" ||
+        pathname === "/my-courses" ||
+        pathname.startsWith("/me/courses/") ||
+        pathname.startsWith("/me/wishlist/")
+      );
     }
 
     return pathname === href || pathname.startsWith(`${href}/`);
@@ -136,11 +147,12 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
 
               <nav className="hidden items-center gap-2 lg:flex">
                 {desktopNav.map((item) => {
+                  const href = item.href === "/me/courses" ? myCoursesHref : item.href;
                   const active = isDesktopNavActive(item.href);
                   return (
                     <Link
                       key={item.href}
-                      href={item.href}
+                      href={href}
                       className={navPillClasses(active)}
                       style={active ? activePillTextStyle : undefined}
                     >
