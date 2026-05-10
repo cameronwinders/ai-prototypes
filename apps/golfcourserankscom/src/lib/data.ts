@@ -410,7 +410,8 @@ async function getRankSignalMap(courses: LeaderboardCourse[]) {
         normalizedScore: course.normalizedScore,
         numSignals: course.numSignals,
         numUniqueGolfers: course.numUniqueGolfers,
-        editorialConsensusRank: getEditorialConsensusRank(course),
+        editorialAverageRank: course.editorialAverageRank,
+        editorialGap: course.editorialGap,
         recentRank: recentRanks.get(course.id) ?? null,
         previousRank: priorRanks.get(course.id) ?? null
       })

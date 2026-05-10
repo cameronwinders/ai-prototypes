@@ -204,14 +204,13 @@ export function buildRankSignal(input: {
   normalizedScore: number;
   numSignals: number;
   numUniqueGolfers: number;
-  editorialConsensusRank: number | null;
+  editorialAverageRank: number | null;
+  editorialGap: number | null;
   recentRank: number | null;
   previousRank: number | null;
 }): RankSignalRecord | null {
   const trendDelta =
     input.recentRank && input.previousRank ? input.previousRank - input.recentRank : 0;
-  const editorialGap =
-    input.editorialConsensusRank !== null ? input.editorialConsensusRank - input.crowdRank : null;
 
   if (input.numSignals >= 12 && input.numUniqueGolfers >= 5 && trendDelta >= 5) {
     return {
@@ -229,8 +228,8 @@ export function buildRankSignal(input: {
     };
   }
 
-  if (editorialGap !== null) {
-    if (editorialGap >= 4) {
+  if (input.editorialGap !== null) {
+    if (input.editorialGap >= 4) {
       return {
         variant: "underrated",
         label: "Underrated",
@@ -238,7 +237,7 @@ export function buildRankSignal(input: {
       };
     }
 
-    if (editorialGap <= -4) {
+    if (input.editorialGap <= -4) {
       return {
         variant: "overrated",
         label: "Overrated",
@@ -251,9 +250,9 @@ export function buildRankSignal(input: {
     input.numUniqueGolfers <= 4 &&
     input.normalizedScore >= 84 &&
     input.crowdRank >= 10 &&
-    (input.editorialConsensusRank === null ||
-      input.editorialConsensusRank >= 25 ||
-      (editorialGap !== null && editorialGap >= 12))
+    (input.editorialAverageRank === null ||
+      input.editorialAverageRank >= 25 ||
+      (input.editorialGap !== null && input.editorialGap >= 12))
   ) {
     return {
       variant: "hidden-gem",
