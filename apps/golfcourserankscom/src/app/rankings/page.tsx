@@ -163,43 +163,46 @@ export default async function RankingsPage({
                         const isEditorial = entry.key === "editorial";
 
                         return (
-                          <div
-                            key={entry.key}
-                            className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-2.5 ${
-                              isCrowd
-                                ? "bg-[rgba(49,107,83,0.16)]"
-                                : isEditorial
-                                  ? "bg-[rgba(201,211,203,0.34)]"
-                                  : "bg-transparent"
-                            } ${
-                              index === MOBILE_RANK_STACK.length - 1 ? "" : "border-b border-[rgba(28,41,36,0.08)]"
-                            }`}
-                          >
-                            <div className="min-w-0">
-                              <span
-                                className={`block min-w-0 text-[11px] uppercase tracking-[0.14em] ${
-                                  isCrowd
-                                    ? "font-bold text-ink"
-                                    : isEditorial
-                                      ? "font-bold text-ink"
-                                      : "font-semibold text-muted"
-                                }`}
-                              >
-                                {entry.label}
-                              </span>
-                              {isEditorial ? (
-                                <div className="mt-1">
-                                  <GapBadge delta={course.editorialGap} />
-                                </div>
-                              ) : null}
-                            </div>
-                            <span
-                              className={`text-sm tracking-[-0.02em] text-ink ${
-                                isCrowd || isEditorial ? "font-bold" : "font-semibold"
+                          <div key={entry.key} className="contents">
+                            <div
+                              className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-2.5 ${
+                                isCrowd
+                                  ? "bg-[rgba(49,107,83,0.16)]"
+                                  : isEditorial
+                                    ? "bg-[rgba(201,211,203,0.34)]"
+                                    : "bg-transparent"
+                              } ${
+                                index === MOBILE_RANK_STACK.length - 1 && !isCrowd
+                                  ? ""
+                                  : "border-b border-[rgba(28,41,36,0.08)]"
                               }`}
                             >
-                              {value}
-                            </span>
+                              <div className="min-w-0">
+                                <span
+                                  className={`block min-w-0 text-[11px] uppercase tracking-[0.14em] ${
+                                    isCrowd
+                                      ? "font-bold text-ink"
+                                      : isEditorial
+                                        ? "font-bold text-ink"
+                                        : "font-semibold text-muted"
+                                  }`}
+                                >
+                                  {entry.label}
+                                </span>
+                              </div>
+                              <span
+                                className={`text-sm tracking-[-0.02em] text-ink ${
+                                  isCrowd || isEditorial ? "font-bold" : "font-semibold"
+                                }`}
+                              >
+                                {value}
+                              </span>
+                            </div>
+                            {isCrowd ? (
+                              <div className="border-b border-[rgba(28,41,36,0.08)] bg-[rgba(201,211,203,0.18)] px-3 py-2">
+                                <GapBadge delta={course.editorialGap} />
+                              </div>
+                            ) : null}
                           </div>
                         );
                       })}
