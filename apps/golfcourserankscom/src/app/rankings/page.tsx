@@ -213,7 +213,7 @@ export default async function RankingsPage({
             </div>
 
             <div className="hidden rounded-xl border border-line bg-white/90 lg:block">
-              <div className="grid grid-cols-[16%_27%_11%_12%_11%_11%_12%] border-b border-line bg-[rgba(255,255,255,0.98)] text-left text-xs font-semibold uppercase tracking-[0.18em] text-muted shadow-[0_1px_0_rgba(28,41,36,0.08)] backdrop-blur lg:sticky lg:top-[5.35rem] lg:z-20 xl:top-[5.6rem]">
+              <div className="grid grid-cols-[16%_27%_11%_12%_11%_11%_12%] border-b border-line bg-[rgba(255,255,255,0.98)] text-left text-xs font-semibold uppercase tracking-[0.18em] text-muted shadow-[0_1px_0_rgba(28,41,36,0.08)] backdrop-blur lg:sticky lg:top-[4.85rem] lg:z-20">
                 <div className="px-4 py-4" title="Crowd score = how golfers actually rank it.">
                   Crowd
                 </div>
