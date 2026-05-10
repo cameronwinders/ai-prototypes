@@ -142,7 +142,6 @@ export default async function RankingsPage({
                       <span className={`pill ${course.isEarly ? "pill-warning" : "pill-pine"} pill-sentence`}>
                         {course.isEarly ? "Starting score" : "Crowd score"} {formatCrowdScore(course.normalizedScore)}
                       </span>
-                      <GapBadge delta={course.editorialGap} />
                       {course.viewerPlayed ? <span className="pill pill-pine pill-sentence">Played by you</span> : null}
                       {course.rankSignal ? (
                         <div>
@@ -176,17 +175,24 @@ export default async function RankingsPage({
                               index === MOBILE_RANK_STACK.length - 1 ? "" : "border-b border-[rgba(28,41,36,0.08)]"
                             }`}
                           >
-                            <span
-                              className={`min-w-0 text-[11px] uppercase tracking-[0.14em] ${
-                                isCrowd
-                                  ? "font-bold text-ink"
-                                  : isEditorial
+                            <div className="min-w-0">
+                              <span
+                                className={`block min-w-0 text-[11px] uppercase tracking-[0.14em] ${
+                                  isCrowd
                                     ? "font-bold text-ink"
-                                    : "font-semibold text-muted"
-                              }`}
-                            >
-                              {entry.label}
-                            </span>
+                                    : isEditorial
+                                      ? "font-bold text-ink"
+                                      : "font-semibold text-muted"
+                                }`}
+                              >
+                                {entry.label}
+                              </span>
+                              {isEditorial ? (
+                                <div className="mt-1">
+                                  <GapBadge delta={course.editorialGap} />
+                                </div>
+                              ) : null}
+                            </div>
                             <span
                               className={`text-sm tracking-[-0.02em] text-ink ${
                                 isCrowd || isEditorial ? "font-bold" : "font-semibold"
