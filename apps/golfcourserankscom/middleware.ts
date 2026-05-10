@@ -1,11 +1,17 @@
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-import { updateSession } from "@/lib/supabase/middleware";
+export function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname !== "/leaderboard") {
+    return NextResponse.next();
+  }
 
-export async function middleware(request: NextRequest) {
-  return updateSession(request);
+  const url = request.nextUrl.clone();
+  url.pathname = "/rankings";
+
+  return NextResponse.redirect(url, 308);
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"]
+  matcher: ["/leaderboard"]
 };
