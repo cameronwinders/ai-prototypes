@@ -15,7 +15,9 @@ export function PlayedButton({
   iconClassName?: string;
 }) {
   return (
-    <span className={`inline-flex min-h-8 items-center justify-center gap-2 rounded-xs border border-ink bg-ink px-3 py-1.5 text-[13px] font-semibold text-[var(--linen)] shadow-[0_1px_0_rgba(255,255,255,0.08)_inset,0_1px_2px_rgba(18,28,25,0.08)] ${className}`}>
+    <span
+      className={`inline-flex min-h-8 items-center justify-center gap-2 rounded-xs border border-[rgba(49,107,83,0.32)] bg-pine-soft px-3 py-1.5 text-[13px] font-semibold text-pine shadow-[0_1px_0_rgba(255,255,255,0.08)_inset,0_1px_2px_rgba(18,28,25,0.08)] ${className}`}
+    >
       <PlayedMarkIcon className={iconClassName} />
       <span>{children}</span>
     </span>
