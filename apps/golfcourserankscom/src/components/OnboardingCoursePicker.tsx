@@ -72,10 +72,10 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
 
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-3xl">
-          <p className="eyebrow">STEP 2 OF 2</p>
+          <p className="eyebrow">STEP 2 OF 3</p>
           <h2 className="h3 mt-4">Pick the public courses you have already played</h2>
           <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
-            Pick 5 to 15 to get the most out of ranking. We will save them as played first, then bring you straight into your list.
+            Pick 5 to 15 to get the most out of ranking. We will save them as played first, then ask for an optional name before your list opens.
           </p>
           <p className="mt-2 text-sm leading-7 text-[var(--muted)]">
             Rank the courses based on which were your overall favorite to play.
@@ -177,7 +177,7 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
               Continue with {selectedIds.length} {selectedIds.length === 1 ? "course" : "courses"} {"\u2192"}
             </p>
             <p className="mt-1 text-sm text-[var(--muted)]">
-              Pick 5 to 15 to get the most out of ranking, then order them by your overall favorite to play.
+              Pick 5 to 15 to get the most out of ranking, then add your name if you want before ordering them by your overall favorite to play.
             </p>
           </div>
           <button

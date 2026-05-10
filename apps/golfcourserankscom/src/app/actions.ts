@@ -115,8 +115,7 @@ export async function completeOnboarding(formData: FormData) {
   const result = await admin
     .from("users")
     .update({
-      handicap_band: handicapBandValue,
-      onboarding_completed: true
+      handicap_band: handicapBandValue
     })
     .eq("id", viewer.user!.id);
 
@@ -124,13 +123,6 @@ export async function completeOnboarding(formData: FormData) {
     redirect(`/onboarding?next=${encodeURIComponent(next)}&error=${encodeURIComponent(result.error.message)}`);
   }
 
-  await logAnalyticsEvent({
-    userId: viewer.user!.id,
-    eventName: "signup_completed",
-    payload: {
-      handicap_band: handicapBandValue
-    }
-  });
   revalidateApp(viewer.profile?.handle);
   redirect(`/onboarding?step=picker&next=${encodeURIComponent(next.startsWith("/") ? next : "/rankings")}`);
 }
@@ -181,7 +173,46 @@ export async function completeOnboardingCourseSelection(formData: FormData) {
   });
 
   revalidateApp(viewer.profile?.handle);
-  redirect(next.startsWith("/") ? next : "/me/courses");
+  redirect(
+    `/onboarding?step=name&next=${encodeURIComponent(next.startsWith("/") ? next : "/me/courses")}`
+  );
+}
+
+export async function completeOnboardingNameStep(formData: FormData) {
+  const next = typeof formData.get("next") === "string" ? String(formData.get("next")) : "/rankings";
+  const firstName = String(formData.get("first_name") ?? "").trim();
+  const lastName = String(formData.get("last_name") ?? "").trim();
+  const viewer = await requireViewer("/onboarding");
+  const admin = createAdminClient();
+  const displayName = [firstName, lastName].filter(Boolean).join(" ").trim();
+  const updatePayload: {
+    onboarding_completed: boolean;
+    display_name?: string;
+  } = {
+    onboarding_completed: true
+  };
+
+  if (displayName) {
+    updatePayload.display_name = displayName;
+  }
+
+  const result = await admin.from("users").update(updatePayload).eq("id", viewer.user!.id);
+
+  if (result.error) {
+    redirect(`/onboarding?step=name&next=${encodeURIComponent(next)}&error=${encodeURIComponent(result.error.message)}`);
+  }
+
+  await logAnalyticsEvent({
+    userId: viewer.user!.id,
+    eventName: "signup_completed",
+    payload: {
+      handicap_band: viewer.profile?.handicap_band ?? null,
+      name_provided: Boolean(displayName)
+    }
+  });
+
+  revalidateApp(viewer.profile?.handle);
+  redirect(next.startsWith("/") ? next : "/rankings");
 }
 
 export async function signOut() {

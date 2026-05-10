@@ -82,7 +82,7 @@ export function SignInForm() {
 
       <p className="text-sm leading-7 text-[var(--muted)]">
         {mode === "sign-up"
-          ? "We will help you set your handicap band after the link opens so you can start ranking right away."
+          ? "We will help you set your handicap band, pick the courses you have played, and optionally add your name before your rankings open."
           : "We will email a secure sign-in link and bring you back to the page you started from."}
       </p>
 

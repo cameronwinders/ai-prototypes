@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { completeOnboarding } from "@/app/actions";
+import { completeOnboarding, completeOnboardingNameStep } from "@/app/actions";
 import { OnboardingCoursePicker } from "@/components/OnboardingCoursePicker";
 import { getAllCourses, getPlayedCoursesForUser } from "@/lib/data";
 import { HANDICAP_OPTIONS } from "@/lib/types";
@@ -20,11 +20,76 @@ export default async function OnboardingPage({
   const step = Array.isArray(stepParam) ? stepParam[0] : stepParam ?? "handicap";
   const error = Array.isArray(errorParam) ? errorParam[0] : errorParam;
   const playedCourses = viewer.user ? await getPlayedCoursesForUser(viewer.user.id) : [];
-  const hasHandicap = Boolean(viewer.profile?.onboarding_completed && viewer.profile?.handicap_band);
+  const hasHandicap = Boolean(viewer.profile?.handicap_band);
+  const isCompleted = Boolean(viewer.profile?.onboarding_completed && viewer.profile?.handicap_band);
   const shouldShowPicker = hasHandicap && playedCourses.length === 0;
+  const shouldShowNameStep = hasHandicap && playedCourses.length > 0 && !viewer.profile?.onboarding_completed;
 
-  if (hasHandicap && playedCourses.length > 0) {
+  if (isCompleted) {
     redirect(next.startsWith("/") ? next : "/rankings");
+  }
+
+  if (step === "name" && !hasHandicap) {
+    redirect(`/onboarding?next=${encodeURIComponent(next)}`);
+  }
+
+  if (step === "name" && playedCourses.length === 0) {
+    redirect(`/onboarding?step=picker&next=${encodeURIComponent(next)}`);
+  }
+
+  if (shouldShowNameStep || step === "name") {
+    return (
+      <div className="mx-auto max-w-3xl">
+        <section className="shell-panel p-6 sm:p-8">
+          <p className="eyebrow">STEP 3 OF 3</p>
+          <h1 className="h2 mt-4">Add your name if you want it on your list</h1>
+          <p className="subhed mt-4">
+            This part is optional. If you skip it, we will keep using the current name based on your email address.
+          </p>
+
+          {error ? (
+            <div className="mt-6 pill pill-warning pill-sentence">{error}</div>
+          ) : null}
+
+          <form action={completeOnboardingNameStep} className="mt-8 space-y-5">
+            <input type="hidden" name="next" value={next} />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="block text-sm font-medium text-[var(--ink)]">
+                First name
+                <input
+                  type="text"
+                  name="first_name"
+                  placeholder="Optional"
+                  className="mt-2 min-w-0 w-full rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-3 text-sm text-[var(--ink)] outline-none transition focus:border-[rgba(49,107,83,0.45)]"
+                />
+              </label>
+              <label className="block text-sm font-medium text-[var(--ink)]">
+                Last name
+                <input
+                  type="text"
+                  name="last_name"
+                  placeholder="Optional"
+                  className="mt-2 min-w-0 w-full rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-3 text-sm text-[var(--ink)] outline-none transition focus:border-[rgba(49,107,83,0.45)]"
+                />
+              </label>
+            </div>
+
+            <p className="text-sm leading-7 text-[var(--muted)]">
+              Adding your name helps friends recognize your rankings faster, but you can skip this and keep moving.
+            </p>
+
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <button type="submit" className="solid-button">
+                Finish setup
+              </button>
+              <button type="submit" className="ghost-button">
+                Skip for now
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
+    );
   }
 
   if (shouldShowPicker || step === "picker") {
@@ -36,10 +101,10 @@ export default async function OnboardingPage({
           <p className="eyebrow">FIRST RANKING SETUP</p>
           <h1 className="h2 mt-4">Start with the courses you already know</h1>
           <p className="subhed mt-4">
-            Save the rounds you have played first, then drag the best ones into order.
+            Save the rounds you have played first, then add your name if you want before ranking them.
           </p>
           <div className="mt-8">
-            <OnboardingCoursePicker courses={courses} next="/me/courses" error={error} />
+            <OnboardingCoursePicker courses={courses} next={next.startsWith("/") ? next : "/rankings"} error={error} />
           </div>
         </section>
       </div>
