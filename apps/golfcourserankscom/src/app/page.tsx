@@ -1,9 +1,32 @@
 import Link from "next/link";
 
-import { CourseRow } from "@/components/CourseRow";
+import { AvatarStack } from "@/components/InitialsAvatar";
 import { getLeaderboardCourses } from "@/lib/data";
-import { formatRankPosition } from "@/lib/ranking";
+import { EDITORIAL_LISTS } from "@/lib/types";
+import { formatCrowdScore, formatLocation, formatRankPosition, getRankDeltaDisplay } from "@/lib/ranking";
 import { getViewerContext } from "@/lib/viewer";
+
+function GapBadge({ delta }: { delta: number | null }) {
+  const display = getRankDeltaDisplay(delta);
+
+  if (!display) {
+    return <span className="pill pill-line pill-sentence">No editorial average</span>;
+  }
+
+  const isUp = display.direction === "up";
+  const isFlat = display.direction === "flat";
+
+  return (
+    <span
+      className={`pill pill-sentence ${
+        isFlat ? "pill-line" : isUp ? "pill-pine" : "pill-warning"
+      }`}
+      title={display.label}
+    >
+      {isFlat ? "All Square" : `${display.value} ${isUp ? "Up" : "Down"}`}
+    </span>
+  );
+}
 
 function RankingsPreview({
   title,
@@ -33,10 +56,167 @@ function RankingsPreview({
         </Link>
       </div>
 
-        <div className="mt-6 grid gap-3">
+      <div className="mt-6 grid gap-3 lg:hidden">
         {courses.map((course) => (
-          <CourseRow key={course.id} course={course} href={`/courses/${course.id}`} actionLabel="" />
+          <Link
+            key={course.id}
+            href={`/courses/${course.id}`}
+            className="block rounded-lg border border-line bg-white/92 p-4 transition-[background-color,transform] duration-150 hover:-translate-y-px hover:bg-white"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <div className="flex items-start gap-3">
+                  <span className="pill pill-pine">#{course.leaderboardRank}</span>
+                  <div className="min-w-0">
+                    <h3 className="text-[1.65rem] font-semibold leading-[1.02] tracking-[var(--tracking-tight)] text-ink [overflow-wrap:anywhere]">
+                      {course.name}
+                    </h3>
+                    <p className="meta mt-2">{formatLocation(course)}</p>
+                    {course.friendPlayers?.length ? (
+                      <div className="mt-3 flex flex-wrap items-center gap-2">
+                        <span className="meta">Friends played</span>
+                        <AvatarStack people={course.friendPlayers} size="sm" max={3} />
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+              <span className="shrink-0 pt-1 text-lg text-muted" aria-hidden="true">
+                &gt;
+              </span>
+            </div>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-[minmax(0,1fr)_10.5rem]">
+              <div className="min-w-0 space-y-3">
+                <span className={`pill ${course.isEarly ? "pill-warning" : "pill-pine"} pill-sentence`}>
+                  {course.isEarly ? "Starting score" : "Crowd score"} {formatCrowdScore(course.normalizedScore)}
+                </span>
+              </div>
+
+              <div className="overflow-hidden rounded-md border border-line bg-[rgba(246,243,236,0.92)]">
+                {[
+                  { key: "crowd", label: "Crowd" },
+                  { key: "editorial", label: "Editorial avg" },
+                  { key: "golf-top-100", label: "GOLF.com" },
+                  { key: "golf-digest-public", label: "Golf Digest" },
+                  { key: "golfweek-you-can-play", label: "Golfweek" }
+                ].map((entry, index) => {
+                  const isCrowd = entry.key === "crowd";
+                  const isEditorial = entry.key === "editorial";
+                  const value =
+                    entry.key === "crowd"
+                      ? formatRankPosition(course.leaderboardRank)
+                      : entry.key === "editorial"
+                        ? formatRankPosition(course.editorialAverageRank)
+                        : formatRankPosition(course.editorialRanks?.[entry.key as keyof typeof course.editorialRanks]);
+
+                  return (
+                    <div
+                      key={entry.key}
+                      className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-2.5 ${
+                        isCrowd
+                          ? "bg-[rgba(49,107,83,0.16)]"
+                          : isEditorial
+                            ? "bg-[rgba(201,211,203,0.34)]"
+                            : "bg-transparent"
+                      } ${index === 4 ? "" : "border-b border-[rgba(28,41,36,0.08)]"}`}
+                    >
+                      <div className="min-w-0">
+                        <span
+                          className={`block min-w-0 text-[11px] uppercase tracking-[0.14em] ${
+                            isCrowd || isEditorial ? "font-bold text-ink" : "font-semibold text-muted"
+                          }`}
+                        >
+                          {entry.label}
+                        </span>
+                        {isEditorial ? (
+                          <div className="mt-1">
+                            <GapBadge delta={course.editorialGap} />
+                          </div>
+                        ) : null}
+                      </div>
+                      <span
+                        className={`text-sm tracking-[-0.02em] text-ink ${
+                          isCrowd || isEditorial ? "font-bold" : "font-semibold"
+                        }`}
+                      >
+                        {value}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </Link>
         ))}
+      </div>
+
+      <div className="mt-6 hidden overflow-hidden rounded-xl border border-line bg-white/90 lg:block">
+        <table className="w-full table-fixed">
+          <colgroup>
+            <col className="w-[16%]" />
+            <col className="w-[27%]" />
+            <col className="w-[11%]" />
+            <col className="w-[12%]" />
+            <col className="w-[11%]" />
+            <col className="w-[11%]" />
+            <col className="w-[12%]" />
+          </colgroup>
+          <thead>
+            <tr className="border-b border-line bg-[rgba(255,255,255,0.98)] text-left text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+              <th className="px-4 py-4">Crowd</th>
+              <th className="px-4 py-4">Course</th>
+              <th className="px-4 py-4">Editorial avg</th>
+              <th className="px-4 py-4">Crowd vs editorial</th>
+              {EDITORIAL_LISTS.map((editorial) => (
+                <th key={editorial.key} className="px-4 py-4">
+                  {editorial.label}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {courses.map((course) => (
+              <tr key={course.id} className="border-b border-line last:border-b-0">
+                <td className="px-4 py-5 align-top">
+                  <Link href={`/courses/${course.id}`} className="block min-w-0">
+                    <div className="font-display text-[2.2rem] font-semibold tracking-[var(--tracking-tighter)] text-ink">
+                      #{course.leaderboardRank}
+                    </div>
+                    <div className={`mt-2 inline-flex ${course.isEarly ? "pill pill-warning" : "pill pill-pine"} pill-sentence`}>
+                      {course.isEarly ? "Starting score" : "Crowd score"} {formatCrowdScore(course.normalizedScore)}
+                    </div>
+                    {course.friendPlayers?.length ? (
+                      <div className="mt-3 flex items-center gap-2">
+                        <AvatarStack people={course.friendPlayers} size="sm" max={3} />
+                        <span className="text-xs uppercase tracking-[0.12em] text-muted">Friends played</span>
+                      </div>
+                    ) : null}
+                  </Link>
+                </td>
+                <td className="px-4 py-5 align-top">
+                  <Link href={`/courses/${course.id}`} className="block">
+                    <h3 className="text-[1.28rem] font-semibold tracking-[var(--tracking-tight)] text-ink">{course.name}</h3>
+                    <p className="meta mt-1">{formatLocation(course)}</p>
+                  </Link>
+                </td>
+                <td className="px-4 py-5 align-top">
+                  <div className="text-base font-semibold text-ink">{formatRankPosition(course.editorialAverageRank)}</div>
+                </td>
+                <td className="px-4 py-5 align-top">
+                  <GapBadge delta={course.editorialGap} />
+                </td>
+                {EDITORIAL_LISTS.map((editorial) => (
+                  <td key={editorial.key} className="px-4 py-5 align-top">
+                    <div className="text-base font-semibold text-ink">
+                      {formatRankPosition(course.editorialRanks?.[editorial.key])}
+                    </div>
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       <div className="mt-6">
@@ -48,72 +228,11 @@ function RankingsPreview({
   );
 }
 
-function GolfDigestPreview({
-  courses
-}: {
-  courses: Awaited<ReturnType<typeof getLeaderboardCourses>>;
-}) {
-  return (
-    <section className="shell-panel shell-panel-contrast p-6">
-      <div className="max-w-3xl">
-        <h2 className="h2 text-[1.85rem] text-ink">Golf Digest rankings</h2>
-        <p className="subhed mt-3">
-          The same public courses, sorted by Golf Digest, so you can compare the media board against the crowd board.
-        </p>
-      </div>
-
-      <div className="mt-6 grid gap-3">
-        {courses.map((course) => (
-          <Link
-            key={course.id}
-            href={`/courses/${course.id}`}
-            className="block rounded-md border border-line bg-white/92 p-4 transition-[background-color,transform] duration-150 hover:-translate-y-px hover:bg-white"
-          >
-            <div className="grid gap-4 md:grid-cols-[92px_minmax(0,1.6fr)_minmax(0,1.1fr)_auto] md:items-center">
-              <div className="font-display text-[2rem] font-semibold tracking-[var(--tracking-tighter)] text-ink">
-                {formatRankPosition(course.editorialRanks?.["golf-digest-public"])}
-              </div>
-
-              <div className="min-w-0">
-                <h3 className="text-[1.2rem] font-semibold tracking-[var(--tracking-tight)] text-ink">{course.name}</h3>
-                <p className="meta mt-1">
-                  {course.city}, {course.state}
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <span className="pill pill-line">Crowd {formatRankPosition(course.leaderboardRank)}</span>
-                <span className="pill pill-line">Editorial avg {formatRankPosition(course.editorialAverageRank)}</span>
-                {course.editorialRanks?.["golf-top-100"] ? (
-                  <span className="pill pill-line">GOLF.com {formatRankPosition(course.editorialRanks["golf-top-100"])}</span>
-                ) : null}
-                {course.editorialRanks?.["golfweek-you-can-play"] ? (
-                  <span className="pill pill-line">
-                    Golfweek {formatRankPosition(course.editorialRanks["golfweek-you-can-play"])}
-                  </span>
-                ) : null}
-              </div>
-
-              <div className="text-left text-sm text-muted md:text-right">Golf Digest board</div>
-            </div>
-          </Link>
-        ))}
-      </div>
-
-      <div className="mt-6">
-        <Link href="/rankings?sort=golf-digest-public" className="solid-button min-h-11">
-          Open Golf Digest board
-        </Link>
-      </div>
-    </section>
-  );
-}
-
 export default async function HomePage() {
   const viewer = await getViewerContext();
   const [crowdBoard, golfDigestBoard] = await Promise.all([
-    getLeaderboardCourses({ limit: 3 }),
-    getLeaderboardCourses({ limit: 3, sort: "golf-digest-public" })
+    getLeaderboardCourses({ limit: 5 }),
+    getLeaderboardCourses({ limit: 5, sort: "golf-digest-public" })
   ]);
 
   return (
@@ -128,14 +247,14 @@ export default async function HomePage() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-start gap-3">
+            <Link href="/rankings" className="solid-button min-h-11">
+              Explore overall rankings
+            </Link>
             <Link
               href={viewer.user ? (viewer.profile?.onboarding_completed ? "/me/courses" : "/onboarding") : "/sign-in?next=/me/courses"}
-              className="solid-button min-h-11"
+              className="ghost-button min-h-11"
             >
               {viewer.user ? "Rank my courses" : "Start ranking"}
-            </Link>
-            <Link href="/rankings" className="ghost-button min-h-11">
-              Explore overall rankings
             </Link>
             <Link
               href={viewer.user ? "/friends" : "/sign-in?next=/friends"}
@@ -197,7 +316,13 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <GolfDigestPreview courses={golfDigestBoard} />
+      <RankingsPreview
+        title="Golf Digest rankings"
+        subhed="The same public courses, sorted by Golf Digest, so you can compare the media board directly against the crowd board."
+        courses={golfDigestBoard}
+        href="/rankings?sort=golf-digest-public"
+        cta="Open Golf Digest board"
+      />
     </div>
   );
 }
