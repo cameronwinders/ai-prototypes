@@ -1194,15 +1194,17 @@ export async function getPublicProfileOverview(
         friendsCount: 0
       },
       topCourses: [],
+      wishlistCourses: [],
       canCompare: false,
       visibilityState
     };
   }
 
   const admin = createAdminClient();
-  const [played, ranked, friendsData, pairwiseCount] = await Promise.all([
+  const [played, ranked, wishlistCourses, friendsData, pairwiseCount] = await Promise.all([
     getPlayedCoursesForUser(profile.id),
     getRankedCoursesForUser(profile.id),
+    getWishlistCoursesForUser(profile.id),
     getFriendsPageData(profile.id),
     admin
       .from("pairwise_signals")
@@ -1224,6 +1226,7 @@ export async function getPublicProfileOverview(
       friendsCount: friendsData.accepted.length
     },
     topCourses: ranked.slice(0, 10),
+    wishlistCourses,
     canCompare: Boolean(viewerId && viewerId !== profile.id && friendship?.status !== "accepted"),
     visibilityState
   };

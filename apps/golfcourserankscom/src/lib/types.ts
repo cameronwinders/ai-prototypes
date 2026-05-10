@@ -256,6 +256,7 @@ export type PublicProfileOverview = {
     friendsCount: number;
   };
   topCourses: RankedCourse[];
+  wishlistCourses: WishlistCourse[];
   canCompare: boolean;
   visibilityState: "visible" | "friends_only" | "private" | "not_found";
 };

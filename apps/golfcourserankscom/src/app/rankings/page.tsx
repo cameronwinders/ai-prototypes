@@ -3,9 +3,11 @@ import Link from "next/link";
 import { AvatarStack } from "@/components/InitialsAvatar";
 import { LeaderboardFilterPanel } from "@/components/LeaderboardFilterPanel";
 import { RankSignal } from "@/components/RankSignal";
+import { ShareButton } from "@/components/ShareButton";
 import { getLeaderboardCourses } from "@/lib/data";
 import { formatCrowdScore, formatLocation, formatRankPosition, getRankDeltaDisplay } from "@/lib/ranking";
 import { EDITORIAL_LISTS, HANDICAP_OPTIONS, RANK_SIGNAL_OPTIONS, type RankSignalFilter } from "@/lib/types";
+import { getSiteUrl } from "@/lib/supabase/env";
 import { getViewerContext } from "@/lib/viewer";
 
 const SORT_OPTIONS = [
@@ -69,6 +71,7 @@ export default async function RankingsPage({
       ? (tagParam as RankSignalFilter)
       : "all";
   const viewer = await getViewerContext();
+  const rankingsUrl = `${getSiteUrl()}/rankings?utm_source=share&utm_medium=overall_rankings&utm_campaign=rankings_share`;
 
   const band = HANDICAP_OPTIONS.includes(bandParam as (typeof HANDICAP_OPTIONS)[number])
     ? (bandParam as (typeof HANDICAP_OPTIONS)[number])
@@ -92,11 +95,21 @@ export default async function RankingsPage({
   return (
     <section className="shell-panel shell-panel-contrast p-6 sm:p-8">
       <div className="flex flex-col gap-5">
-        <div className="flex flex-col gap-3">
-          <h1 className="h2 text-[2rem] text-ink sm:text-[2.3rem]">National Rankings</h1>
-          <p className="subhed max-w-3xl">
-            Use "Sort by" to see crowd rankings, golf media rankings, or where they differ most.
-          </p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="h2 text-[2rem] text-ink sm:text-[2.3rem]">National Rankings</h1>
+            <p className="subhed max-w-3xl">
+              Use "Sort by" to see crowd rankings, golf media rankings, or where they differ most.
+            </p>
+          </div>
+          <ShareButton
+            title="Golf Course Ranks Overall Rankings"
+            text="Compare the crowd board with Golf Digest, GOLF.com, and Golfweek on Golf Course Ranks."
+            url={rankingsUrl}
+            className="ghost-button min-h-11 shrink-0"
+            analyticsSurface="rankings-page"
+            buttonChildren="Share rankings"
+          />
         </div>
 
         <LeaderboardFilterPanel sort={sort} />

@@ -90,7 +90,7 @@ export default async function FriendsPage() {
         <p className="eyebrow">FRIENDS</p>
         <h1 className="h2 mt-4">Follow golf friends and compare your lists</h1>
         <p className="subhed mt-4">
-          Share an invite link, find golfers by handle or email, and unlock overlap-only comparisons.
+          Share an invite link, let golfers auto-connect when they join through it, and unlock overlap-only comparisons.
         </p>
       </section>
 

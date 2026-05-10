@@ -46,11 +46,14 @@ export async function generateMetadata({
 }
 
 export default async function PublicProfilePage({
-  params
+  params,
+  searchParams
 }: {
   params: Promise<{ handle: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { handle } = await params;
+  const query = await searchParams;
   const viewer = await getViewerContext();
   const overview = await getPublicProfileOverview(handle, viewer.user?.id ?? null);
 
@@ -59,6 +62,10 @@ export default async function PublicProfilePage({
   }
 
   const profileUrl = `${getSiteUrl()}/u/${overview.profile.handle}`;
+  const wishlistUrl = `${profileUrl}?view=wishlist#wishlist`;
+  const requestedViewParam = query.view;
+  const requestedView = Array.isArray(requestedViewParam) ? requestedViewParam[0] : requestedViewParam;
+  const showWishlistFirst = requestedView === "wishlist";
 
   if (overview.visibilityState === "visible") {
     await logAnalyticsEvent({
@@ -78,6 +85,109 @@ export default async function PublicProfilePage({
       : null,
     overview.profile.home_state || null
   ].filter(Boolean);
+  const isOwnProfile = viewer.user?.id === overview.profile.id;
+  const friendActionHref = viewer.user
+    ? `/invite/${overview.profile.handle}?accept=1`
+    : `/sign-in?next=${encodeURIComponent(`/invite/${overview.profile.handle}?accept=1`)}`;
+  const primaryAction = isOwnProfile
+    ? (
+      <Link href="/friends" className="solid-button">
+        Invite friends
+      </Link>
+    )
+    : overview.canCompare
+      ? (
+        <Link href={friendActionHref} className="solid-button">
+          Add as friend
+        </Link>
+      )
+      : viewer.user
+        ? (
+          <Link href={`/compare/${overview.profile.handle}`} className="solid-button">
+            Compare lists
+          </Link>
+        )
+        : (
+          <Link href={friendActionHref} className="solid-button">
+            Add as friend
+          </Link>
+        );
+  const topTenSection = (
+    <section id="rankings" className="shell-panel p-6">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="eyebrow">TOP 10</p>
+          <h2 className="h3 mt-4">The courses this golfer keeps highest</h2>
+        </div>
+      </div>
+
+      {overview.topCourses.length === 0 ? (
+        <div className="mt-5 rounded-[var(--radius-lg)] border border-dashed border-[var(--line)] px-5 py-8 text-sm leading-7 text-[var(--muted)]">
+          No ranked courses are public yet. Check back after this golfer finishes their first stack.
+        </div>
+      ) : (
+        <div className="mt-5 grid gap-3">
+          {overview.topCourses.map((course) => (
+            <Link
+              key={course.id}
+              href={`/courses/${course.id}`}
+              className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4 transition hover:-translate-y-px hover:bg-white"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-start gap-4">
+                  <span className="pill pill-pine shrink-0">#{course.rankPosition + 1}</span>
+                  <div>
+                    <h3 className="h3 text-[1.2rem]">{course.name}</h3>
+                    <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
+                  </div>
+                </div>
+                <span className="pill pill-line pill-sentence">Personal rank #{course.rankPosition + 1}</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+  const wishlistSection = (
+    <section id="wishlist" className="shell-panel p-6">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="eyebrow">WISH LIST</p>
+          <h2 className="h3 mt-4">The public courses this golfer wants to play next</h2>
+        </div>
+      </div>
+
+      {overview.wishlistCourses.length === 0 ? (
+        <div className="mt-5 rounded-[var(--radius-lg)] border border-dashed border-[var(--line)] px-5 py-8 text-sm leading-7 text-[var(--muted)]">
+          No public wish-list courses are shared yet.
+        </div>
+      ) : (
+        <div className="mt-5 grid gap-3">
+          {overview.wishlistCourses.map((course) => (
+            <Link
+              key={course.id}
+              href={`/courses/${course.id}`}
+              className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4 transition hover:-translate-y-px hover:bg-white"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-start gap-4">
+                  {course.leaderboard_rank ? (
+                    <span className="pill pill-pine shrink-0">#{course.leaderboard_rank}</span>
+                  ) : null}
+                  <div>
+                    <h3 className="h3 text-[1.2rem]">{course.name}</h3>
+                    <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
+                  </div>
+                </div>
+                <span className="pill pill-line pill-sentence">Wish list</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </section>
+  );
 
   return (
     <div className="space-y-6">
@@ -94,19 +204,15 @@ export default async function PublicProfilePage({
         <p className="subhed mt-4">{profileMeta.join(" | ")}</p>
 
         <div className="mt-6 flex flex-wrap gap-3">
+          {primaryAction}
           <ShareButton
             title={`${overview.profile.display_name ?? overview.profile.handle} on Golf Course Ranks`}
             text="Check out this public-course ranking profile on Golf Course Ranks."
             url={profileUrl}
-            className="solid-button"
+            className="ghost-button"
             analyticsSurface="public-profile"
-            buttonChildren="Copy profile link"
+            buttonChildren="Share profile"
           />
-          {overview.canCompare ? (
-            <Link href={`/invite/${overview.profile.handle}`} className="ghost-button">
-              Compare lists with {overview.profile.display_name ?? overview.profile.handle}
-            </Link>
-          ) : null}
         </div>
       </section>
 
@@ -150,41 +256,8 @@ export default async function PublicProfilePage({
             ))}
           </section>
 
-          <section className="shell-panel p-6">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <p className="eyebrow">TOP 10</p>
-                <h2 className="h3 mt-4">The courses this golfer keeps highest</h2>
-              </div>
-            </div>
-
-            {overview.topCourses.length === 0 ? (
-              <div className="mt-5 rounded-[var(--radius-lg)] border border-dashed border-[var(--line)] px-5 py-8 text-sm leading-7 text-[var(--muted)]">
-                No ranked courses are public yet. Check back after this golfer finishes their first stack.
-              </div>
-            ) : (
-              <div className="mt-5 grid gap-3">
-                {overview.topCourses.map((course) => (
-                  <Link
-                    key={course.id}
-                    href={`/courses/${course.id}`}
-                    className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4 transition hover:-translate-y-px hover:bg-white"
-                  >
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div className="flex items-start gap-4">
-                        <span className="pill pill-pine shrink-0">#{course.rankPosition + 1}</span>
-                        <div>
-                          <h3 className="h3 text-[1.2rem]">{course.name}</h3>
-                          <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
-                        </div>
-                      </div>
-                      <span className="pill pill-line pill-sentence">Personal rank #{course.rankPosition + 1}</span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </section>
+          {showWishlistFirst ? wishlistSection : topTenSection}
+          {showWishlistFirst ? topTenSection : wishlistSection}
         </>
       )}
     </div>

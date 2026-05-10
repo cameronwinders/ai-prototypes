@@ -5,14 +5,18 @@ import Link from "next/link";
 
 import { setCoursePlayed, setCourseWishlisted } from "@/app/actions";
 import { WantToPlayButton } from "@/components/PlayActions";
+import { ShareButton } from "@/components/ShareButton";
 import { formatLocation } from "@/lib/ranking";
 import type { WishlistCourse } from "@/lib/types";
 
 type WishlistManagerProps = {
   initialCourses: WishlistCourse[];
+  siteUrl: string;
+  viewerHandle: string;
+  inviteUrl: string;
 };
 
-export function WishlistManager({ initialCourses }: WishlistManagerProps) {
+export function WishlistManager({ initialCourses, siteUrl, viewerHandle, inviteUrl }: WishlistManagerProps) {
   const [courses, setCourses] = useState(initialCourses);
   const [busyCourseId, setBusyCourseId] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
@@ -58,6 +62,22 @@ export function WishlistManager({ initialCourses }: WishlistManagerProps) {
           </p>
           <div className="flex flex-wrap gap-3">
             <span className="pill pill-pine pill-sentence">{courses.length} saved for later</span>
+            <ShareButton
+              title="Share my Golf Course wish list"
+              text="These are the public courses I want to play next on Golf Course Ranks."
+              url={`${siteUrl}/u/${viewerHandle}?view=wishlist&utm_source=share&utm_medium=wishlist&utm_campaign=user_share#wishlist`}
+              className="ghost-button"
+              analyticsSurface="wishlist-share"
+              buttonChildren="Share my wish list"
+            />
+            <ShareButton
+              title="Join me on Golf Course Ranks"
+              text="Compare your public-course rankings and wish list with mine on Golf Course Ranks."
+              url={inviteUrl}
+              className="ghost-button"
+              analyticsSurface="wishlist-invite"
+              buttonChildren="Invite friends"
+            />
             <Link href="/courses" className="ghost-button">
               Browse more courses
             </Link>

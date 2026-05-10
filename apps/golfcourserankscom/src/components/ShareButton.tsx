@@ -156,14 +156,14 @@ export function ShareButton({
       {status && !hideStatus ? <p className="mt-2 text-sm text-muted">{status}</p> : null}
 
       {open ? (
-        <div className="fixed inset-0 z-[70]">
+        <div className="fixed inset-0 z-[70] flex items-end justify-center p-3 sm:items-center sm:p-5">
           <button
             type="button"
             aria-label="Close share"
             className="absolute inset-0 bg-[rgba(18,28,25,0.36)]"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute inset-x-3 bottom-3 rounded-lg border border-line bg-white shadow-[0_24px_60px_rgba(18,28,25,0.18)] sm:inset-y-0 sm:right-3 sm:left-auto sm:my-auto sm:w-[29rem] sm:h-fit">
+          <div className="relative z-[71] max-h-[calc(100vh-1.5rem)] w-full max-w-[34rem] overflow-y-auto rounded-lg border border-line bg-white shadow-[0_24px_60px_rgba(18,28,25,0.18)]">
             <div className="flex items-center justify-between border-b border-line px-5 py-4">
               <span className="eyebrow">SHARE</span>
               <button type="button" aria-label="Close share" onClick={() => setOpen(false)} className="ghost-button sm">
@@ -188,7 +188,7 @@ export function ShareButton({
             </div>
 
             <div className="px-5 pb-4">
-              <div className="flex items-center gap-2 rounded-xs border border-line bg-linen-warm px-3 py-2">
+              <div className="flex flex-col gap-2 rounded-xs border border-line bg-linen-warm px-3 py-2 sm:flex-row sm:items-center">
                 <span className="min-w-0 flex-1 truncate font-mono text-[0.78rem] text-muted">{url}</span>
                 <button type="button" onClick={handleCopy} className={copied ? "ghost-button sm" : "solid-button sm"}>
                   {copied ? "Copied" : "Copy link"}

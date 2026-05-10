@@ -151,7 +151,7 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle }: Friends
           <p className="eyebrow">SHARE YOUR INVITE LINK</p>
           <h2 className="h3 mt-4">Send one link and start comparing lists</h2>
           <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
-            Your personal invite route is permanent, mobile-friendly, and easy to drop into a group chat.
+            Your personal invite route is permanent, mobile-friendly, and easy to drop into a group chat. When a golfer opens it, signs up, and finishes onboarding, you become friends automatically.
           </p>
 
           <div className="shell-panel-contrast mt-5 p-4">
@@ -160,11 +160,11 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle }: Friends
           </div>
 
           <div className="mt-5 grid gap-3 sm:flex sm:flex-wrap">
-            <button type="button" onClick={handleCopyLink} className="solid-button justify-center">
-              Copy link
+            <button type="button" onClick={handleShareLink} disabled={sharing} className="solid-button justify-center">
+              {sharing ? "Inviting..." : "Invite a friend"}
             </button>
-            <button type="button" onClick={handleShareLink} disabled={sharing} className="ghost-button justify-center">
-              {sharing ? "Sharing..." : "Share link"}
+            <button type="button" onClick={handleCopyLink} className="ghost-button justify-center">
+              Copy invite link
             </button>
             <Link href={`/u/${viewerHandle}`} className="ghost-button justify-center">
               Open my public profile

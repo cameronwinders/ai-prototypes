@@ -15,6 +15,7 @@ type MyCoursesManagerProps = {
   allCourses: CourseRecord[];
   siteUrl: string;
   viewerHandle: string;
+  inviteUrl: string;
 };
 
 type DragState = {
@@ -88,7 +89,8 @@ export function MyCoursesManager({
   initialWishlistIds,
   allCourses,
   siteUrl,
-  viewerHandle
+  viewerHandle,
+  inviteUrl
 }: MyCoursesManagerProps) {
   const [playedCourses, setPlayedCourses] = useState(initialPlayedCourses);
   const [wishlistIds, setWishlistIds] = useState(new Set(initialWishlistIds));
@@ -381,12 +383,20 @@ export function MyCoursesManager({
             ))}
 
             <ShareButton
-              title="Share my Top 10"
-              text="My top 10 public courses, ranked. Roast me."
+              title="Share my Golf Course Rankings"
+              text="See how I rank public golf courses on Golf Course Ranks."
               url={`${siteUrl}/u/${viewerHandle}?utm_source=share&utm_medium=top10card&utm_campaign=user_share`}
               className="ghost-button justify-center whitespace-nowrap"
               analyticsSurface="my-courses-top10"
-              buttonChildren="Copy top 10 link"
+              buttonChildren="Share my rankings"
+            />
+            <ShareButton
+              title="Join me on Golf Course Ranks"
+              text="Compare your public-course rankings with mine on Golf Course Ranks."
+              url={inviteUrl}
+              className="ghost-button justify-center whitespace-nowrap"
+              analyticsSurface="my-courses-invite"
+              buttonChildren="Invite friends"
             />
             <Link href="/courses" className="ghost-button justify-center whitespace-nowrap">
               Browse courses

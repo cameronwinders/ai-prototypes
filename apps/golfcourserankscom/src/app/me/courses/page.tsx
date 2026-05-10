@@ -13,6 +13,7 @@ export default async function MyCoursesPage() {
     getWishlistCourseIdsForUser(viewer.user!.id)
   ]);
   const siteUrl = getSiteUrl();
+  const inviteUrl = `${siteUrl}/invite/${viewer.profile?.handle ?? "golfer"}`;
 
   if (playedCourses.length === 0) {
     redirect("/onboarding?step=picker&next=/me/courses");
@@ -25,6 +26,7 @@ export default async function MyCoursesPage() {
       allCourses={allCourses}
       siteUrl={siteUrl}
       viewerHandle={viewer.profile?.handle ?? "golfer"}
+      inviteUrl={inviteUrl}
     />
   );
 }
