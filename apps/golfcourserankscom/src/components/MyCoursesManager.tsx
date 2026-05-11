@@ -414,6 +414,34 @@ export function MyCoursesManager({
           <div className="pill pill-warning pill-sentence">{saveError}</div>
         ) : null}
 
+        {ranked.length >= 5 ? (
+          <section className="shell-panel-contrast p-5">
+            <p className="eyebrow">SHARE YOUR LIST</p>
+            <h2 className="h3 mt-4">Your rankings are ready to share</h2>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--muted)]">
+              Once you have a real top five, the best growth loop is inviting another golfer to stack their list beside yours.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <ShareButton
+                title="Share my Golf Course Rankings"
+                text="See how I rank public golf courses on Golf Course Ranks."
+                url={`${siteUrl}/u/${viewerHandle}?utm_source=share&utm_medium=top10card&utm_campaign=user_share`}
+                className="solid-button"
+                analyticsSurface="my-courses-top10-prompt"
+                buttonChildren="Share my rankings"
+              />
+              <ShareButton
+                title="Join me on Golf Course Ranks"
+                text="Compare your public-course rankings with mine on Golf Course Ranks."
+                url={inviteUrl}
+                className="ghost-button"
+                analyticsSurface="my-courses-invite-prompt"
+                buttonChildren="Invite friends"
+              />
+            </div>
+          </section>
+        ) : null}
+
         {playedCourses.length === 0 ? (
           <section className="shell-panel-contrast p-8 text-center">
             <p className="eyebrow">START YOUR LIST</p>

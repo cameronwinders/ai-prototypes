@@ -11,9 +11,11 @@ type FriendsManagerProps = {
   initialData: FriendsPageData;
   inviteUrl: string;
   viewerHandle: string;
+  joinedHandle?: string | null;
+  joinedName?: string | null;
 };
 
-export function FriendsManager({ initialData, inviteUrl, viewerHandle }: FriendsManagerProps) {
+export function FriendsManager({ initialData, inviteUrl, viewerHandle, joinedHandle, joinedName }: FriendsManagerProps) {
   const [data, setData] = useState(initialData);
   const [email, setEmail] = useState("");
   const [search, setSearch] = useState("");
@@ -147,6 +149,24 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle }: Friends
   return (
     <div className="grid gap-6 xl:grid-cols-[1.08fr_0.92fr]">
       <section className="space-y-6">
+        {joinedHandle ? (
+          <section className="shell-panel-contrast p-5">
+            <p className="eyebrow">INVITE WORKED</p>
+            <h2 className="h3 mt-4">{joinedName ?? `@${joinedHandle}`} joined through your invite</h2>
+            <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
+              You are connected now, so the fastest next step is to compare the courses you both know.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link href={`/compare/${joinedHandle}`} className="solid-button">
+                Compare lists
+              </Link>
+              <Link href={`/u/${joinedHandle}`} className="ghost-button">
+                View profile
+              </Link>
+            </div>
+          </section>
+        ) : null}
+
         <section className="shell-panel-soft p-6">
           <p className="eyebrow">SHARE YOUR INVITE LINK</p>
           <h2 className="h3 mt-4">Send one link and start comparing lists</h2>

@@ -1,9 +1,44 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { InviteLanding } from "@/components/InviteLanding";
-import { getProfileByHandle, logAnalyticsEvent } from "@/lib/data";
+import { getFriendshipBetweenUsers, getProfileByHandle, logAnalyticsEvent } from "@/lib/data";
+import { getSiteUrl } from "@/lib/supabase/env";
 import { getViewerContext } from "@/lib/viewer";
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ handle: string }>;
+}): Promise<Metadata> {
+  const { handle } = await params;
+  const inviter = await getProfileByHandle(handle);
+
+  if (!inviter) {
+    return {
+      title: "Invite not found | Golf Course Ranks"
+    };
+  }
+
+  const inviterName = inviter.display_name ?? inviter.handle;
+  const inviteUrl = `${getSiteUrl()}/invite/${inviter.handle}`;
+
+  return {
+    title: `${inviterName} invited you to compare rankings | Golf Course Ranks`,
+    description: `Open ${inviterName}'s invite link to auto-connect and compare your public-course rankings side by side.`,
+    openGraph: {
+      title: `${inviterName} invited you to compare rankings`,
+      description: `Auto-connect on Golf Course Ranks, then compare your public-course lists side by side.`,
+      url: inviteUrl
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${inviterName} invited you to compare rankings`,
+      description: `Auto-connect on Golf Course Ranks, then compare your public-course lists side by side.`
+    }
+  };
+}
 
 export default async function InvitePage({
   params,
@@ -31,6 +66,10 @@ export default async function InvitePage({
     }
   });
 
+  const alreadyConnected = viewer.user
+    ? (await getFriendshipBetweenUsers(viewer.user.id, inviter.id))?.status === "accepted"
+    : false;
+
   return (
     <div className="mx-auto max-w-3xl">
       <section className="shell-panel p-6 sm:p-8">
@@ -46,6 +85,7 @@ export default async function InvitePage({
           viewerSignedIn={Boolean(viewer.user)}
           isSelf={viewer.user?.id === inviter.id}
           autoAccept={autoAccept}
+          alreadyConnected={alreadyConnected}
         />
 
         <div className="mt-8 grid gap-3 sm:grid-cols-2">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 
 import { AvatarStack } from "@/components/InitialsAvatar";
 import { LeaderboardFilterPanel } from "@/components/LeaderboardFilterPanel";
@@ -27,6 +28,11 @@ const MOBILE_RANK_STACK = [
   { key: "golf-digest-public", label: "Golf Digest" },
   { key: "golfweek-you-can-play", label: "Golfweek" }
 ] as const;
+
+export const metadata: Metadata = {
+  title: "Overall Rankings | Golf Course Ranks",
+  description: "See where the crowd board disagrees with Golf Digest, GOLF.com, and Golfweek on one national rankings page."
+};
 
 function formatEditorialPosition(position?: number | null) {
   return formatRankPosition(position);

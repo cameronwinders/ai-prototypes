@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { type Metadata } from "next";
 
 import { FriendsManager } from "@/components/FriendsManager";
 import { getFriendsPageData } from "@/lib/data";
@@ -11,7 +12,17 @@ const comparisonPreview = [
   { course: "Pacific Dunes", you: "#3", friend: "#2", friendName: "Mike" }
 ];
 
-export default async function FriendsPage() {
+export const metadata: Metadata = {
+  title: "Friends | Golf Course Ranks",
+  description: "Invite golf friends, auto-connect when they join, and compare only the public courses you both know."
+};
+
+export default async function FriendsPage({
+  searchParams
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const query = await searchParams;
   const viewer = await getViewerContext();
 
   if (!viewer.user || !viewer.profile?.onboarding_completed) {
@@ -83,6 +94,10 @@ export default async function FriendsPage() {
   const friends = await getFriendsPageData(viewer.user.id);
   const siteUrl = getSiteUrl();
   const inviteUrl = `${siteUrl}/invite/${viewer.profile?.handle ?? "golfer"}`;
+  const joinedHandleParam = query.joined;
+  const joinedNameParam = query.joined_name;
+  const joinedHandle = Array.isArray(joinedHandleParam) ? joinedHandleParam[0] : joinedHandleParam ?? null;
+  const joinedName = Array.isArray(joinedNameParam) ? joinedNameParam[0] : joinedNameParam ?? null;
 
   return (
     <div className="space-y-6">
@@ -94,7 +109,13 @@ export default async function FriendsPage() {
         </p>
       </section>
 
-      <FriendsManager initialData={friends} inviteUrl={inviteUrl} viewerHandle={viewer.profile?.handle ?? "golfer"} />
+      <FriendsManager
+        initialData={friends}
+        inviteUrl={inviteUrl}
+        viewerHandle={viewer.profile?.handle ?? "golfer"}
+        joinedHandle={joinedHandle}
+        joinedName={joinedName}
+      />
     </div>
   );
 }

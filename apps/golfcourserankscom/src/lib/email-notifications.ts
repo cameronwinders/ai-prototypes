@@ -219,7 +219,10 @@ export async function sendInviteConversionEmail(input: {
     return false;
   }
 
-  const friendsUrl = await createEmailSignInLink(input.to, "/friends?utm_source=email&utm_medium=lifecycle&utm_campaign=invite_conversion");
+  const friendsUrl = await createEmailSignInLink(
+    input.to,
+    `/friends?utm_source=email&utm_medium=lifecycle&utm_campaign=invite_conversion&joined=${encodeURIComponent(input.joinerHandle)}&joined_name=${encodeURIComponent(input.joinerName)}`
+  );
   const joinerProfileUrl = `${getSiteUrl()}/u/${encodeURIComponent(input.joinerHandle)}?utm_source=email&utm_medium=lifecycle&utm_campaign=invite_conversion`;
   const joinerProfileSignInUrl = await createEmailSignInLink(input.to, joinerProfileUrl);
 

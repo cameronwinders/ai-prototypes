@@ -89,6 +89,34 @@ export function WishlistManager({ initialCourses, siteUrl, viewerHandle, inviteU
 
         {status ? <p className="meta">{status}</p> : null}
 
+        {courses.length >= 5 ? (
+          <section className="shell-panel-contrast p-5">
+            <p className="eyebrow">SHARE YOUR NEXT TRIP</p>
+            <h2 className="h3 mt-4">Your wish list is worth sending around</h2>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--muted)]">
+              Share the public courses you want to play next, then invite a friend to build their own wish list so you can line up the trip together.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <ShareButton
+                title="Share my Golf Course wish list"
+                text="These are the public courses I want to play next on Golf Course Ranks."
+                url={`${siteUrl}/u/${viewerHandle}?view=wishlist&utm_source=share&utm_medium=wishlist&utm_campaign=user_share#wishlist`}
+                className="solid-button"
+                analyticsSurface="wishlist-share-prompt"
+                buttonChildren="Share my wish list"
+              />
+              <ShareButton
+                title="Join me on Golf Course Ranks"
+                text="Compare your public-course rankings and wish list with mine on Golf Course Ranks."
+                url={inviteUrl}
+                className="ghost-button"
+                analyticsSurface="wishlist-invite-prompt"
+                buttonChildren="Invite friends"
+              />
+            </div>
+          </section>
+        ) : null}
+
         {courses.length === 0 ? (
           <section className="shell-panel-contrast p-8 text-center">
             <p className="eyebrow">NOTHING SAVED YET</p>

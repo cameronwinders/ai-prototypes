@@ -10,11 +10,14 @@ import { getSiteUrl } from "@/lib/supabase/env";
 import { getViewerContext } from "@/lib/viewer";
 
 export async function generateMetadata({
-  params
+  params,
+  searchParams
 }: {
   params: Promise<{ handle: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
   const { handle } = await params;
+  const query = await searchParams;
   const overview = await getPublicProfileOverview(handle, null);
 
   if (!overview) {
@@ -23,9 +26,18 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${overview.profile.display_name ?? overview.profile.handle} | Golf Course Ranks`;
-  const description = `${overview.stats.playedCount} played | ${overview.stats.rankedCount} ranked | ${overview.stats.topHundredPlayedCount} of the Top 100 played.`;
+  const requestedViewParam = query.view;
+  const requestedView = Array.isArray(requestedViewParam) ? requestedViewParam[0] : requestedViewParam;
+  const showWishlistFirst = requestedView === "wishlist";
+  const displayName = overview.profile.display_name ?? overview.profile.handle;
+  const title = showWishlistFirst
+    ? `${displayName}'s golf wish list | Golf Course Ranks`
+    : `${displayName}'s public-course rankings | Golf Course Ranks`;
+  const description = showWishlistFirst
+    ? `See which public courses ${displayName} wants to play next, then add them as a friend to compare your own list.`
+    : `See how ${displayName} ranks public courses, compare that list to the crowd board, and add them as a friend to compare your own stack.`;
   const url = `${getSiteUrl()}/u/${overview.profile.handle}`;
+  const imageUrl = showWishlistFirst ? `${url}/opengraph-image?view=wishlist` : `${url}/opengraph-image`;
 
   return {
     title,
@@ -34,13 +46,13 @@ export async function generateMetadata({
       title,
       description,
       url,
-      images: [`${url}/opengraph-image`]
+      images: [imageUrl]
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [`${url}/opengraph-image`]
+      images: [imageUrl]
     }
   };
 }

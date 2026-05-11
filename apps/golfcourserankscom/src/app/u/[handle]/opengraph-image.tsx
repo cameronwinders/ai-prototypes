@@ -10,15 +10,27 @@ export const size = {
 export const contentType = "image/png";
 
 export default async function Image({
-  params
+  params,
+  searchParams
 }: {
   params: Promise<{ handle: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { handle } = await params;
+  const query = await searchParams;
   const overview = await getPublicProfileOverview(handle, null);
 
   const title = overview?.profile.display_name ?? overview?.profile.handle ?? "Golf Course Ranks";
   const courses = overview?.topCourses.slice(0, 10) ?? [];
+  const wishlistCourses = overview?.wishlistCourses.slice(0, 10) ?? [];
+  const requestedViewParam = query.view;
+  const requestedView = Array.isArray(requestedViewParam) ? requestedViewParam[0] : requestedViewParam;
+  const showWishlist = requestedView === "wishlist";
+  const listTitle = showWishlist ? "Wish list" : "Top 10 public courses";
+  const featuredCourses = showWishlist ? wishlistCourses : courses;
+  const subtitle = showWishlist
+    ? `${overview?.stats.playedCount ?? 0} played · ${wishlistCourses.length} on the wish list`
+    : `${overview?.stats.topHundredPlayedCount ?? 0} of America's Top 100 played`;
 
   return new ImageResponse(
     (
@@ -54,22 +66,25 @@ export default async function Image({
               </div>
             </div>
             <div style={{ fontSize: 56, fontWeight: 700, lineHeight: 1.02, maxWidth: 720 }}>{title}</div>
-            <div style={{ fontSize: 28, color: "#5d6a64" }}>
-              {overview?.stats.topHundredPlayedCount ?? 0} of America&apos;s Top 100 played
+            <div style={{ fontSize: 28, color: "#5d6a64" }}>{subtitle}</div>
+            <div style={{ fontSize: 24, color: "#316b53", fontStyle: "italic", maxWidth: 760 }}>
+              {showWishlist
+                ? "See the public courses this golfer wants to play next, then add them as a friend to compare lists."
+                : "See how this golfer's Top 10 compares to the crowd board and add them as a friend to compare lists."}
             </div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 10, minWidth: 210 }}>
-            <div style={{ fontSize: 20, color: "#5d6a64" }}>Top 10 public courses</div>
-            {courses.slice(0, 5).map((course) => (
+            <div style={{ fontSize: 20, color: "#5d6a64" }}>{listTitle}</div>
+            {featuredCourses.slice(0, 5).map((course, index) => (
               <div key={course.id} style={{ fontSize: 22 }}>
-                #{course.rankPosition + 1} {course.name}
+                {showWishlist ? `${index + 1}.` : `#${("rankPosition" in course ? course.rankPosition + 1 : index + 1)}`} {course.name}
               </div>
             ))}
           </div>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 16 }}>
-          {courses.map((course) => (
+          {featuredCourses.slice(0, 5).map((course, index) => (
             <div
               key={course.id}
               style={{
@@ -83,7 +98,7 @@ export default async function Image({
               }}
             >
               <div style={{ fontSize: 18, color: "#316b53", textTransform: "uppercase", letterSpacing: 1.5 }}>
-                #{course.rankPosition + 1}
+                {showWishlist ? `Wish ${index + 1}` : `#${"rankPosition" in course ? course.rankPosition + 1 : index + 1}`}
               </div>
               <div style={{ fontSize: 24, fontWeight: 700, lineHeight: 1.1 }}>{course.name}</div>
               <div style={{ fontSize: 18, color: "#5d6a64" }}>

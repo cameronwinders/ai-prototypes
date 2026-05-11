@@ -11,6 +11,7 @@ type InviteLandingProps = {
   viewerSignedIn: boolean;
   isSelf: boolean;
   autoAccept: boolean;
+  alreadyConnected?: boolean;
 };
 
 export function InviteLanding({
@@ -18,13 +19,15 @@ export function InviteLanding({
   inviterName,
   viewerSignedIn,
   isSelf,
-  autoAccept
+  autoAccept,
+  alreadyConnected = false
 }: InviteLandingProps) {
   const [pending, setPending] = useState(autoAccept);
   const [status, setStatus] = useState<string | null>(null);
+  const [connected, setConnected] = useState(alreadyConnected);
 
   useEffect(() => {
-    if (!autoAccept || !viewerSignedIn || isSelf) {
+    if (!autoAccept || !viewerSignedIn || isSelf || alreadyConnected) {
       return;
     }
 
@@ -36,6 +39,9 @@ export function InviteLanding({
         return;
       }
       setPending(false);
+      if (result.ok) {
+        setConnected(true);
+      }
       setStatus(result.message ?? (result.ok ? "Connection saved." : "We could not finish that invite."));
     }
 
@@ -44,7 +50,7 @@ export function InviteLanding({
     return () => {
       active = false;
     };
-  }, [autoAccept, handle, isSelf, viewerSignedIn]);
+  }, [alreadyConnected, autoAccept, handle, isSelf, viewerSignedIn]);
 
   if (!viewerSignedIn) {
     return (
@@ -67,6 +73,25 @@ export function InviteLanding({
     );
   }
 
+  if (connected) {
+    return (
+      <div className="mt-6 space-y-3">
+        <div className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/88 px-4 py-4 text-sm leading-7 text-[var(--muted)]">
+          You are already connected with {inviterName}. Jump straight to the overlap and compare where your rankings differ.
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <Link href={`/compare/${handle}`} className="solid-button min-h-11">
+            Compare lists
+          </Link>
+          <Link href={`/u/${handle}`} className="ghost-button min-h-11">
+            View profile
+          </Link>
+        </div>
+        {status ? <p className="text-sm text-[var(--muted)]">{status}</p> : null}
+      </div>
+    );
+  }
+
   return (
     <div className="mt-6 space-y-3">
       <button
@@ -75,6 +100,9 @@ export function InviteLanding({
           setPending(true);
           const result = await acceptInviteFromHandle(handle);
           setPending(false);
+          if (result.ok) {
+            setConnected(true);
+          }
           setStatus(result.message ?? (result.ok ? "Connection saved." : "We could not finish that invite."));
         }}
         disabled={pending}

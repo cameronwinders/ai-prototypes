@@ -39,11 +39,11 @@ export default function Image() {
               </svg>
               <div style={{ fontSize: 28, fontWeight: 600 }}>Golf Course Ranks</div>
             </div>
-            <div style={{ fontSize: 72, fontWeight: 700, lineHeight: 1.02, letterSpacing: -2 }}>
-              The crowd-ranked list of U.S. public golf courses.
+            <div style={{ fontSize: 68, fontWeight: 700, lineHeight: 1.02, letterSpacing: -2 }}>
+              The hub for crowd rankings, golf media rankings, and the golfers you follow.
             </div>
             <div style={{ fontSize: 28, color: "#316b53", fontStyle: "italic" }}>
-              Editorial Top 100s rank what panelists think. We rank what real golfers actually played.
+              Compare the crowd board with Golf Digest, GOLF.com, and Golfweek, then invite friends to stack their lists beside both.
             </div>
           </div>
 
@@ -69,6 +69,7 @@ export default function Image() {
                 <div style={{ flex: 1, fontSize: 22 }}>{name}</div>
               </div>
             ))}
+            <div style={{ marginTop: 12, fontSize: 18, color: "#5d6a64" }}>See where the crowd disagrees with Golf Digest.</div>
           </div>
         </div>
       </div>
