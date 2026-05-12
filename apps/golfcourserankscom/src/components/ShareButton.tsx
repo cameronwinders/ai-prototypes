@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { MarkIcon } from "@/components/MarkIcon";
 
@@ -44,9 +45,11 @@ export function ShareButton({
   const [canNativeShare, setCanNativeShare] = useState(false);
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const shareMessage = text ? `${text}\n${url}` : url;
 
   useEffect(() => {
+    setMounted(true);
     setCanNativeShare(typeof navigator !== "undefined" && typeof navigator.share === "function");
   }, []);
 
@@ -155,78 +158,81 @@ export function ShareButton({
 
       {status && !hideStatus ? <p className="mt-2 text-sm text-muted">{status}</p> : null}
 
-      {open ? (
-        <div className="fixed inset-0 z-[70] flex items-end justify-center p-3 sm:items-center sm:p-5">
-          <button
-            type="button"
-            aria-label="Close share"
-            className="absolute inset-0 bg-[rgba(18,28,25,0.36)]"
-            onClick={() => setOpen(false)}
-          />
-          <div className="relative z-[71] max-h-[calc(100vh-1.5rem)] w-full max-w-[34rem] overflow-y-auto rounded-lg border border-line bg-white shadow-[0_24px_60px_rgba(18,28,25,0.18)]">
-            <div className="flex items-center justify-between border-b border-line px-5 py-4">
-              <span className="eyebrow">SHARE</span>
-              <button type="button" aria-label="Close share" onClick={() => setOpen(false)} className="ghost-button sm">
-                {"\u00D7"}
-              </button>
-            </div>
+      {mounted && open
+        ? createPortal(
+            <div className="fixed inset-0 z-[70] flex items-end justify-center p-3 sm:items-center sm:p-5">
+              <button
+                type="button"
+                aria-label="Close share"
+                className="absolute inset-0 bg-[rgba(18,28,25,0.36)]"
+                onClick={() => setOpen(false)}
+              />
+              <div className="relative z-[71] max-h-[calc(100vh-1.5rem)] w-full max-w-[34rem] overflow-y-auto rounded-lg border border-line bg-white shadow-[0_24px_60px_rgba(18,28,25,0.18)]">
+                <div className="flex items-center justify-between border-b border-line px-5 py-4">
+                  <span className="eyebrow">SHARE</span>
+                  <button type="button" aria-label="Close share" onClick={() => setOpen(false)} className="ghost-button sm">
+                    {"\u00D7"}
+                  </button>
+                </div>
 
-            <div className="px-5 py-5">
-              <div className="overflow-hidden rounded-md border border-line bg-white">
-                <div className="grid grid-cols-[6px_1fr]">
-                  <div className="bg-pine" />
-                  <div className="bg-linen-warm px-4 py-4">
-                    <div className="text-[1.15rem] font-semibold tracking-[var(--tracking-tight)] text-ink">{title}</div>
-                    <div className="mt-1 text-sm text-muted">{text}</div>
+                <div className="px-5 py-5">
+                  <div className="overflow-hidden rounded-md border border-line bg-white">
+                    <div className="grid grid-cols-[6px_1fr]">
+                      <div className="bg-pine" />
+                      <div className="bg-linen-warm px-4 py-4">
+                        <div className="text-[1.15rem] font-semibold tracking-[var(--tracking-tight)] text-ink">{title}</div>
+                        <div className="mt-1 text-sm text-muted">{text}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between gap-3 border-t border-line px-4 py-3">
+                      <span className="min-w-0 truncate font-mono text-[0.68rem] tracking-[0.04em] text-muted">{url}</span>
+                      <MarkIcon className="h-4 w-4 shrink-0 text-pine" />
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center justify-between gap-3 border-t border-line px-4 py-3">
-                  <span className="min-w-0 truncate font-mono text-[0.68rem] tracking-[0.04em] text-muted">{url}</span>
-                  <MarkIcon className="h-4 w-4 shrink-0 text-pine" />
-                </div>
-              </div>
-            </div>
 
-            <div className="px-5 pb-4">
-              <div className="flex flex-col gap-2 rounded-xs border border-line bg-linen-warm px-3 py-2 sm:flex-row sm:items-center">
-                <span className="min-w-0 flex-1 truncate font-mono text-[0.78rem] text-muted">{url}</span>
-                <button type="button" onClick={handleCopy} className={copied ? "ghost-button sm" : "solid-button sm"}>
-                  {copied ? "Copied" : "Copy link"}
-                </button>
-              </div>
-            </div>
-
-            {hideSecondaryLinks ? null : (
-              <div className="border-t border-line px-5 py-5">
-                <div className="eyebrow mb-3 text-[0.62rem]">SEND TO</div>
-                <div className="grid grid-cols-4 gap-2">
-                  {destinations.map((destination) => (
-                    <a
-                      key={destination.id}
-                      href={destination.href}
-                      target={destination.id === "x" || destination.id === "whatsapp" ? "_blank" : undefined}
-                      rel={destination.id === "x" || destination.id === "whatsapp" ? "noreferrer" : undefined}
-                      className="flex flex-col items-center gap-2 rounded-xs border border-line bg-white px-2 py-3 text-center"
-                      onClick={() => {
-                        void trackShare(destination.id);
-                      }}
-                    >
-                      <span className="text-base font-semibold text-ink">{destination.glyph}</span>
-                      <span className="text-[0.72rem] font-semibold text-muted">{destination.label}</span>
-                    </a>
-                  ))}
+                <div className="px-5 pb-4">
+                  <div className="flex flex-col gap-2 rounded-xs border border-line bg-linen-warm px-3 py-2 sm:flex-row sm:items-center">
+                    <span className="min-w-0 flex-1 truncate font-mono text-[0.78rem] text-muted">{url}</span>
+                    <button type="button" onClick={handleCopy} className={copied ? "ghost-button sm" : "solid-button sm"}>
+                      {copied ? "Copied" : "Copy link"}
+                    </button>
+                  </div>
                 </div>
-                {canNativeShare ? (
-                  <button type="button" onClick={handleNativeShare} className="ghost-button mt-4 w-full justify-center">
-                    <ShareGlyph />
-                    Share on this device
-                  </button>
-                ) : null}
+
+                {hideSecondaryLinks ? null : (
+                  <div className="border-t border-line px-5 py-5">
+                    <div className="eyebrow mb-3 text-[0.62rem]">SEND TO</div>
+                    <div className="grid grid-cols-4 gap-2">
+                      {destinations.map((destination) => (
+                        <a
+                          key={destination.id}
+                          href={destination.href}
+                          target={destination.id === "x" || destination.id === "whatsapp" ? "_blank" : undefined}
+                          rel={destination.id === "x" || destination.id === "whatsapp" ? "noreferrer" : undefined}
+                          className="flex flex-col items-center gap-2 rounded-xs border border-line bg-white px-2 py-3 text-center"
+                          onClick={() => {
+                            void trackShare(destination.id);
+                          }}
+                        >
+                          <span className="text-base font-semibold text-ink">{destination.glyph}</span>
+                          <span className="text-[0.72rem] font-semibold text-muted">{destination.label}</span>
+                        </a>
+                      ))}
+                    </div>
+                    {canNativeShare ? (
+                      <button type="button" onClick={handleNativeShare} className="ghost-button mt-4 w-full justify-center">
+                        <ShareGlyph />
+                        Share on this device
+                      </button>
+                    ) : null}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        </div>
-      ) : null}
+            </div>,
+            document.body
+          )
+        : null}
     </>
   );
 }
