@@ -26,12 +26,12 @@ export async function generateMetadata({
 
   if (!detail) {
     return {
-      title: "Course not found | Golf Course Ranks"
+      title: "Course not found"
     };
   }
 
   const score = detail.aggregate?.normalized_score?.toFixed(1) ?? "0.0";
-  const title = `${detail.course.name} | Golf Course Ranks`;
+  const title = detail.course.name;
   const description = `${formatLocation(detail.course)} - Crowd score ${score} on Golf Course Ranks.`;
   const url = `${getSiteUrl()}/courses/${detail.course.id}`;
   const image = `${url}/opengraph-image`;
@@ -143,7 +143,6 @@ export default async function CourseDetailPage({
               }
             ]}
             eyebrow="Course preview"
-            caption="Real photography can slot in here later. For now the board keeps the visual language lean."
             badgeLabel="Course card"
             heroTagLabel={isEditorialOnly ? "Starting score" : "Crowd favorite"}
             scoreEyebrow={isEditorialOnly ? "Starting score" : "Crowd score"}

@@ -1011,7 +1011,7 @@ export async function getCourseDetail(
     throw new Error(viewerWishlistRows.error.message);
   }
 
-  const course = courseRes.data as CourseRecord | null;
+  const course = courseRes.data ? attachEditorialRanks([courseRes.data as CourseRecord])[0] : null;
 
   if (!course) {
     return null;

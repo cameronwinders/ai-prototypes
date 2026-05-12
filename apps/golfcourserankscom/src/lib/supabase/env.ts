@@ -1,3 +1,5 @@
+import { headers } from "next/headers";
+
 const DEFAULT_SCHEMA = "app_golfcourserankscom_";
 const FALLBACK_SITE_URL = "http://localhost:3000";
 
@@ -22,6 +24,25 @@ export function getSiteUrl() {
   }
 
   return FALLBACK_SITE_URL;
+}
+
+export async function getRequestSiteUrl() {
+  try {
+    const requestHeaders = await headers();
+    const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
+
+    if (host) {
+      const proto =
+        requestHeaders.get("x-forwarded-proto") ??
+        (host.includes("localhost") || host.startsWith("127.0.0.1") ? "http" : "https");
+
+      return `${proto}://${host}`;
+    }
+  } catch {
+    // Fall back to the configured canonical URL when request headers are unavailable.
+  }
+
+  return getSiteUrl();
 }
 
 export function getPublicSupabaseEnv() {

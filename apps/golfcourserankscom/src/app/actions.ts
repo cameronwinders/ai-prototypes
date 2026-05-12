@@ -23,7 +23,7 @@ import {
   sendInviteConversionEmail
 } from "@/lib/email-notifications";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getSiteUrl } from "@/lib/supabase/env";
+import { getRequestSiteUrl, getSiteUrl } from "@/lib/supabase/env";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import {
   FEEDBACK_TYPES,
@@ -257,6 +257,7 @@ export async function requestSignInLink(input: {
 }): Promise<ActionResult<null>> {
   const email = input.email.trim().toLowerCase();
   const next = input.next.startsWith("/") ? input.next : "/rankings";
+  const requestSiteUrl = await getRequestSiteUrl();
 
   if (!email.includes("@")) {
     return {
@@ -285,7 +286,7 @@ export async function requestSignInLink(input: {
     type: "magiclink",
     email,
     options: {
-      redirectTo: `${getSiteUrl()}/api/auth/callback?next=${encodeURIComponent(next)}`
+      redirectTo: `${requestSiteUrl}/api/auth/callback?next=${encodeURIComponent(next)}`
     }
   });
 
@@ -306,7 +307,7 @@ export async function requestSignInLink(input: {
     };
   }
 
-  const actionLink = `${getSiteUrl()}/api/auth/callback?token_hash=${encodeURIComponent(hashedToken)}&type=${encodeURIComponent(verificationType)}&next=${encodeURIComponent(next)}`;
+  const actionLink = `${requestSiteUrl}/api/auth/callback?token_hash=${encodeURIComponent(hashedToken)}&type=${encodeURIComponent(verificationType)}&next=${encodeURIComponent(next)}`;
 
   try {
     await sendAuthMagicLinkEmail({
