@@ -102,6 +102,18 @@ function isMissingWishlistTableError(error: { code?: string; message?: string } 
   );
 }
 
+function isMissingWishlistRankColumnError(error: { code?: string; message?: string } | null | undefined) {
+  if (!error) {
+    return false;
+  }
+
+  return (
+    error.code === "42703" ||
+    error.message?.includes("rank_position") ||
+    false
+  );
+}
+
 function canViewerSeeProfile(
   profile: UserProfile,
   viewerId: string | null,
@@ -215,7 +227,7 @@ function buildWishlistCourses(courses: CourseRecord[], wishlistRows: WishlistCou
   const courseById = new Map(courses.map((course) => [course.id, course]));
 
   return wishlistRows
-    .map<WishlistCourse | null>((row) => {
+    .map<WishlistCourse | null>((row, index) => {
       const course = courseById.get(row.course_id);
       if (!course) {
         return null;
@@ -223,7 +235,8 @@ function buildWishlistCourses(courses: CourseRecord[], wishlistRows: WishlistCou
 
       return {
         ...course,
-        wishlistedAt: row.created_at
+        wishlistedAt: row.created_at,
+        rankPosition: row.rank_position ?? index
       };
     })
     .filter(Boolean) as WishlistCourse[];
@@ -624,11 +637,22 @@ export async function getWishlistCoursesForUser(userId: string) {
   }
 
   const admin = createAdminClient();
-  const { data, error } = await admin
+  let query = await admin
     .from("wishlist_courses")
     .select("*")
     .eq("user_id", userId)
-    .order("created_at", { ascending: false });
+    .order("rank_position", { ascending: true })
+    .order("created_at", { ascending: true });
+
+  if (query.error && isMissingWishlistRankColumnError(query.error)) {
+    query = await admin
+      .from("wishlist_courses")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: true });
+  }
+
+  const { data, error } = query;
 
   if (error) {
     if (isMissingWishlistTableError(error)) {

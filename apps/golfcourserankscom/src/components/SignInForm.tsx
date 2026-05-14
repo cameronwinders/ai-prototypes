@@ -46,8 +46,16 @@ export function SignInForm({ inviterName = null }: { inviterName?: string | null
   return (
     <form className="min-w-0 space-y-5 overflow-x-hidden" onSubmit={onSubmit}>
       {signedOut ? <div className="pill pill-pine pill-sentence">You have been signed out.</div> : null}
-      {error ? <div className="pill pill-warning pill-sentence">{error}</div> : null}
-      {message ? <div className="pill pill-pine pill-sentence">{message}</div> : null}
+      {error ? (
+        <div className="rounded-[var(--radius-md)] border border-[var(--warning-line)] bg-[var(--warning-bg)] px-4 py-3 text-sm leading-7 text-[var(--warning-ink)]">
+          {error}
+        </div>
+      ) : null}
+      {message ? (
+        <div className="rounded-[var(--radius-md)] border border-[rgba(49,107,83,0.18)] bg-[rgba(216,231,221,0.82)] px-4 py-3 text-sm leading-7 text-[var(--pine)]">
+          {message}
+        </div>
+      ) : null}
       {inviterName ? (
         <div className="rounded-[var(--radius-md)] border border-[rgba(49,107,83,0.16)] bg-[rgba(216,231,221,0.72)] px-4 py-3 text-sm leading-7 text-[var(--pine)]">
           Continue to compare with <span className="font-semibold text-[var(--ink)]">{inviterName}</span> after you open the email link.
@@ -88,8 +96,8 @@ export function SignInForm({ inviterName = null }: { inviterName?: string | null
       <p className="text-sm leading-7 text-[var(--muted)]">
         {mode === "sign-up"
           ? inviterName
-            ? `We will help you set your handicap band, pick the courses you have played, and then connect you back to ${inviterName}'s invite.`
-            : "We will help you set your handicap band, pick the courses you have played, and optionally add your name before your rankings open."
+            ? `We will help you set your handicap band, pick the public courses you have played, rank them, and then connect you back to ${inviterName}'s invite.`
+            : "We will help you set your handicap band, track the public courses you have played, build your wish list, and start ranking."
           : "We will email a secure sign-in link and bring you back to the page you started from."}
       </p>
 

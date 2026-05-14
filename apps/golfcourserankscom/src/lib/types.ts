@@ -100,6 +100,7 @@ export type PlayedCourseRecord = {
 export type WishlistCourseRecord = {
   user_id: string;
   course_id: string;
+  rank_position: number;
   created_at: string;
   updated_at: string;
 };
@@ -118,6 +119,7 @@ export type PlayedCourse = CourseRecord & {
 
 export type WishlistCourse = CourseRecord & {
   wishlistedAt: string;
+  rankPosition: number;
 };
 
 export type FriendPresence = {

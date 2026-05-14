@@ -2,7 +2,8 @@ import { redirect } from "next/navigation";
 
 import { completeOnboarding, completeOnboardingNameStep } from "@/app/actions";
 import { OnboardingCoursePicker } from "@/components/OnboardingCoursePicker";
-import { getAllCourses, getPlayedCoursesForUser, getProfileByHandle } from "@/lib/data";
+import { OnboardingRankingStep } from "@/components/OnboardingRankingStep";
+import { getAllCourses, getPlayedCoursesForUser, getProfileByHandle, getRankedCoursesForUser } from "@/lib/data";
 import { HANDICAP_OPTIONS } from "@/lib/types";
 import { requireViewer } from "@/lib/viewer";
 
@@ -26,6 +27,7 @@ export default async function OnboardingPage({
   const step = Array.isArray(stepParam) ? stepParam[0] : stepParam ?? "handicap";
   const error = Array.isArray(errorParam) ? errorParam[0] : errorParam;
   const playedCourses = viewer.user ? await getPlayedCoursesForUser(viewer.user.id) : [];
+  const rankedCourses = viewer.user ? await getRankedCoursesForUser(viewer.user.id) : [];
   const inviteHandle = getInviteHandle(next);
   const inviter = inviteHandle ? await getProfileByHandle(inviteHandle) : null;
   const inviterPlayedIds = inviter ? new Set((await getPlayedCoursesForUser(inviter.id)).map((course) => course.id)) : new Set<string>();
@@ -33,7 +35,8 @@ export default async function OnboardingPage({
   const hasHandicap = Boolean(viewer.profile?.handicap_band);
   const isCompleted = Boolean(viewer.profile?.onboarding_completed && viewer.profile?.handicap_band);
   const shouldShowPicker = hasHandicap && playedCourses.length === 0;
-  const shouldShowNameStep = hasHandicap && playedCourses.length > 0 && !viewer.profile?.onboarding_completed;
+  const needsInviteRanking = Boolean(inviterName && playedCourses.length > 0 && rankedCourses.length === 0);
+  const shouldShowNameStep = hasHandicap && playedCourses.length > 0 && !viewer.profile?.onboarding_completed && !needsInviteRanking;
 
   if (isCompleted) {
     redirect(next.startsWith("/") ? next : "/rankings");
@@ -47,19 +50,38 @@ export default async function OnboardingPage({
     redirect(`/onboarding?step=picker&next=${encodeURIComponent(next)}`);
   }
 
+  if (step === "name" && inviterName && rankedCourses.length === 0) {
+    redirect(`/onboarding?step=ranking&next=${encodeURIComponent(next)}`);
+  }
+
+  if ((step === "ranking" || needsInviteRanking) && inviterName) {
+    return (
+      <div className="mx-auto max-w-4xl">
+        <section className="shell-panel p-6 sm:p-8">
+          <OnboardingRankingStep
+            initialCourses={rankedCourses}
+            next={next.startsWith("/") ? next : "/rankings"}
+            error={error}
+            inviterName={inviterName}
+          />
+        </section>
+      </div>
+    );
+  }
+
   if (shouldShowNameStep || step === "name") {
     return (
       <div className="mx-auto max-w-3xl">
         <section className="shell-panel p-6 sm:p-8">
-          <p className="eyebrow">STEP 3 OF 3</p>
+          <p className="eyebrow">{inviterName ? "STEP 4 OF 4" : "STEP 3 OF 3"}</p>
           <h1 className="h2 mt-4">Add your name if you want it on your list</h1>
           <p className="subhed mt-4">
             This part is optional. If you skip it, we will keep using the current name based on your email address.
           </p>
           {inviterName ? (
-            <div className="mt-6 rounded-[var(--radius-md)] border border-[rgba(49,107,83,0.16)] bg-[rgba(216,231,221,0.72)] px-4 py-3 text-sm leading-7 text-[var(--pine)]">
+          <div className="mt-6 rounded-[var(--radius-md)] border border-[rgba(49,107,83,0.16)] bg-[rgba(216,231,221,0.72)] px-4 py-3 text-sm leading-7 text-[var(--pine)]">
               You are almost done. Add your name if you want, then we will send you back to compare with <span className="font-semibold text-[var(--ink)]">{inviterName}</span>.
-            </div>
+          </div>
           ) : null}
 
           {error ? (
@@ -117,7 +139,7 @@ export default async function OnboardingPage({
           <h1 className="h2 mt-4">{inviterName ? `Start with the courses you and ${inviterName} are most likely to know` : "Start with the courses you already know"}</h1>
           <p className="subhed mt-4">
             {inviterName
-              ? `${inviterName} invited you to compare public-course lists. Save the rounds you have played first, then add your name if you want before ranking them.`
+              ? `${inviterName} invited you to compare public-course lists. Save the rounds you have played first, then rank them before you add your name if you want.`
               : "Save the rounds you have played first, then add your name if you want before ranking them."}
           </p>
           <div className="mt-8">
@@ -153,17 +175,11 @@ export default async function OnboardingPage({
 
         <form action={completeOnboarding} className="mt-8 space-y-5">
           <input type="hidden" name="next" value={next} />
-          <div>
-            <p className="eyebrow">HANDICAP BAND</p>
-            <p className="mt-2 text-sm leading-7 text-[var(--muted)]">
-              Pick the range that best matches your current game.
-            </p>
-          </div>
-          <div className="grid gap-3">
+          <div className="grid gap-2">
             {HANDICAP_OPTIONS.map((option) => (
               <label
                 key={option}
-                className="block cursor-pointer rounded-[var(--radius-lg)] border border-[rgba(24,37,43,0.08)] bg-white/90 p-5 transition hover:-translate-y-px hover:bg-white has-[:checked]:border-[rgba(49,107,83,0.55)] has-[:checked]:bg-[var(--pine-soft)] has-[:checked]:shadow-[0_0_0_1px_rgba(49,107,83,0.12)]"
+                className="block cursor-pointer rounded-[var(--radius-lg)] border border-[rgba(24,37,43,0.08)] bg-white/90 p-4 transition hover:-translate-y-px hover:bg-white has-[:checked]:border-[rgba(49,107,83,0.55)] has-[:checked]:bg-[var(--pine-soft)] has-[:checked]:shadow-[0_0_0_1px_rgba(49,107,83,0.12)]"
               >
                 <div className="flex items-start gap-4">
                   <input
@@ -174,16 +190,7 @@ export default async function OnboardingPage({
                     className="mt-1 h-5 w-5 accent-[var(--pine)]"
                   />
                   <div className="min-w-0">
-                    <p className="h3 text-[2rem]">{option}</p>
-                    <p className="mt-2 text-sm text-[var(--muted)]">
-                      {option === "0-5"
-                        ? "Low-handicap range"
-                        : option === "6-10"
-                          ? "Competitive regular range"
-                          : option === "11-18"
-                            ? "Mid-handicap range"
-                            : "High-handicap range"}
-                    </p>
+                    <p className="h3 text-[1.65rem]">{option}</p>
                   </div>
                 </div>
               </label>

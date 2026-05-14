@@ -93,7 +93,7 @@ export function OnboardingCoursePicker({
 
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-3xl">
-          <p className="eyebrow">STEP 2 OF 3</p>
+          <p className="eyebrow">{inviterName ? "STEP 2 OF 4" : "STEP 2 OF 3"}</p>
           <h2 className="h3 mt-4">Pick the public courses you have already played</h2>
           <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
             {inviterName
@@ -209,7 +209,7 @@ export function OnboardingCoursePicker({
             </p>
             <p className="mt-1 text-sm text-[var(--muted)]">
               {inviterName
-                ? `Pick at least 5 courses you know well, especially the ones ${inviterName} played, then add your name if you want before ordering them by your overall favorite to play.`
+                ? `Pick at least 5 courses you know well, especially the ones ${inviterName} played, then rank them before you add your name if you want.`
                 : "Pick 5 to 15 to get the most out of ranking, then add your name if you want before ordering them by your overall favorite to play."}
             </p>
           </div>

@@ -76,7 +76,9 @@ export default async function InvitePage({
         <p className="eyebrow">FRIEND INVITE</p>
         <h1 className="h2 mt-4">{inviter.display_name ?? inviter.handle} wants to compare public-course lists with you</h1>
         <p className="subhed mt-4">
-          Accept the invite and unlock overlap-only comparisons.
+          {viewer.user
+            ? "Accept the invite and unlock overlap-only comparisons."
+            : "Create your account or sign in to accept the invite and unlock overlap-only comparisons."}
         </p>
 
         <InviteLanding

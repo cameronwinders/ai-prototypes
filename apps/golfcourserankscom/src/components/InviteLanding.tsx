@@ -56,10 +56,10 @@ export function InviteLanding({
     return (
       <div className="mt-6 flex flex-wrap gap-3">
         <Link href={`/sign-in?next=${encodeURIComponent(`/invite/${handle}?accept=1`)}`} className="solid-button min-h-11">
-          Sign in to connect
+          Sign in or create account to compare
         </Link>
         <Link href="/rankings" className="ghost-button min-h-11">
-          Explore leaderboard first
+          Explore rankings first
         </Link>
       </div>
     );

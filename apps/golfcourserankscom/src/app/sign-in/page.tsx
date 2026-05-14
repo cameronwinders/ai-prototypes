@@ -31,14 +31,14 @@ export default async function SignInPage({
         </h1>
         <p className="subhed mt-4">
           {inviter
-            ? `${inviter.display_name ?? inviter.handle} invited you to compare public-course lists. Sign in, set your handicap band, and we will bring you straight back to that connection flow.`
-            : "Sign in with your email, set your handicap band, and start ranking the public courses you know best."}
+            ? `${inviter.display_name ?? inviter.handle} invited you to compare public-course lists. Sign in or create your account, set your handicap band, and rank the public U.S. golf courses you know best.`
+            : "Sign in with your email to track the public U.S. golf courses you have played, build a wish list, and start ranking them."}
         </p>
         <div className="mt-8 grid gap-3">
           {(inviter
             ? [
                 `${inviter.display_name ?? inviter.handle} already shared their list with you. Finish sign-in to unlock the overlap-only compare view.`,
-                "During onboarding, pick the public courses you have played so your first comparison has real signal.",
+                "During onboarding, pick and rank the public courses you have played so your first comparison has real signal.",
                 "Once you finish, you will land back on the invite flow already connected."
               ]
             : [

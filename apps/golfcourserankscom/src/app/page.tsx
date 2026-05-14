@@ -240,10 +240,10 @@ export default async function HomePage() {
       <section className="shell-panel shell-panel-contrast p-6 sm:p-8 lg:p-10">
         <div className="max-w-5xl">
           <h1 className="h1-display text-[3.55rem] text-ink sm:text-[5.1rem]">
-            The hub for crowd rankings, golf media rankings, and the golfers you follow.
+            The hub for public U.S. golf-course rankings.
           </h1>
           <p className="subhed mt-4 max-w-4xl">
-            Compare real-golfer rankings across the U.S. with Golf Digest, GOLF.com, and Golfweek, then invite friends to stack their own lists beside both.
+            Track the public courses you have played, build a wish list, compare the crowd against Golf Digest, GOLF.com, and Golfweek, and invite friends to stack their own lists beside yours.
           </p>
 
           <div className="mt-8 flex flex-wrap items-start gap-3">

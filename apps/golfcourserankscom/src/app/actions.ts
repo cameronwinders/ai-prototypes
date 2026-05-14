@@ -11,6 +11,7 @@ import {
   getProfileByHandle,
   getProfileById,
   getRankedCoursesForUser,
+  getWishlistCoursesForUser,
   logAnalyticsEvent,
   searchDiscoverableProfiles,
   upsertProfileSettings
@@ -32,7 +33,8 @@ import {
   type FeedbackType,
   type PlayedCourse,
   type ProfileVisibility,
-  type RankedCourse
+  type RankedCourse,
+  type WishlistCourse
 } from "@/lib/types";
 import { getViewerContext, requireAdminViewer, requireOnboardedViewer, requireViewer } from "@/lib/viewer";
 
@@ -57,6 +59,18 @@ function isMissingWishlistTableError(error: { code?: string; message?: string } 
   );
 }
 
+function isMissingWishlistRankColumnError(error: { code?: string; message?: string } | null | undefined) {
+  if (!error) {
+    return false;
+  }
+
+  return (
+    error.code === "42703" ||
+    error.message?.includes("rank_position") ||
+    false
+  );
+}
+
 function isHandicapBand(value: string): value is (typeof HANDICAP_OPTIONS)[number] {
   return HANDICAP_OPTIONS.includes(value as (typeof HANDICAP_OPTIONS)[number]);
 }
@@ -67,6 +81,12 @@ function isFeedbackType(value: string): value is FeedbackType {
 
 function isFriendshipStatus(value: string) {
   return FRIENDSHIP_STATUSES.includes(value as (typeof FRIENDSHIP_STATUSES)[number]);
+}
+
+function getInviteHandleFromNext(next: string) {
+  const normalized = decodeURIComponent(next);
+  const match = normalized.match(/\/invite\/([^/?#]+)/i);
+  return match?.[1] ?? null;
 }
 
 function appPaths(handle?: string | null) {
@@ -164,6 +184,28 @@ export async function completeOnboardingCourseSelection(formData: FormData) {
     redirect(`/onboarding?step=picker&next=${encodeURIComponent(next)}&error=${encodeURIComponent(insert.error.message)}`);
   }
 
+  const inviteHandle = getInviteHandleFromNext(next);
+
+  if (inviteHandle) {
+    const deleteRanks = await admin.from("user_course_ranks").delete().eq("user_id", viewer.user!.id);
+
+    if (deleteRanks.error) {
+      redirect(`/onboarding?step=picker&next=${encodeURIComponent(next)}&error=${encodeURIComponent(deleteRanks.error.message)}`);
+    }
+
+    const insertRanks = await admin.from("user_course_ranks").insert(
+      dedupedIds.map((courseId, index) => ({
+        user_id: viewer.user!.id,
+        course_id: courseId,
+        rank_position: index
+      }))
+    );
+
+    if (insertRanks.error) {
+      redirect(`/onboarding?step=picker&next=${encodeURIComponent(next)}&error=${encodeURIComponent(insertRanks.error.message)}`);
+    }
+  }
+
   await logAnalyticsEvent({
     userId: viewer.user!.id,
     eventName: "onboarding_grid_completed",
@@ -173,9 +215,49 @@ export async function completeOnboardingCourseSelection(formData: FormData) {
   });
 
   revalidateApp(viewer.profile?.handle);
-  redirect(
-    `/onboarding?step=name&next=${encodeURIComponent(next.startsWith("/") ? next : "/me/courses")}`
+  redirect(`/onboarding?step=${inviteHandle ? "ranking" : "name"}&next=${encodeURIComponent(next.startsWith("/") ? next : "/me/courses")}`);
+}
+
+export async function completeOnboardingRankingStep(formData: FormData) {
+  const next = typeof formData.get("next") === "string" ? String(formData.get("next")) : "/rankings";
+  const courseIds = formData
+    .getAll("course_ids")
+    .map((value) => String(value))
+    .filter(Boolean);
+  const viewer = await requireViewer("/onboarding");
+  const admin = createAdminClient();
+  const playedCourses = await getPlayedCoursesForUser(viewer.user!.id);
+  const playedIds = new Set(playedCourses.map((course) => course.id));
+
+  if (courseIds.length === 0) {
+    redirect(`/onboarding?step=ranking&next=${encodeURIComponent(next)}&error=Order+at+least+one+course+to+continue`);
+  }
+
+  if (new Set(courseIds).size !== courseIds.length || courseIds.some((courseId) => !playedIds.has(courseId))) {
+    redirect(`/onboarding?step=ranking&next=${encodeURIComponent(next)}&error=We+could+not+save+that+ranking.+Please+try+again.`);
+  }
+
+  const deleteRanks = await admin.from("user_course_ranks").delete().eq("user_id", viewer.user!.id);
+
+  if (deleteRanks.error) {
+    redirect(`/onboarding?step=ranking&next=${encodeURIComponent(next)}&error=${encodeURIComponent(deleteRanks.error.message)}`);
+  }
+
+  const insertRanks = await admin.from("user_course_ranks").insert(
+    courseIds.map((courseId, index) => ({
+      user_id: viewer.user!.id,
+      course_id: courseId,
+      rank_position: index
+    }))
   );
+
+  if (insertRanks.error) {
+    redirect(`/onboarding?step=ranking&next=${encodeURIComponent(next)}&error=${encodeURIComponent(insertRanks.error.message)}`);
+  }
+
+  await rebuildSignalsForUser(viewer.user!.id);
+  revalidateApp(viewer.profile?.handle);
+  redirect(`/onboarding?step=name&next=${encodeURIComponent(next.startsWith("/") ? next : "/rankings")}`);
 }
 
 export async function completeOnboardingNameStep(formData: FormData) {
@@ -330,7 +412,7 @@ export async function requestSignInLink(input: {
     ok: true,
     message:
       input.mode === "sign-up"
-        ? "Check your email for the account link. Once you open it, we will help you set your handicap band and bring you back to where you started."
+        ? "Check your email for the account link. Once you open it, it will create your account so you can start ranking."
         : "Check your email for the secure sign-in link."
   };
 }
@@ -430,16 +512,57 @@ export async function setCourseWishlisted(
       };
     }
 
-    const result = await admin.from("wishlist_courses").upsert(
+    const [existingWishlist, wishlistCount] = await Promise.all([
+      admin.from("wishlist_courses").select("course_id, rank_position").eq("user_id", userId).eq("course_id", courseId).maybeSingle(),
+      admin.from("wishlist_courses").select("course_id", { count: "exact", head: true }).eq("user_id", userId)
+    ]);
+
+    if (
+      existingWishlist.error &&
+      !isMissingWishlistTableError(existingWishlist.error) &&
+      !isMissingWishlistRankColumnError(existingWishlist.error)
+    ) {
+      return {
+        ok: false,
+        message: existingWishlist.error.message
+      };
+    }
+
+    if (
+      wishlistCount.error &&
+      !isMissingWishlistTableError(wishlistCount.error) &&
+      !isMissingWishlistRankColumnError(wishlistCount.error)
+    ) {
+      return {
+        ok: false,
+        message: wishlistCount.error.message
+      };
+    }
+
+    let result = await admin.from("wishlist_courses").upsert(
       {
         user_id: userId,
-        course_id: courseId
+        course_id: courseId,
+        rank_position: existingWishlist.data?.rank_position ?? wishlistCount.count ?? 0
       },
       {
         onConflict: "user_id,course_id",
         ignoreDuplicates: false
       }
     );
+
+    if (result.error && isMissingWishlistRankColumnError(result.error)) {
+      result = await admin.from("wishlist_courses").upsert(
+        {
+          user_id: userId,
+          course_id: courseId
+        },
+        {
+          onConflict: "user_id,course_id",
+          ignoreDuplicates: false
+        }
+      );
+    }
 
       if (result.error) {
         if (isMissingWishlistTableError(result.error)) {
@@ -474,6 +597,60 @@ export async function setCourseWishlisted(
   return {
     ok: true,
     data: { wishlisted }
+  };
+}
+
+export async function saveWishlistOrder(courseIds: string[]): Promise<ActionResult<WishlistCourse[]>> {
+  const viewer = await requireOnboardedViewer("/me/wishlist");
+  const admin = createAdminClient();
+  const userId = viewer.user!.id;
+  const wishlistCourses = await getWishlistCoursesForUser(userId);
+  const wishlistIds = new Set(wishlistCourses.map((course) => course.id));
+  const submittedIds = courseIds.filter(Boolean);
+
+  if (new Set(submittedIds).size !== submittedIds.length) {
+    return {
+      ok: false,
+      message: "We found the same course twice in that wish list order. Try again."
+    };
+  }
+
+  if (submittedIds.length !== wishlistCourses.length || submittedIds.some((courseId) => !wishlistIds.has(courseId))) {
+    return {
+      ok: false,
+      message: "Only courses already on your wish list can be reordered."
+    };
+  }
+
+  const updates = submittedIds.map((courseId, index) =>
+    admin
+      .from("wishlist_courses")
+      .update({ rank_position: index })
+      .eq("user_id", userId)
+      .eq("course_id", courseId)
+  );
+
+  const results = await Promise.all(updates);
+  const firstError = results.find((result) => result.error)?.error;
+
+  if (firstError) {
+    if (isMissingWishlistRankColumnError(firstError)) {
+      return {
+        ok: false,
+        message: "Wish-list ranking will turn on as soon as the latest database update finishes."
+      };
+    }
+    return {
+      ok: false,
+      message: firstError.message
+    };
+  }
+
+  const updated = await getWishlistCoursesForUser(userId);
+  revalidateApp(viewer.profile?.handle);
+  return {
+    ok: true,
+    data: updated
   };
 }
 

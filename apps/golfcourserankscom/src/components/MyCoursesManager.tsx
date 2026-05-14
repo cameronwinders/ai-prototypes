@@ -76,6 +76,8 @@ const STATE_NAME_BY_CODE: Record<string, string> = {
   WY: "wyoming"
 };
 
+const CATALOG_PAGE_SIZE = 18;
+
 function mergePlayedCourses(current: PlayedCourse[], ranked: Array<{ id: string; rankPosition: number }>) {
   const rankById = new Map(ranked.map((course) => [course.id, course.rankPosition]));
   return current.map((course) => ({
@@ -100,6 +102,7 @@ export function MyCoursesManager({
   const [busyCourseId, setBusyCourseId] = useState<string | null>(null);
   const [wishlistBusyCourseId, setWishlistBusyCourseId] = useState<string | null>(null);
   const [catalogQuery, setCatalogQuery] = useState("");
+  const [catalogVisibleCount, setCatalogVisibleCount] = useState(CATALOG_PAGE_SIZE);
   const [announcement, setAnnouncement] = useState("");
   const [dragState, setDragState] = useState<DragState>(null);
   const latestServerState = useRef(initialPlayedCourses);
@@ -115,25 +118,34 @@ export function MyCoursesManager({
     setWishlistIds(new Set(initialWishlistIds));
   }, [initialWishlistIds]);
 
+  useEffect(() => {
+    setCatalogVisibleCount(CATALOG_PAGE_SIZE);
+  }, [catalogQuery]);
+
   const { ranked, unranked } = useMemo(() => splitPlayedCourses(playedCourses), [playedCourses]);
   const rankedIds = useMemo(() => new Set(ranked.map((course) => course.id)), [ranked]);
   const playedIds = useMemo(() => new Set(playedCourses.map((course) => course.id)), [playedCourses]);
   const filteredCatalog = useMemo(() => {
     const normalized = catalogQuery.trim().toLowerCase();
-
-    if (!normalized) {
-      return allCourses.slice(0, 18);
-    }
-
     return allCourses
       .filter((course) => {
         const stateName = STATE_NAME_BY_CODE[course.state.toUpperCase()] ?? "";
         return [course.name, course.city, course.state, stateName].some((value) =>
           value.toLowerCase().includes(normalized)
         );
-      })
-      .slice(0, 24);
+      });
   }, [allCourses, catalogQuery]);
+  const visibleCatalog = useMemo(
+    () => filteredCatalog.slice(0, catalogVisibleCount),
+    [catalogVisibleCount, filteredCatalog]
+  );
+  const hasMoreCatalogCourses = catalogVisibleCount < filteredCatalog.length;
+
+  function syncPlayedState(next: PlayedCourse[]) {
+    latestServerState.current = next;
+    latestState.current = next;
+    setPlayedCourses(next);
+  }
 
   async function flushOrder(orderIds: string[]) {
     if (savingRef.current) {
@@ -157,8 +169,7 @@ export function MyCoursesManager({
     }
 
     const updated = mergePlayedCourses(latestState.current, result.data);
-    latestServerState.current = updated;
-    setPlayedCourses(updated);
+    syncPlayedState(updated);
     setLastSavedAt(result.message ?? new Date().toISOString());
     setStatus("Saved");
     savingRef.current = false;
@@ -178,6 +189,7 @@ export function MyCoursesManager({
         rankPosition: index
       }))
     );
+    latestState.current = next;
     setPlayedCourses(next);
     void flushOrder(orderIds);
   }
@@ -259,8 +271,7 @@ export function MyCoursesManager({
       return;
     }
 
-    latestServerState.current = result.data;
-    setPlayedCourses(result.data);
+    syncPlayedState(result.data);
     setLastSavedAt(new Date().toISOString());
     setStatus("Saved");
   }
@@ -275,9 +286,8 @@ export function MyCoursesManager({
       return;
     }
 
-    const updated = mergePlayedCourses(latestState.current, result.data);
-    latestServerState.current = updated;
-    setPlayedCourses(updated);
+    const updated = mergePlayedCourses(latestServerState.current, result.data);
+    syncPlayedState(updated);
     setLastSavedAt(new Date().toISOString());
     setStatus("Saved");
 
@@ -297,8 +307,7 @@ export function MyCoursesManager({
       return;
     }
 
-    latestServerState.current = result.data;
-    setPlayedCourses(result.data);
+    syncPlayedState(result.data);
     setLastSavedAt(new Date().toISOString());
     setStatus("Saved");
   }
@@ -313,8 +322,7 @@ export function MyCoursesManager({
       return;
     }
 
-    latestServerState.current = result.data;
-    setPlayedCourses(result.data);
+    syncPlayedState(result.data);
     setWishlistIds((current) => {
       const next = new Set(current);
       next.delete(courseId);
@@ -631,7 +639,7 @@ export function MyCoursesManager({
           </div>
 
           <div className="mt-6 grid gap-3">
-            {filteredCatalog.map((course) => {
+            {visibleCatalog.map((course) => {
               const isRanked = rankedIds.has(course.id);
               const isPlayed = playedIds.has(course.id);
               const isWishlisted = wishlistIds.has(course.id);
@@ -687,6 +695,18 @@ export function MyCoursesManager({
               );
             })}
           </div>
+
+          {hasMoreCatalogCourses ? (
+            <div className="mt-5 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setCatalogVisibleCount((current) => current + CATALOG_PAGE_SIZE)}
+                className="ghost-button"
+              >
+                Load more courses
+              </button>
+            </div>
+          ) : null}
         </section>
       </div>
     </section>
