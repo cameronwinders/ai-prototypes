@@ -456,6 +456,7 @@ export function buildAiCourseStory(
 
 export function compareRankings(selfCourses: RankedCourse[], friendCourses: RankedCourse[]) {
   const friendMap = new Map(friendCourses.map((course) => [course.id, course]));
+  const selfMap = new Map(selfCourses.map((course) => [course.id, course]));
   const overlap = selfCourses
     .filter((course) => friendMap.has(course.id))
     .map<CompareCourse>((course) => {
@@ -478,10 +479,32 @@ export function compareRankings(selfCourses: RankedCourse[], friendCourses: Rank
       return left.selfRank - right.selfRank;
     });
 
+  const selfOnly = selfCourses
+    .filter((course) => !friendMap.has(course.id))
+    .map((course) => ({
+      id: course.id,
+      name: course.name,
+      city: course.city,
+      state: course.state,
+      rank: course.rankPosition + 1
+    }));
+
+  const friendOnly = friendCourses
+    .filter((course) => !selfMap.has(course.id))
+    .map((course) => ({
+      id: course.id,
+      name: course.name,
+      city: course.city,
+      state: course.state,
+      rank: course.rankPosition + 1
+    }));
+
   return {
     overlap,
-    selfOnlyCount: selfCourses.filter((course) => !friendMap.has(course.id)).length,
-    friendOnlyCount: friendCourses.filter((course) => !selfCourses.some((own) => own.id === course.id)).length
+    selfOnly,
+    friendOnly,
+    selfOnlyCount: selfOnly.length,
+    friendOnlyCount: friendOnly.length
   };
 }
 

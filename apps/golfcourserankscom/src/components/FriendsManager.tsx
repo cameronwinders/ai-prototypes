@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { respondToFriendRequest, searchFriendProfilesAction, sendFriendRequest, sendFriendRequestToUser } from "@/app/actions";
 import { InitialsAvatar } from "@/components/InitialsAvatar";
+import { ShareButton } from "@/components/ShareButton";
 import type { DiscoverableProfile, FriendsPageData } from "@/lib/types";
 
 type FriendsManagerProps = {
@@ -23,29 +24,7 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle, joinedHan
   const [status, setStatus] = useState<string | null>(null);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [sharing, setSharing] = useState(false);
-
   const acceptedIds = useMemo(() => new Set(data.accepted.map((friend) => friend.profile.id)), [data.accepted]);
-
-  async function trackShare(method: string) {
-    try {
-      await fetch("/api/analytics", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          eventName: "share_clicked",
-          payload: {
-            surface: "friends-invite-link",
-            method
-          }
-        })
-      });
-    } catch {
-      // Ignore analytics failures here.
-    }
-  }
 
   async function handleSendEmail() {
     setSubmitting(true);
@@ -105,41 +84,9 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle, joinedHan
     }
   }
 
-  async function handleShareLink() {
-    setSharing(true);
-    setStatus(null);
-
-    try {
-      if (typeof navigator !== "undefined" && navigator.share) {
-        await navigator.share({
-          title: "Golf Course Ranks invite",
-          text: "Compare public-course rankings with me on Golf Course Ranks.",
-          url: inviteUrl
-        });
-        await trackShare("native");
-        setStatus("Invite link shared.");
-        return;
-      }
-
-      if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(inviteUrl);
-        await trackShare("clipboard");
-        setStatus("Invite link copied.");
-        return;
-      }
-
-      setStatus("Share is not available on this device.");
-    } catch {
-      setStatus("Share cancelled.");
-    } finally {
-      setSharing(false);
-    }
-  }
-
   async function handleCopyLink() {
     if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
       await navigator.clipboard.writeText(inviteUrl);
-      await trackShare("copy-button");
       setStatus("Invite link copied.");
     } else {
       setStatus("Copy is not available on this device.");
@@ -180,9 +127,14 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle, joinedHan
           </div>
 
           <div className="mt-5 grid gap-3 sm:flex sm:flex-wrap">
-            <button type="button" onClick={handleShareLink} disabled={sharing} className="solid-button justify-center">
-              {sharing ? "Inviting..." : "Invite a friend"}
-            </button>
+            <ShareButton
+              title="Golf Course Ranks invite"
+              text="Compare public-course rankings with me on Golf Course Ranks."
+              url={inviteUrl}
+              className="solid-button justify-center"
+              analyticsSurface="friends-invite-link"
+              buttonChildren="Invite a friend"
+            />
             <button type="button" onClick={handleCopyLink} className="ghost-button justify-center">
               Copy invite link
             </button>

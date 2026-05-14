@@ -10,11 +10,19 @@ type OnboardingCoursePickerProps = {
   courses: CourseRecord[];
   next: string;
   error?: string | null;
+  inviterName?: string | null;
+  highlightedCourseIds?: string[];
 };
 
 const PAGE_SIZE = 25;
 
-export function OnboardingCoursePicker({ courses, next, error }: OnboardingCoursePickerProps) {
+export function OnboardingCoursePicker({
+  courses,
+  next,
+  error,
+  inviterName = null,
+  highlightedCourseIds = []
+}: OnboardingCoursePickerProps) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [scope, setScope] = useState<"all" | "top50">("all");
   const [stateFilter, setStateFilter] = useState("ALL");
@@ -26,10 +34,13 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
     [courses]
   );
 
+  const highlightedSet = useMemo(() => new Set(highlightedCourseIds), [highlightedCourseIds]);
+
   const filteredCourses = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
 
-    return courses.filter((course) => {
+    return courses
+      .filter((course) => {
       if (scope === "top50" && (course.leaderboard_rank ?? course.seed_rank) > 50) {
         return false;
       }
@@ -46,8 +57,18 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
       }
 
       return true;
-    });
-  }, [courses, scope, searchQuery, stateFilter]);
+      })
+      .sort((left, right) => {
+        const leftHighlighted = highlightedSet.has(left.id) ? 1 : 0;
+        const rightHighlighted = highlightedSet.has(right.id) ? 1 : 0;
+
+        if (leftHighlighted !== rightHighlighted) {
+          return rightHighlighted - leftHighlighted;
+        }
+
+        return (left.leaderboard_rank ?? left.seed_rank) - (right.leaderboard_rank ?? right.seed_rank);
+      });
+  }, [courses, highlightedSet, scope, searchQuery, stateFilter]);
 
   const visibleCourses = useMemo(() => filteredCourses.slice(0, visibleCount), [filteredCourses, visibleCount]);
 
@@ -75,11 +96,18 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
           <p className="eyebrow">STEP 2 OF 3</p>
           <h2 className="h3 mt-4">Pick the public courses you have already played</h2>
           <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
-            Pick 5 to 15 to get the most out of ranking. We will save them as played first, then ask for an optional name before your list opens.
+            {inviterName
+              ? `Pick at least 5 courses you have played so your first comparison with ${inviterName} has real signal. We are floating their played courses to the top.`
+              : "Pick 5 to 15 to get the most out of ranking. We will save them as played first, then ask for an optional name before your list opens."}
           </p>
           <p className="mt-2 text-sm leading-7 text-[var(--muted)]">
             Rank the courses based on which were your overall favorite to play.
           </p>
+          {inviterName ? (
+            <div className="mt-4 rounded-[var(--radius-md)] border border-[rgba(49,107,83,0.16)] bg-[rgba(216,231,221,0.72)] px-4 py-3 text-sm leading-7 text-[var(--pine)]">
+              Picking with <span className="font-semibold text-[var(--ink)]">{inviterName}</span> in mind. Courses they already played are marked below.
+            </div>
+          ) : null}
         </div>
 
         <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
@@ -144,7 +172,10 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
               }`}
             >
               <div className="flex items-start justify-between gap-3">
-                <span className={selected ? "pill pill-pine" : "pill pill-line"}>Rank #{badgeValue}</span>
+                <div className="flex flex-wrap gap-2">
+                  <span className={selected ? "pill pill-pine" : "pill pill-line"}>Rank #{badgeValue}</span>
+                  {highlightedSet.has(course.id) ? <span className="pill pill-pine pill-sentence">{inviterName ? `${inviterName} played` : "Friend played"}</span> : null}
+                </div>
                 <span
                   className={`inline-flex h-7 w-7 items-center justify-center rounded-[var(--radius-xs)] border text-[11px] font-semibold ${
                     selected
@@ -177,7 +208,9 @@ export function OnboardingCoursePicker({ courses, next, error }: OnboardingCours
               Continue with {selectedIds.length} {selectedIds.length === 1 ? "course" : "courses"} {"\u2192"}
             </p>
             <p className="mt-1 text-sm text-[var(--muted)]">
-              Pick 5 to 15 to get the most out of ranking, then add your name if you want before ordering them by your overall favorite to play.
+              {inviterName
+                ? `Pick at least 5 courses you know well, especially the ones ${inviterName} played, then add your name if you want before ordering them by your overall favorite to play.`
+                : "Pick 5 to 15 to get the most out of ranking, then add your name if you want before ordering them by your overall favorite to play."}
             </p>
           </div>
           <button

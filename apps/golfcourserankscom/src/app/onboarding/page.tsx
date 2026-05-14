@@ -2,9 +2,15 @@ import { redirect } from "next/navigation";
 
 import { completeOnboarding, completeOnboardingNameStep } from "@/app/actions";
 import { OnboardingCoursePicker } from "@/components/OnboardingCoursePicker";
-import { getAllCourses, getPlayedCoursesForUser } from "@/lib/data";
+import { getAllCourses, getPlayedCoursesForUser, getProfileByHandle } from "@/lib/data";
 import { HANDICAP_OPTIONS } from "@/lib/types";
 import { requireViewer } from "@/lib/viewer";
+
+function getInviteHandle(next: string) {
+  const normalized = decodeURIComponent(next);
+  const match = normalized.match(/\/invite\/([^/?#]+)/i);
+  return match?.[1] ?? null;
+}
 
 export default async function OnboardingPage({
   searchParams
@@ -20,6 +26,10 @@ export default async function OnboardingPage({
   const step = Array.isArray(stepParam) ? stepParam[0] : stepParam ?? "handicap";
   const error = Array.isArray(errorParam) ? errorParam[0] : errorParam;
   const playedCourses = viewer.user ? await getPlayedCoursesForUser(viewer.user.id) : [];
+  const inviteHandle = getInviteHandle(next);
+  const inviter = inviteHandle ? await getProfileByHandle(inviteHandle) : null;
+  const inviterPlayedIds = inviter ? new Set((await getPlayedCoursesForUser(inviter.id)).map((course) => course.id)) : new Set<string>();
+  const inviterName = inviter?.display_name ?? inviter?.handle ?? null;
   const hasHandicap = Boolean(viewer.profile?.handicap_band);
   const isCompleted = Boolean(viewer.profile?.onboarding_completed && viewer.profile?.handicap_band);
   const shouldShowPicker = hasHandicap && playedCourses.length === 0;
@@ -46,6 +56,11 @@ export default async function OnboardingPage({
           <p className="subhed mt-4">
             This part is optional. If you skip it, we will keep using the current name based on your email address.
           </p>
+          {inviterName ? (
+            <div className="mt-6 rounded-[var(--radius-md)] border border-[rgba(49,107,83,0.16)] bg-[rgba(216,231,221,0.72)] px-4 py-3 text-sm leading-7 text-[var(--pine)]">
+              You are almost done. Add your name if you want, then we will send you back to compare with <span className="font-semibold text-[var(--ink)]">{inviterName}</span>.
+            </div>
+          ) : null}
 
           {error ? (
             <div className="mt-6 pill pill-warning pill-sentence">{error}</div>
@@ -98,13 +113,21 @@ export default async function OnboardingPage({
     return (
       <div className="mx-auto max-w-6xl">
         <section className="shell-panel p-6 sm:p-8">
-          <p className="eyebrow">FIRST RANKING SETUP</p>
-          <h1 className="h2 mt-4">Start with the courses you already know</h1>
+          <p className="eyebrow">{inviterName ? "COMPARE SETUP" : "FIRST RANKING SETUP"}</p>
+          <h1 className="h2 mt-4">{inviterName ? `Start with the courses you and ${inviterName} are most likely to know` : "Start with the courses you already know"}</h1>
           <p className="subhed mt-4">
-            Save the rounds you have played first, then add your name if you want before ranking them.
+            {inviterName
+              ? `${inviterName} invited you to compare public-course lists. Save the rounds you have played first, then add your name if you want before ranking them.`
+              : "Save the rounds you have played first, then add your name if you want before ranking them."}
           </p>
           <div className="mt-8">
-            <OnboardingCoursePicker courses={courses} next={next.startsWith("/") ? next : "/rankings"} error={error} />
+            <OnboardingCoursePicker
+              courses={courses}
+              next={next.startsWith("/") ? next : "/rankings"}
+              error={error}
+              inviterName={inviterName}
+              highlightedCourseIds={Array.from(inviterPlayedIds)}
+            />
           </div>
         </section>
       </div>
@@ -114,10 +137,14 @@ export default async function OnboardingPage({
   return (
     <div className="mx-auto max-w-3xl">
       <section className="shell-panel p-6 sm:p-8">
-        <p className="eyebrow">ONBOARDING</p>
-        <h1 className="h2 mt-4">One last detail before the leaderboard opens</h1>
+        <p className="eyebrow">{inviterName ? "FRIEND INVITE" : "ONBOARDING"}</p>
+        <h1 className="h2 mt-4">
+          {inviterName ? `${inviterName} invited you. Start with your handicap band.` : "One last detail before the leaderboard opens"}
+        </h1>
         <p className="subhed mt-4">
-          Choose the handicap band that best fits your game so the board stays relevant.
+          {inviterName
+            ? `Choose the handicap band that best fits your game so your first comparison with ${inviterName} feels relevant.`
+            : "Choose the handicap band that best fits your game so the board stays relevant."}
         </p>
 
         {error ? (

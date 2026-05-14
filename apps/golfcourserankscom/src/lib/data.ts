@@ -1260,6 +1260,8 @@ export async function getCompareOverview(
   return {
     friend: friendProfile,
     overlap: comparison.overlap,
+    selfOnly: comparison.selfOnly,
+    friendOnly: comparison.friendOnly,
     selfOnlyCount: comparison.selfOnlyCount,
     friendOnlyCount: comparison.friendOnlyCount
   };

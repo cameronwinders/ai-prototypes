@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 
 import { requestSignInLink } from "@/app/actions";
 
-export function SignInForm() {
+export function SignInForm({ inviterName = null }: { inviterName?: string | null }) {
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "/rankings";
   const signedOut = searchParams.get("signed_out") === "1";
@@ -48,6 +48,11 @@ export function SignInForm() {
       {signedOut ? <div className="pill pill-pine pill-sentence">You have been signed out.</div> : null}
       {error ? <div className="pill pill-warning pill-sentence">{error}</div> : null}
       {message ? <div className="pill pill-pine pill-sentence">{message}</div> : null}
+      {inviterName ? (
+        <div className="rounded-[var(--radius-md)] border border-[rgba(49,107,83,0.16)] bg-[rgba(216,231,221,0.72)] px-4 py-3 text-sm leading-7 text-[var(--pine)]">
+          Continue to compare with <span className="font-semibold text-[var(--ink)]">{inviterName}</span> after you open the email link.
+        </div>
+      ) : null}
 
       <div className="min-w-0 rounded-[var(--radius-md)] border border-[var(--line)] bg-white/85 p-1">
         <div className="grid grid-cols-2 gap-1">
@@ -82,7 +87,9 @@ export function SignInForm() {
 
       <p className="text-sm leading-7 text-[var(--muted)]">
         {mode === "sign-up"
-          ? "We will help you set your handicap band, pick the courses you have played, and optionally add your name before your rankings open."
+          ? inviterName
+            ? `We will help you set your handicap band, pick the courses you have played, and then connect you back to ${inviterName}'s invite.`
+            : "We will help you set your handicap band, pick the courses you have played, and optionally add your name before your rankings open."
           : "We will email a secure sign-in link and bring you back to the page you started from."}
       </p>
 

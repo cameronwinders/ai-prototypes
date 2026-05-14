@@ -226,9 +226,19 @@ export type CompareCourse = {
   delta: number;
 };
 
+export type CompareListCourse = {
+  id: string;
+  name: string;
+  city: string;
+  state: string;
+  rank: number;
+};
+
 export type CompareOverview = {
   friend: UserProfile;
   overlap: CompareCourse[];
+  selfOnly: CompareListCourse[];
+  friendOnly: CompareListCourse[];
   selfOnlyCount: number;
   friendOnlyCount: number;
 };
