@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 
 import { AvatarStack } from "@/components/InitialsAvatar";
 import { LeaderboardFilterPanel } from "@/components/LeaderboardFilterPanel";
+import { RankingsMobileStack } from "@/components/RankingsMobileStack";
 import { RankSignal } from "@/components/RankSignal";
 import { ShareButton } from "@/components/ShareButton";
 import { getLeaderboardCourses } from "@/lib/data";
@@ -19,14 +20,6 @@ const SORT_OPTIONS = [
   { value: "golf-top-100", label: "GOLF.com" },
   { value: "golfweek-you-can-play", label: "Golf Week" },
   { value: "most-played", label: "Most played" }
-] as const;
-
-const MOBILE_RANK_STACK = [
-  { key: "crowd", label: "Crowd" },
-  { key: "editorial", label: "Editorial avg" },
-  { key: "golf-top-100", label: "GOLF.com" },
-  { key: "golf-digest-public", label: "Golf Digest" },
-  { key: "golfweek-you-can-play", label: "Golfweek" }
 ] as const;
 
 export const metadata: Metadata = {
@@ -169,61 +162,7 @@ export default async function RankingsPage({
                       ) : null}
                     </div>
 
-                    <div className="overflow-hidden rounded-md border border-line bg-[rgba(246,243,236,0.92)]">
-                      {MOBILE_RANK_STACK.map((entry, index) => {
-                        const value =
-                          entry.key === "crowd"
-                            ? formatRankPosition(course.leaderboardRank)
-                            : entry.key === "editorial"
-                              ? formatRankPosition(course.editorialAverageRank)
-                              : formatEditorialPosition(course.editorialRanks?.[entry.key]);
-
-                        const isCrowd = entry.key === "crowd";
-                        const isEditorial = entry.key === "editorial";
-
-                        return (
-                          <div key={entry.key} className="contents">
-                            <div
-                              className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-2.5 ${
-                                isCrowd
-                                  ? "bg-[rgba(49,107,83,0.16)]"
-                                  : isEditorial
-                                    ? "bg-[rgba(201,211,203,0.34)]"
-                                    : "bg-transparent"
-                              } ${
-                                index === MOBILE_RANK_STACK.length - 1
-                                  ? ""
-                                  : "border-b border-[rgba(28,41,36,0.08)]"
-                              }`}
-                            >
-                              <div className="min-w-0">
-                                <span
-                                  className={`block min-w-0 text-[11px] uppercase tracking-[0.14em] ${
-                                    isCrowd
-                                      ? "font-bold text-ink"
-                                      : isEditorial
-                                        ? "font-bold text-ink"
-                                        : "font-semibold text-muted"
-                                  }`}
-                                >
-                                  {entry.label}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                {isEditorial ? <GapBadge delta={course.editorialGap} /> : null}
-                                <span
-                                  className={`text-sm tracking-[-0.02em] text-ink ${
-                                    isCrowd || isEditorial ? "font-bold" : "font-semibold"
-                                  }`}
-                                >
-                                  {value}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
+                    <RankingsMobileStack course={course} />
                   </div>
                 </Link>
               ))}
