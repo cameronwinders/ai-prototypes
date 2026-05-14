@@ -191,7 +191,7 @@ export default async function RankingsPage({
                                     ? "bg-[rgba(201,211,203,0.34)]"
                                     : "bg-transparent"
                               } ${
-                                index === MOBILE_RANK_STACK.length - 1 && !isCrowd
+                                index === MOBILE_RANK_STACK.length - 1
                                   ? ""
                                   : "border-b border-[rgba(28,41,36,0.08)]"
                               }`}
@@ -209,19 +209,17 @@ export default async function RankingsPage({
                                   {entry.label}
                                 </span>
                               </div>
-                              <span
-                                className={`text-sm tracking-[-0.02em] text-ink ${
-                                  isCrowd || isEditorial ? "font-bold" : "font-semibold"
-                                }`}
-                              >
-                                {value}
-                              </span>
-                            </div>
-                            {isCrowd ? (
-                              <div className="border-b border-[rgba(28,41,36,0.08)] bg-[rgba(201,211,203,0.18)] px-3 py-2">
-                                <GapBadge delta={course.editorialGap} />
+                              <div className="flex items-center gap-2">
+                                {isEditorial ? <GapBadge delta={course.editorialGap} /> : null}
+                                <span
+                                  className={`text-sm tracking-[-0.02em] text-ink ${
+                                    isCrowd || isEditorial ? "font-bold" : "font-semibold"
+                                  }`}
+                                >
+                                  {value}
+                                </span>
                               </div>
-                            ) : null}
+                            </div>
                           </div>
                         );
                       })}
