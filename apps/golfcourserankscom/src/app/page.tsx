@@ -1,33 +1,12 @@
 import Link from "next/link";
 
 import { AvatarStack } from "@/components/InitialsAvatar";
+import { RankGapBadge } from "@/components/RankGapBadge";
 import { RankingsMobileStack } from "@/components/RankingsMobileStack";
 import { getLeaderboardCourses } from "@/lib/data";
 import { EDITORIAL_LISTS } from "@/lib/types";
-import { formatCrowdScore, formatLocation, formatRankPosition, getRankDeltaDisplay } from "@/lib/ranking";
+import { formatCrowdScore, formatLocation, formatRankPosition } from "@/lib/ranking";
 import { getViewerContext } from "@/lib/viewer";
-
-function GapBadge({ delta }: { delta: number | null }) {
-  const display = getRankDeltaDisplay(delta);
-
-  if (!display) {
-    return <span className="pill pill-line pill-sentence">No editorial average</span>;
-  }
-
-  const isUp = display.direction === "up";
-  const isFlat = display.direction === "flat";
-
-  return (
-    <span
-      className={`pill pill-sentence ${
-        isFlat ? "pill-line" : isUp ? "pill-pine" : "pill-warning"
-      }`}
-      title={display.label}
-    >
-      {isFlat ? "All Square" : `${display.value} ${isUp ? "Up" : "Down"}`}
-    </span>
-  );
-}
 
 function RankingsPreview({
   title,
@@ -153,7 +132,7 @@ function RankingsPreview({
                   <div className="text-base font-semibold text-ink">{formatRankPosition(course.editorialAverageRank)}</div>
                 </td>
                 <td className="px-4 py-5 align-top">
-                  <GapBadge delta={course.editorialGap} />
+                  <RankGapBadge delta={course.editorialGap} />
                 </td>
                 {EDITORIAL_LISTS.map((editorial) => (
                   <td key={editorial.key} className="px-4 py-5 align-top">

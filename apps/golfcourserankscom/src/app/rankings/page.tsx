@@ -3,11 +3,12 @@ import type { Metadata } from "next";
 
 import { AvatarStack } from "@/components/InitialsAvatar";
 import { LeaderboardFilterPanel } from "@/components/LeaderboardFilterPanel";
+import { RankGapBadge } from "@/components/RankGapBadge";
 import { RankingsMobileStack } from "@/components/RankingsMobileStack";
 import { RankSignal } from "@/components/RankSignal";
 import { ShareButton } from "@/components/ShareButton";
 import { getLeaderboardCourses } from "@/lib/data";
-import { formatCrowdScore, formatLocation, formatRankPosition, getRankDeltaDisplay } from "@/lib/ranking";
+import { formatCrowdScore, formatLocation, formatRankPosition } from "@/lib/ranking";
 import { EDITORIAL_LISTS, HANDICAP_OPTIONS, RANK_SIGNAL_OPTIONS, type RankSignalFilter } from "@/lib/types";
 import { getSiteUrl } from "@/lib/supabase/env";
 import { getViewerContext } from "@/lib/viewer";
@@ -29,28 +30,6 @@ export const metadata: Metadata = {
 
 function formatEditorialPosition(position?: number | null) {
   return formatRankPosition(position);
-}
-
-function GapBadge({ delta }: { delta: number | null }) {
-  const display = getRankDeltaDisplay(delta);
-
-  if (!display) {
-    return <span className="pill pill-line pill-sentence">No editorial average</span>;
-  }
-
-  const isUp = display.direction === "up";
-  const isFlat = display.direction === "flat";
-
-  return (
-    <span
-      className={`pill pill-sentence ${
-        isFlat ? "pill-line" : isUp ? "pill-pine" : "pill-warning"
-      }`}
-      title={display.label}
-    >
-      {isFlat ? "All Square" : `${display.value} ${isUp ? "Up" : "Down"}`}
-    </span>
-  );
 }
 
 export default async function RankingsPage({
@@ -236,7 +215,7 @@ export default async function RankingsPage({
                       <div className="text-base font-semibold text-ink">{formatRankPosition(course.editorialAverageRank)}</div>
                     </div>
                     <div className="px-4 py-5 align-top">
-                      <GapBadge delta={course.editorialGap} />
+                      <RankGapBadge delta={course.editorialGap} />
                     </div>
                     {EDITORIAL_LISTS.map((editorial) => (
                       <div key={editorial.key} className="px-4 py-5 align-top">

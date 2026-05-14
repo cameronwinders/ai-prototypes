@@ -1,5 +1,6 @@
-import { formatRankPosition, getRankDeltaDisplay } from "@/lib/ranking";
+import { formatRankPosition } from "@/lib/ranking";
 import { type LeaderboardCourse } from "@/lib/types";
+import { RankGapBadge } from "@/components/RankGapBadge";
 
 const MOBILE_RANK_STACK = [
   { key: "crowd", label: "Crowd" },
@@ -8,28 +9,6 @@ const MOBILE_RANK_STACK = [
   { key: "golf-digest-public", label: "Golf Digest" },
   { key: "golfweek-you-can-play", label: "Golfweek" }
 ] as const;
-
-function GapBadge({ delta }: { delta: number | null }) {
-  const display = getRankDeltaDisplay(delta);
-
-  if (!display) {
-    return <span className="pill pill-line pill-sentence">No editorial average</span>;
-  }
-
-  const isUp = display.direction === "up";
-  const isFlat = display.direction === "flat";
-
-  return (
-    <span
-      className={`pill pill-sentence ${
-        isFlat ? "pill-line" : isUp ? "pill-pine" : "pill-warning"
-      }`}
-      title={display.label}
-    >
-      {isFlat ? "All Square" : `${display.value} ${isUp ? "Up" : "Down"}`}
-    </span>
-  );
-}
 
 function formatEditorialPosition(position?: number | null) {
   return formatRankPosition(position);
@@ -70,7 +49,7 @@ export function RankingsMobileStack({ course }: { course: LeaderboardCourse }) {
               </span>
             </div>
             <div className="flex items-center gap-2">
-              {isCrowd ? <GapBadge delta={course.editorialGap} /> : null}
+              {isCrowd ? <RankGapBadge delta={course.editorialGap} /> : null}
               <span
                 className={`text-sm tracking-[-0.02em] text-ink ${
                   isCrowd || isEditorial ? "font-bold" : "font-semibold"
