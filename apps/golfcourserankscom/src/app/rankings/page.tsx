@@ -41,6 +41,7 @@ export default async function RankingsPage({
   const bandParam = Array.isArray(params.band) ? params.band[0] : params.band;
   const stateParam = Array.isArray(params.state) ? params.state[0] : params.state;
   const sortParam = Array.isArray(params.sort) ? params.sort[0] : params.sort;
+  const queryParam = Array.isArray(params.q) ? params.q[0] : params.q;
   const playedParam = Array.isArray(params.played) ? params.played[0] : params.played;
   const tagParam = Array.isArray(params.tag) ? params.tag[0] : params.tag;
   const activity = playedParam === "played" || playedParam === "not-played" ? playedParam : "all";
@@ -55,11 +56,12 @@ export default async function RankingsPage({
     ? (bandParam as (typeof HANDICAP_OPTIONS)[number])
     : null;
   const selectedState = stateParam?.trim().toUpperCase() ?? "";
+  const searchQuery = queryParam?.trim() ?? "";
   const sort = SORT_OPTIONS.some((option) => option.value === sortParam)
     ? (sortParam as (typeof SORT_OPTIONS)[number]["value"])
     : "rank";
 
-  const courses = await getLeaderboardCourses({
+  const allCourses = await getLeaderboardCourses({
     handicapBand: band,
     minSignals: 0,
     state: selectedState || null,
@@ -69,6 +71,13 @@ export default async function RankingsPage({
     activity,
     signal
   });
+
+  const normalizedQuery = searchQuery.toLowerCase();
+  const courses = normalizedQuery
+    ? allCourses.filter((course) =>
+        [course.name, course.city, course.state].some((value) => value.toLowerCase().includes(normalizedQuery))
+      )
+    : allCourses;
 
   return (
     <section className="shell-panel shell-panel-contrast p-6 sm:p-8">
@@ -90,11 +99,11 @@ export default async function RankingsPage({
           />
         </div>
 
-        <LeaderboardFilterPanel sort={sort} />
+        <LeaderboardFilterPanel sort={sort} query={searchQuery} />
 
         {courses.length === 0 ? (
           <div className="rounded-lg border border-dashed border-line px-5 py-10 text-sm leading-6 text-muted">
-            No courses match that filter right now. Try another state, switch back to all golfers, or reset the sort.
+            No courses match that search right now. Try another course name, city, or state, or clear the search.
           </div>
         ) : (
           <>
