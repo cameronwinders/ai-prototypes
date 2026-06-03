@@ -32,7 +32,7 @@ export default async function ComparePage({
     <div className="space-y-6">
       <section className="shell-panel p-6 sm:p-8">
         <p className="eyebrow">COMPARE</p>
-        <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
+        <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 className="h2">Your ranking list vs {friendName}</h1>
             <p className="subhed mt-4">This view only shows courses both of you have ranked.</p>
@@ -69,7 +69,7 @@ export default async function ComparePage({
       <section className="grid gap-6 xl:grid-cols-[1.12fr_0.88fr]">
         <div className="shell-panel p-6">
           <p className="eyebrow">SHARED COURSES</p>
-          <h2 className="h3 mt-4">Same courses, different order</h2>
+          <h2 className="h3">Same courses, different order</h2>
 
           {overview.overlap.length === 0 ? (
             <div className="mt-6 rounded-[var(--radius-lg)] border border-dashed border-[var(--line)] px-5 py-8 text-sm leading-7 text-[var(--muted)]">
@@ -129,7 +129,7 @@ export default async function ComparePage({
 
           <section className="shell-panel-contrast p-6">
             <p className="eyebrow">ONLY ON YOUR LIST</p>
-            <h2 className="h3 mt-4">Courses you ranked that {friendName} has not ranked yet</h2>
+            <h2 className="h3">Courses you ranked that {friendName} has not ranked yet</h2>
             {overview.selfOnly.length === 0 ? (
               <div className="mt-5 rounded-[var(--radius-md)] border border-dashed border-[var(--line)] px-4 py-6 text-sm leading-7 text-[var(--muted)]">
                 Nothing exclusive on your side right now.
@@ -157,7 +157,7 @@ export default async function ComparePage({
 
           <section className="shell-panel-contrast p-6">
             <p className="eyebrow">ONLY ON THEIR LIST</p>
-            <h2 className="h3 mt-4">Courses {friendName} ranked that you have not ranked yet</h2>
+            <h2 className="h3">Courses {friendName} ranked that you have not ranked yet</h2>
             {overview.friendOnly.length === 0 ? (
               <div className="mt-5 rounded-[var(--radius-md)] border border-dashed border-[var(--line)] px-4 py-6 text-sm leading-7 text-[var(--muted)]">
                 Nothing exclusive on {friendName}&apos;s side right now.

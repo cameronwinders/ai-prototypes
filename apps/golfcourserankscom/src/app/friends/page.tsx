@@ -30,7 +30,7 @@ export default async function FriendsPage({
       <div className="space-y-6">
         <section className="shell-panel p-6 sm:p-8">
           <p className="eyebrow">FRIENDS</p>
-          <h1 className="h2 mt-4">Follow golf friends and compare the courses you both know</h1>
+          <h1 className="h2">Follow golf friends and compare the courses you both know</h1>
           <p className="subhed mt-4">
             Share an invite link, find golfers fast, and compare only the rounds you both know.
           </p>
@@ -47,7 +47,7 @@ export default async function FriendsPage({
         <section className="grid gap-6 xl:grid-cols-[1.02fr_0.98fr]">
           <section className="shell-panel-contrast p-6">
             <p className="eyebrow">HOW COMPARE WORKS</p>
-            <h2 className="h3 mt-4">Same courses, two ranking styles, one fast answer</h2>
+            <h2 className="h3">Same courses, two ranking styles, one fast answer</h2>
             <div className="mt-5 grid gap-3">
               {comparisonPreview.map((row) => (
                 <div
@@ -103,7 +103,7 @@ export default async function FriendsPage({
     <div className="space-y-6">
       <section className="shell-panel p-6 sm:p-8">
         <p className="eyebrow">FRIENDS</p>
-        <h1 className="h2 mt-4">Follow golf friends and compare your lists</h1>
+        <h1 className="h2">Follow golf friends and compare your lists</h1>
         <p className="subhed mt-4">
           Share an invite link, let golfers auto-connect when they join through it, and unlock overlap-only comparisons.
         </p>

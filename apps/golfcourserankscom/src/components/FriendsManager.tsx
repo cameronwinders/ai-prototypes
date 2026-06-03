@@ -99,7 +99,7 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle, joinedHan
         {joinedHandle ? (
           <section className="shell-panel-contrast p-5">
             <p className="eyebrow">INVITE WORKED</p>
-            <h2 className="h3 mt-4">{joinedName ?? `@${joinedHandle}`} joined through your invite</h2>
+            <h2 className="h3">{joinedName ?? `@${joinedHandle}`} joined through your invite</h2>
             <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
               You are connected now, so the fastest next step is to compare the courses you both know.
             </p>
@@ -116,7 +116,7 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle, joinedHan
 
         <section className="shell-panel-soft p-6">
           <p className="eyebrow">SHARE YOUR INVITE LINK</p>
-          <h2 className="h3 mt-4">Send one link and start comparing lists</h2>
+          <h2 className="h3">Send one link and start comparing lists</h2>
           <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
             Your personal invite route is permanent, mobile-friendly, and easy to drop into a group chat. When a golfer opens it, signs up, and finishes onboarding, you become friends automatically.
           </p>
@@ -156,7 +156,7 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle, joinedHan
 
         <section className="shell-panel p-6">
           <p className="eyebrow">SEARCH GOLFERS</p>
-          <h2 className="h3 mt-4">Find people by handle, name, or email</h2>
+          <h2 className="h3">Find people by handle, name, or email</h2>
 
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <input
@@ -211,7 +211,7 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle, joinedHan
 
         <section className="shell-panel-contrast p-6">
           <p className="eyebrow">FALLBACK</p>
-          <h2 className="h3 mt-4">Still want to invite by email?</h2>
+          <h2 className="h3">Still want to invite by email?</h2>
           <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
             Keep the manual path around for golfers who have not claimed a public handle yet.
           </p>

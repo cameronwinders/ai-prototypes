@@ -16,7 +16,7 @@ export default async function AdminFeedbackPage() {
     <div className="space-y-6">
       <section className="shell-panel p-6 sm:p-8">
         <p className="eyebrow">ADMIN FEEDBACK</p>
-        <h1 className="h2 mt-4">Every bug, feature request, and rough edge in one place</h1>
+        <h1 className="h2">Every bug, feature request, and rough edge in one place</h1>
         <p className="subhed mt-4">
           Each submission carries the screen and URL so product triage does not depend on guesswork.
         </p>

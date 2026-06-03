@@ -36,7 +36,7 @@ export default async function SignInPage({
     <div className="mx-auto w-full max-w-3xl overflow-x-hidden">
       <section className="shell-panel-contrast min-w-0 p-6 sm:p-8">
         <p className="eyebrow">{eyebrow}</p>
-        <h1 className="h2 mt-4">{title}</h1>
+        <h1 className="h2">{title}</h1>
         <p className="subhed mt-4 max-w-2xl">{subhed}</p>
         <p className="mt-5 text-sm leading-7 text-[var(--muted)]">{helper}</p>
         <div className="mt-6">

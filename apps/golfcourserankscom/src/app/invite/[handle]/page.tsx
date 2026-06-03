@@ -74,7 +74,7 @@ export default async function InvitePage({
     <div className="mx-auto max-w-3xl">
       <section className="shell-panel p-6 sm:p-8">
         <p className="eyebrow">FRIEND INVITE</p>
-        <h1 className="h2 mt-4">{inviter.display_name ?? inviter.handle} wants to compare public-course lists with you</h1>
+        <h1 className="h2">{inviter.display_name ?? inviter.handle} wants to compare public-course lists with you</h1>
         <p className="subhed mt-4">
           {viewer.user
             ? "Accept the invite and unlock overlap-only comparisons."

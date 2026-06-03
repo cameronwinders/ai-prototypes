@@ -23,7 +23,7 @@ export default async function FeedbackPage({
     <div className="space-y-6">
       <section className="shell-panel p-6 sm:p-8">
         <p className="eyebrow">FEEDBACK</p>
-        <h1 className="h2 mt-4">Tell us what to improve</h1>
+        <h1 className="h2">Tell us what to improve</h1>
         <p className="subhed mt-4">
           Share bugs, feature ideas, or request a course addition with the current page attached.
         </p>

@@ -74,7 +74,7 @@ export default async function OnboardingPage({
       <div className="mx-auto max-w-3xl">
         <section className="shell-panel p-6 sm:p-8">
           <p className="eyebrow">{inviterName ? "STEP 4 OF 4" : "STEP 3 OF 3"}</p>
-          <h1 className="h2 mt-4">Add your name if you want it on your list</h1>
+          <h1 className="h2">Add your name if you want it on your list</h1>
           <p className="subhed mt-4">
             This part is optional. If you skip it, we will keep using the current name based on your email address.
           </p>
@@ -136,7 +136,7 @@ export default async function OnboardingPage({
       <div className="mx-auto max-w-6xl">
         <section className="shell-panel p-6 sm:p-8">
           <p className="eyebrow">{inviterName ? "COMPARE SETUP" : "FIRST RANKING SETUP"}</p>
-          <h1 className="h2 mt-4">{inviterName ? `Start with the courses you and ${inviterName} are most likely to know` : "Start with the courses you already know"}</h1>
+          <h1 className="h2">{inviterName ? `Start with the courses you and ${inviterName} are most likely to know` : "Start with the courses you already know"}</h1>
           <p className="subhed mt-4">
             {inviterName
               ? `${inviterName} invited you to compare public-course lists. Save the rounds you have played first, then rank them before you add your name if you want.`
@@ -160,7 +160,7 @@ export default async function OnboardingPage({
     <div className="mx-auto max-w-3xl">
       <section className="shell-panel p-6 sm:p-8">
         <p className="eyebrow">{inviterName ? "FRIEND INVITE" : "ONBOARDING"}</p>
-        <h1 className="h2 mt-4">
+        <h1 className="h2">
           {inviterName ? `${inviterName} invited you. Start with your handicap band.` : "One last detail before the leaderboard opens"}
         </h1>
         <p className="subhed mt-4">
@@ -179,7 +179,7 @@ export default async function OnboardingPage({
             {HANDICAP_OPTIONS.map((option) => (
               <label
                 key={option}
-                className="block cursor-pointer rounded-[var(--radius-lg)] border border-[rgba(24,37,43,0.08)] bg-white/90 p-4 transition hover:-translate-y-px hover:bg-white has-[:checked]:border-[rgba(49,107,83,0.55)] has-[:checked]:bg-[var(--pine-soft)] has-[:checked]:shadow-[0_0_0_1px_rgba(49,107,83,0.12)]"
+                className="block cursor-pointer rounded-[var(--radius-lg)] border border-[rgba(24,37,43,0.08)] bg-white/90 p-4 transition hover:-translate-y-px hover:bg-white has-[:checked]:border-transparent has-[:checked]:bg-[var(--pine-soft)] has-[:checked]:shadow-[inset_3px_0_0_var(--pine),0_4px_14px_rgba(49,107,83,0.08)]"
               >
                 <div className="flex items-start gap-4">
                   <input

@@ -365,7 +365,7 @@ export function MyCoursesManager({
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-4xl">
               <p className="eyebrow">MY COURSES</p>
-              <h1 className="h2 mt-4">Your public-course stack</h1>
+              <h1 className="h2">Your public-course stack</h1>
               <p className="subhed mt-4">
                 Rank the courses based on which were your overall favorite to play.
               </p>
@@ -425,7 +425,7 @@ export function MyCoursesManager({
         {ranked.length >= 5 ? (
           <section className="shell-panel-contrast p-5">
             <p className="eyebrow">SHARE YOUR LIST</p>
-            <h2 className="h3 mt-4">Your rankings are ready to share</h2>
+            <h2 className="h3">Your rankings are ready to share</h2>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--muted)]">
               Once you have a real top five, the best growth loop is inviting another golfer to stack their list beside yours.
             </p>
@@ -453,7 +453,7 @@ export function MyCoursesManager({
         {playedCourses.length === 0 ? (
           <section className="shell-panel-contrast p-8 text-center">
             <p className="eyebrow">START YOUR LIST</p>
-            <h2 className="h3 mt-4">Add your first course</h2>
+            <h2 className="h3">Add your first course</h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)]">
               Mark the public courses you have already played, then rank the best ones into order.
             </p>
@@ -472,7 +472,7 @@ export function MyCoursesManager({
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
               <p className="eyebrow">RANKING</p>
-              <h2 className="h3 mt-4">Rank the public courses you have actually played</h2>
+              <h2 className="h3">Rank the public courses you have actually played</h2>
               <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
                 On mobile, use Top, Up, and Down to set the order. The top slot is your favorite.
               </p>
@@ -621,7 +621,7 @@ export function MyCoursesManager({
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
               <p className="eyebrow">ADD MORE COURSES</p>
-              <h2 className="h3 mt-4">Search and mark more public courses as played</h2>
+              <h2 className="h3">Search and mark more public courses as played</h2>
               <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
                 This list starts in national leaderboard order. Once you mark a course as played, it drops into the unranked section above.
               </p>

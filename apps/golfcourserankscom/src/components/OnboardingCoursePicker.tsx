@@ -94,7 +94,7 @@ export function OnboardingCoursePicker({
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-3xl">
           <p className="eyebrow">{inviterName ? "STEP 2 OF 4" : "STEP 2 OF 3"}</p>
-          <h2 className="h3 mt-4">Pick the public courses you have already played</h2>
+          <h2 className="h3">Pick the public courses you have already played</h2>
           <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
             {inviterName
               ? `Pick at least 5 courses you have played so your first comparison with ${inviterName} has real signal. We are floating their played courses to the top.`
@@ -167,7 +167,7 @@ export function OnboardingCoursePicker({
               onClick={() => toggleCourse(course.id)}
               className={`min-h-[10rem] rounded-[var(--radius-lg)] border p-4 text-left transition ${
                 selected
-                  ? "border-[rgba(49,107,83,0.52)] bg-[var(--pine-soft)] shadow-[0_0_0_1px_rgba(49,107,83,0.1)]"
+                  ? "is-selected"
                   : "border-[var(--line)] bg-white/90 hover:-translate-y-px hover:bg-white"
               }`}
             >

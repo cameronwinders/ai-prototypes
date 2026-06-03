@@ -39,7 +39,7 @@ export default async function ProfilePage({
     <div className="space-y-6">
       <section className="shell-panel p-6 sm:p-8">
         <p className="eyebrow">ACCOUNT SETTINGS</p>
-        <div className="mt-4 flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           <InitialsAvatar
             displayName={summary.profile?.display_name}
             handle={summary.profile?.handle}
@@ -86,7 +86,7 @@ export default async function ProfilePage({
       <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
         <section className="shell-panel p-6">
           <p className="eyebrow">PROFILE CONTROLS</p>
-          <h2 className="h3 mt-4">Choose how your profile shows up</h2>
+          <h2 className="h3">Choose how your profile shows up</h2>
           <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
             Your handle is generated automatically at signup. You can change it one time for free.
           </p>
@@ -203,7 +203,7 @@ export default async function ProfilePage({
 
         <aside className="shell-panel-soft p-6">
           <p className="eyebrow">SHARE PREVIEW</p>
-          <h2 className="h3 mt-4">Your public URL is ready</h2>
+          <h2 className="h3">Your public URL is ready</h2>
           <div className="shell-panel-contrast mt-5 p-4">
             <p className="meta">Profile link</p>
             <p className="mt-2 break-all text-sm font-semibold text-[var(--ink)]">{publicProfileUrl}</p>

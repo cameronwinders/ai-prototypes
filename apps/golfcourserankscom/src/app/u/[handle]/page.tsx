@@ -129,7 +129,7 @@ export default async function PublicProfilePage({
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="eyebrow">TOP 10</p>
-          <h2 className="h3 mt-4">The courses this golfer keeps highest</h2>
+          <h2 className="h3">The courses this golfer keeps highest</h2>
         </div>
       </div>
 
@@ -166,7 +166,7 @@ export default async function PublicProfilePage({
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="eyebrow">WISH LIST</p>
-          <h2 className="h3 mt-4">The public courses this golfer wants to play next</h2>
+          <h2 className="h3">The public courses this golfer wants to play next</h2>
         </div>
       </div>
 
@@ -205,7 +205,7 @@ export default async function PublicProfilePage({
     <div className="space-y-6">
       <section className="shell-panel p-6 sm:p-8">
         <p className="eyebrow">PUBLIC PROFILE</p>
-        <div className="mt-4 flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           <InitialsAvatar
             displayName={overview.profile.display_name}
             handle={overview.profile.handle}
@@ -231,7 +231,7 @@ export default async function PublicProfilePage({
       {overview.visibilityState !== "visible" ? (
         <section className="shell-panel-contrast p-6">
           <p className="eyebrow">PROFILE UNAVAILABLE</p>
-          <h2 className="h3 mt-4">
+          <h2 className="h3">
             {overview.visibilityState === "private"
               ? "This golfer keeps their profile private."
               : "This profile is only visible to accepted friends."}

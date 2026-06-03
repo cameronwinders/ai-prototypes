@@ -67,7 +67,7 @@ export function OnboardingRankingStep({
 
       <div className="max-w-3xl">
         <p className="eyebrow">STEP 3 OF 4</p>
-        <h2 className="h3 mt-4">Put your played courses in order</h2>
+        <h2 className="h3">Put your played courses in order</h2>
         <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
           {inviterName
             ? `Before you compare with ${inviterName}, rank these public courses by which were your overall favorite to play.`

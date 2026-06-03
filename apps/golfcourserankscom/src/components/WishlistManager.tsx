@@ -154,7 +154,7 @@ export function WishlistManager({ initialCourses, siteUrl, viewerHandle, inviteU
         {courses.length >= 5 ? (
           <section className="shell-panel-contrast p-5">
             <p className="eyebrow">SHARE YOUR NEXT TRIP</p>
-            <h2 className="h3 mt-4">Your wish list is worth sending around</h2>
+            <h2 className="h3">Your wish list is worth sending around</h2>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--muted)]">
               Share the public courses you want to play next, then invite a friend to build their own wish list so you can line up the trip together.
             </p>
@@ -182,7 +182,7 @@ export function WishlistManager({ initialCourses, siteUrl, viewerHandle, inviteU
         {courses.length === 0 ? (
           <section className="shell-panel-contrast p-8 text-center">
             <p className="eyebrow">NOTHING SAVED YET</p>
-            <h2 className="h3 mt-4">Your next golf trip starts here</h2>
+            <h2 className="h3">Your next golf trip starts here</h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)]">
               Browse the course directory and tap Add to wish list on anything you want to keep in the conversation.
             </p>
@@ -197,7 +197,7 @@ export function WishlistManager({ initialCourses, siteUrl, viewerHandle, inviteU
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div className="max-w-3xl">
                 <p className="eyebrow">RANK YOUR WISH LIST</p>
-                <h2 className="h3 mt-4">Put your next-trip priorities in order</h2>
+                <h2 className="h3">Put your next-trip priorities in order</h2>
                 <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
                   New courses are added to the bottom of this list. Use Top, Up, and Down to move the dream trip to the top.
                 </p>

@@ -4,7 +4,7 @@ export default function NotFound() {
   return (
     <div className="shell-panel p-6 sm:p-8">
       <p className="eyebrow">PAGE NOT FOUND</p>
-      <h1 className="h2 mt-4">That page is out of bounds</h1>
+      <h1 className="h2">That page is out of bounds</h1>
       <p className="subhed mt-4">
         The link may be old, or the page may have moved while the national board kept growing. Use one of the quick routes below to get back into the app.
       </p>
