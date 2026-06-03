@@ -320,7 +320,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                   >
                     <span style={active ? activePillTextStyle : undefined}>{item.label}</span>
                     <span
-                      className={`eyebrow text-[11px] ${active ? "" : "text-muted"}`}
+                      className={`section-label text-[11px] ${active ? "" : "text-muted"}`}
                       style={active ? activePillTextStyle : undefined}
                     >
                       {active ? "Current" : "Open"}

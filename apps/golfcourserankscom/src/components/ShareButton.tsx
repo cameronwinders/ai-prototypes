@@ -169,7 +169,7 @@ export function ShareButton({
               />
               <div className="relative z-[71] max-h-[calc(100vh-1.5rem)] w-full max-w-[34rem] overflow-y-auto rounded-lg border border-line bg-white shadow-[0_24px_60px_rgba(18,28,25,0.18)]">
                 <div className="flex items-center justify-between border-b border-line px-5 py-4">
-                  <span className="eyebrow">SHARE</span>
+                  <span className="section-label">SHARE</span>
                   <button type="button" aria-label="Close share" onClick={() => setOpen(false)} className="ghost-button sm">
                     {"\u00D7"}
                   </button>
@@ -202,7 +202,7 @@ export function ShareButton({
 
                 {hideSecondaryLinks ? null : (
                   <div className="border-t border-line px-5 py-5">
-                    <div className="eyebrow mb-3 text-[0.62rem]">SEND TO</div>
+                    <div className="section-label mb-3 text-[0.62rem]">SEND TO</div>
                     <div className="grid grid-cols-4 gap-2">
                       {destinations.map((destination) => (
                         <a

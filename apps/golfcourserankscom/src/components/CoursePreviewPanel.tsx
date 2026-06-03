@@ -76,7 +76,7 @@ export function CoursePreviewPanel({
             </div>
 
             <div className="w-full rounded-md border border-[rgba(49,107,83,0.12)] bg-[rgba(216,231,221,0.76)] px-3 py-2 text-left sm:w-auto sm:text-right">
-              <p className="eyebrow text-[10px]">{scoreEyebrow}</p>
+              <p className="section-label text-[10px]">{scoreEyebrow}</p>
               <p className="mt-1 text-2xl font-semibold tracking-[var(--tracking-tight)] text-ink">
                 {hero.normalizedScore.toFixed(1)}
               </p>
@@ -92,7 +92,7 @@ export function CoursePreviewPanel({
                 >
                   <div className="flex items-center justify-between gap-3">
                     <span className="pill pill-line bg-linen">#{course.leaderboardRank}</span>
-                    <span className="eyebrow text-[11px] text-pine">{course.normalizedScore.toFixed(1)}</span>
+                    <span className="section-label text-[11px] text-pine">{course.normalizedScore.toFixed(1)}</span>
                   </div>
                   <p className="mt-3 text-base font-semibold tracking-[-0.03em] text-ink">{course.name}</p>
                   <p className="meta mt-1">
