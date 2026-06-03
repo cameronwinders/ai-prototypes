@@ -63,6 +63,40 @@
   --motion-fast: 140ms ease;
   --motion-mid: 300ms ease;
 
+  /* Codified rhythm — eyebrow→headline gap + section spacing (design system edit) */
+  --space-eyebrow: 0.75rem;
+  --space-section: 4rem;
+
+  /* ── Mobile tokens (≤640px, 44px touch targets, thumb-reach safe areas) ── */
+  --m-gutter: 18px;
+  --m-gutter-tight: 14px;
+  --m-touch: 44px;
+  --m-touch-sm: 36px;
+  --m-bottom-bar: 64px;
+  --m-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --m-safe-top: env(safe-area-inset-top, 0px);
+
+  --m-space-eyebrow: 0.625rem;
+  --m-space-section: 2.5rem;
+
+  --m-fs-display: 2.6rem;
+  --m-fs-h1: 1.75rem;
+  --m-fs-h2: 1.35rem;
+  --m-fs-h3: 1.1rem;
+  --m-fs-title: 1rem;
+  --m-fs-body: 0.95rem;
+  --m-fs-meta: 0.78rem;
+  --m-fs-eyebrow: 0.68rem;
+
+  --m-radius-sm: 8px;
+  --m-radius-md: 12px;
+  --m-radius-lg: 16px;
+  --m-radius-sheet: 20px;
+
+  --m-shadow-card: 0 2px 8px rgba(18, 28, 25, 0.05);
+  --m-shadow-sheet: 0 -8px 32px rgba(18, 28, 25, 0.12);
+  --m-shadow-sticky: 0 1px 0 var(--line);
+
   --bg-page-gradient:
     radial-gradient(circle at top left, rgba(202, 218, 201, 0.45), transparent 32%),
     radial-gradient(circle at top right, rgba(233, 216, 182, 0.32), transparent 28%),
@@ -176,20 +210,32 @@ h3,
 
 .subhed {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1.5rem; /* display-only: italic Cormorant earns its keep at >=1.5rem */
   font-style: italic;
   font-weight: 500;
+  line-height: 1.45;
+  color: var(--pine);
+}
+
+.subhed-sm {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-style: normal;
+  font-weight: 500;
   line-height: 1.5;
+  letter-spacing: -0.005em;
   color: var(--pine);
 }
 
 .eyebrow {
+  display: block;
   font-family: var(--font-body);
   font-size: var(--fs-eyebrow);
   font-weight: 700;
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
   color: var(--pine);
+  margin-bottom: var(--space-eyebrow); /* codified gap; do not rely on parent flex gap */
 }
 
 .meta {
@@ -266,11 +312,15 @@ pre,
 .shell-panel {
   position: relative;
   overflow: hidden;
-  border: 1px solid var(--line);
+  /* borderless by default — shadow + inset top edge + ::before glow carry the lift */
   border-radius: var(--radius-lg);
   background: linear-gradient(180deg, rgba(255, 253, 249, 0.98), rgba(255, 250, 243, 0.88));
   box-shadow: var(--shadow-panel), var(--inset-edge);
   backdrop-filter: blur(18px);
+}
+
+.shell-panel-bordered {
+  border: 1px solid var(--line); /* opt-in hairline for panels in busy/nested context */
 }
 
 .shell-panel::before {
@@ -293,6 +343,17 @@ pre,
 .shell-panel-contrast {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(249, 245, 237, 0.92));
   box-shadow: 0 20px 48px rgba(18, 28, 25, 0.1), var(--inset-edge);
+}
+
+/* Selected state — never a border ring. Pine-soft fill + 3px inset pine left rule. */
+.is-selected {
+  background: var(--pine-soft);
+  box-shadow: inset 3px 0 0 var(--pine), 0 4px 14px rgba(49, 107, 83, 0.08);
+  border-color: transparent;
+}
+
+.shell-panel.is-selected {
+  box-shadow: inset 3px 0 0 var(--pine), var(--shadow-panel), var(--inset-edge);
 }
 
 .solid-button,
@@ -376,6 +437,15 @@ pre,
   font-size: 1rem;
 }
 
+/* Mobile full-width button — 44px+ hit target */
+.solid-button.block,
+.ghost-button.block {
+  width: 100%;
+  min-height: var(--m-touch);
+  padding: 0.85rem 1.2rem;
+  font-size: 1rem;
+}
+
 .brand-heading {
   font-family: var(--font-display);
   font-weight: 600;
@@ -412,37 +482,58 @@ pre,
   grid-template-columns: 74px minmax(0, 1.75fr) minmax(0, 1fr) minmax(0, 0.8fr);
 }
 
-@media (max-width: 768px) {
-  :root {
-    --fs-h3: 1.32rem;
-    --fs-h2: 1.72rem;
-    --fs-h1: 2.5rem;
-    --fs-display: 3.55rem;
-  }
-
+@media (max-width: 640px) {
   body {
+    font-size: var(--m-fs-body);
     line-height: 1.45;
   }
 
+  h1,
+  .h1 {
+    font-size: var(--m-fs-h1);
+    line-height: 1.12;
+  }
+
   .h1-display {
-    line-height: 0.98;
+    font-size: var(--m-fs-display);
+    line-height: 1.06;
+  }
+
+  h2,
+  .h2 {
+    font-size: var(--m-fs-h2);
+    line-height: 1.15;
+  }
+
+  h3,
+  .h3 {
+    font-size: var(--m-fs-h3);
   }
 
   .subhed {
-    font-size: 1.08rem;
+    font-size: 1.25rem; /* still display-tier on mobile */
     line-height: 1.4;
+  }
+
+  .subhed-sm {
+    font-size: 1rem;
+  }
+
+  .eyebrow {
+    margin-bottom: var(--m-space-eyebrow);
   }
 
   .shell-panel,
   .shell-panel-soft,
   .shell-panel-contrast {
-    border-radius: var(--radius-md);
+    border-radius: var(--m-radius-md);
   }
 
   .solid-button,
   .ghost-button {
-    min-height: 2.85rem;
+    min-height: var(--m-touch);
     padding: 0.72rem 1rem;
+    font-size: 0.95rem;
   }
 
   .pill {
@@ -453,4 +544,365 @@ pre,
   .pill-sentence {
     font-size: 0.76rem;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MOBILE UTILITY LAYER — .m-* classes for the phone-side kit.
+   Apply at any width (used by mobile-framed composites and ≤640px screens).
+   ═══════════════════════════════════════════════════════════════════ */
+.m-screen {
+  width: 100%;
+  min-height: 100%;
+  font-family: var(--font-body);
+  font-size: var(--m-fs-body);
+  color: var(--fg-1);
+  background: var(--bg-page-gradient);
+}
+
+.m-screen h1,
+.m-screen .h1 {
+  font-size: var(--m-fs-h1);
+  line-height: 1.12;
+}
+
+.m-screen .h1-display {
+  font-size: var(--m-fs-display);
+  line-height: 1.06;
+}
+
+.m-screen h2,
+.m-screen .h2 {
+  font-size: var(--m-fs-h2);
+  line-height: 1.15;
+}
+
+.m-screen h3,
+.m-screen .h3 {
+  font-size: var(--m-fs-h3);
+}
+
+.m-screen .subhed {
+  font-size: 1.25rem;
+}
+
+.m-screen .subhed-sm {
+  font-size: 1rem;
+}
+
+.m-screen .eyebrow {
+  margin-bottom: var(--m-space-eyebrow);
+}
+
+.m-page {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 16px var(--m-gutter) calc(var(--m-bottom-bar) + 24px);
+}
+
+/* Mobile sticky header — flat linen, hairline rule, wordmark left / actions right */
+.m-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 52px;
+  padding: 12px var(--m-gutter);
+  background: rgba(251, 248, 242, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+
+.m-wordmark {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.m-wordmark img {
+  flex-shrink: 0;
+}
+
+.m-icon-btn {
+  width: var(--m-touch);
+  height: var(--m-touch);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--m-radius-sm);
+  color: var(--ink);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.m-icon-btn:hover {
+  background: rgba(28, 41, 36, 0.04);
+  border-color: var(--line);
+}
+
+/* Mobile bottom action bar — sticky CTA */
+.m-bottom-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 25;
+  display: flex;
+  gap: 8px;
+  padding: 10px var(--m-gutter) calc(10px + var(--m-safe-bottom));
+  background: rgba(251, 248, 242, 0.96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--line);
+}
+
+/* Mobile course row — vertical layout, no editorial columns inline */
+.m-course-row {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 64px;
+  padding: 12px var(--m-gutter-tight);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--m-radius-md);
+  color: inherit;
+  text-decoration: none;
+}
+
+.m-course-row .rank {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--pine);
+  font-variant-numeric: tabular-nums;
+}
+
+.m-course-row .name {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.m-course-row .meta {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 2px;
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.m-course-row .crowd {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1;
+  color: var(--pine);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.m-course-row .crowd-label {
+  margin-top: 4px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Mobile bottom sheet */
+.m-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(18, 28, 25, 0.32);
+  backdrop-filter: blur(2px);
+}
+
+.m-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 51;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 8px var(--m-gutter) calc(20px + var(--m-safe-bottom));
+  background: var(--linen);
+  border-top-left-radius: var(--m-radius-sheet);
+  border-top-right-radius: var(--m-radius-sheet);
+  box-shadow: var(--m-shadow-sheet);
+}
+
+.m-sheet-grabber {
+  width: 38px;
+  height: 4px;
+  margin: 6px auto 14px;
+  border-radius: 2px;
+  background: rgba(28, 41, 36, 0.18);
+}
+
+/* Mobile chip row — horizontally scrollable filter chips, bleeds to page edge */
+.m-chip-row {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin: 0 calc(var(--m-gutter) * -1);
+  padding: 0 var(--m-gutter) 2px;
+}
+
+.m-chip-row::-webkit-scrollbar {
+  display: none;
+}
+
+.m-chip {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--m-touch-sm);
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xs);
+  background: #fff;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.m-chip[aria-pressed="true"] {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+
+.m-chip.pine[aria-pressed="true"] {
+  background: var(--pine-soft);
+  color: var(--pine);
+  border-color: rgba(49, 107, 83, 0.3);
+}
+
+/* Drag handle — long-press affordance for reorder */
+.m-drag-handle {
+  width: 32px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: grab;
+  user-select: none;
+}
+
+.m-drag-handle:active {
+  cursor: grabbing;
+}
+
+/* List menu — iOS-style tap-to-select rows used inside sheets */
+.m-list {
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--m-radius-md);
+}
+
+.m-list-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--m-touch);
+  padding: 14px 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  font: inherit;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.m-list-row:last-child {
+  border-bottom: none;
+}
+
+.m-list-row:hover {
+  background: rgba(28, 41, 36, 0.03);
+}
+
+.m-list-row .label {
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.m-list-row .meta {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.m-list-row[aria-pressed="true"] .label,
+.m-list-row[aria-selected="true"] .label {
+  color: var(--pine);
+  font-weight: 600;
+}
+
+.m-list-row .check {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--pine);
+}
+
+.m-list-row[aria-pressed="false"] .check,
+.m-list-row[aria-selected="false"] .check {
+  visibility: hidden;
+}
+
+.m-list-section-label {
+  padding: 0 4px 8px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Mobile-list selected state pairs with .is-selected for the left-rule treatment */
+.m-list-row.is-selected {
+  background: var(--pine-soft);
+  box-shadow: inset 3px 0 0 var(--pine);
 }
