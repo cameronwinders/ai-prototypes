@@ -4,7 +4,8 @@ import type { Metadata } from "next";
 import { AvatarStack } from "@/components/InitialsAvatar";
 import { LeaderboardFilterPanel } from "@/components/LeaderboardFilterPanel";
 import { RankGapBadge } from "@/components/RankGapBadge";
-import { RankingsMobileStack } from "@/components/RankingsMobileStack";
+import { RankingsMobileControls } from "@/components/RankingsMobileControls";
+import { RankingsMobileRow } from "@/components/RankingsMobileRow";
 import { RankSignal } from "@/components/RankSignal";
 import { ShareButton } from "@/components/ShareButton";
 import { getLeaderboardCourses } from "@/lib/data";
@@ -99,7 +100,10 @@ export default async function RankingsPage({
           />
         </div>
 
-        <LeaderboardFilterPanel sort={sort} query={searchQuery} />
+        <div className="hidden lg:block">
+          <LeaderboardFilterPanel sort={sort} query={searchQuery} />
+        </div>
+        <RankingsMobileControls sort={sort} query={searchQuery} resultCount={courses.length} />
 
         {courses.length === 0 ? (
           <div className="rounded-lg border border-dashed border-line px-5 py-10 text-sm leading-6 text-muted">
@@ -107,52 +111,9 @@ export default async function RankingsPage({
           </div>
         ) : (
           <>
-            <div className="grid gap-3 lg:hidden">
+            <div className="flex flex-col gap-2 lg:hidden">
               {courses.map((course) => (
-                <Link
-                  key={course.id}
-                  href={`/courses/${course.id}`}
-                  className="block rounded-lg border border-line bg-white/92 p-4 transition-[background-color,transform] duration-150 hover:-translate-y-px hover:bg-white"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="flex items-start gap-3">
-                        <span className="pill pill-pine">#{course.leaderboardRank}</span>
-                        <div className="min-w-0">
-                          <h2 className="text-[1.65rem] font-semibold leading-[1.02] tracking-[var(--tracking-tight)] text-ink [overflow-wrap:anywhere]">
-                            {course.name}
-                          </h2>
-                          <p className="meta mt-2">{formatLocation(course)}</p>
-                          {course.friendPlayers?.length ? (
-                            <div className="mt-3 flex flex-wrap items-center gap-2">
-                              <span className="meta">Friends played</span>
-                              <AvatarStack people={course.friendPlayers} size="sm" max={3} />
-                            </div>
-                          ) : null}
-                        </div>
-                      </div>
-                    </div>
-                    <span className="shrink-0 pt-1 text-lg text-muted" aria-hidden="true">
-                      &gt;
-                    </span>
-                  </div>
-
-                  <div className="mt-4 grid gap-3 sm:grid-cols-[minmax(0,1fr)_10.5rem]">
-                    <div className="min-w-0 space-y-3">
-                      <span className={`pill ${course.isEarly ? "pill-warning" : "pill-pine"} pill-sentence`}>
-                        {course.isEarly ? "Starting score" : "Crowd score"} {formatCrowdScore(course.normalizedScore)}
-                      </span>
-                      {course.viewerPlayed ? <span className="pill pill-pine pill-sentence">Played by you</span> : null}
-                      {course.rankSignal ? (
-                        <div>
-                          <RankSignal signal={course.rankSignal} />
-                        </div>
-                      ) : null}
-                    </div>
-
-                    <RankingsMobileStack course={course} />
-                  </div>
-                </Link>
+                <RankingsMobileRow key={course.id} course={course} />
               ))}
             </div>
 
