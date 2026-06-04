@@ -1,16 +1,12 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 
-import { AvatarStack } from "@/components/InitialsAvatar";
+import { CourseRow, CourseRowHeader } from "@/components/CourseRow";
 import { LeaderboardFilterPanel } from "@/components/LeaderboardFilterPanel";
-import { RankGapBadge } from "@/components/RankGapBadge";
 import { RankingsMobileControls } from "@/components/RankingsMobileControls";
 import { RankingsMobileRow } from "@/components/RankingsMobileRow";
-import { RankSignal } from "@/components/RankSignal";
 import { ShareButton } from "@/components/ShareButton";
 import { getLeaderboardCourses } from "@/lib/data";
-import { formatCrowdScore, formatLocation, formatRankPosition } from "@/lib/ranking";
-import { EDITORIAL_LISTS, HANDICAP_OPTIONS, RANK_SIGNAL_OPTIONS, type RankSignalFilter } from "@/lib/types";
+import { HANDICAP_OPTIONS, RANK_SIGNAL_OPTIONS, type RankSignalFilter } from "@/lib/types";
 import { getSiteUrl } from "@/lib/supabase/env";
 import { getViewerContext } from "@/lib/viewer";
 
@@ -28,10 +24,6 @@ export const metadata: Metadata = {
   title: "Overall Rankings | Golf Course Ranks",
   description: "See where the crowd board disagrees with Golf Digest, GOLF.com, and Golfweek on one national rankings page."
 };
-
-function formatEditorialPosition(position?: number | null) {
-  return formatRankPosition(position);
-}
 
 export default async function RankingsPage({
   searchParams
@@ -85,8 +77,9 @@ export default async function RankingsPage({
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="h2 text-[2rem] text-ink sm:text-[2.3rem]">National Rankings</h1>
-            <p className="subhed max-w-3xl">
+            <p className="eyebrow">National rankings</p>
+            <h1 className="h1 text-[2.4rem] text-ink">Overall Rankings</h1>
+            <p className="subhed-sm mt-2 max-w-3xl">
               Use "Sort by" to see crowd rankings, golf media rankings, or where they differ most.
             </p>
           </div>
@@ -117,84 +110,11 @@ export default async function RankingsPage({
               ))}
             </div>
 
-            <div className="hidden rounded-xl border border-line bg-white/90 lg:block">
-              <div className="grid grid-cols-[16%_27%_11%_12%_11%_11%_12%] border-b border-line bg-[rgba(255,255,255,0.98)] text-left text-xs font-semibold uppercase tracking-[0.18em] text-muted shadow-[0_1px_0_rgba(28,41,36,0.08)] backdrop-blur lg:sticky lg:top-[4.85rem] lg:z-20">
-                <div className="px-4 py-4" title="Crowd score = how golfers actually rank it.">
-                  Crowd
-                </div>
-                <div className="px-4 py-4">Course</div>
-                <div
-                  className="px-4 py-4"
-                  title="Average of the available editorial rankings for this course."
-                >
-                  Editorial avg
-                </div>
-                <div
-                  className="px-4 py-4"
-                  title="How many ranking spots better or worse the crowd has this course versus the editorial average."
-                >
-                  Crowd vs editorial
-                </div>
-                {EDITORIAL_LISTS.map((editorial) => (
-                  <div
-                    key={editorial.key}
-                    className="px-4 py-4"
-                    title={`${editorial.label} position from the seeded editorial lists.`}
-                  >
-                    {editorial.label}
-                  </div>
-                ))}
-              </div>
-              <div>
+            <div className="hidden lg:block">
+              <CourseRowHeader />
+              <div className="grid gap-1.5">
                 {courses.map((course) => (
-                  <div
-                    key={course.id}
-                    className="grid grid-cols-[16%_27%_11%_12%_11%_11%_12%] border-b border-line last:border-b-0"
-                  >
-                    <div className="px-4 py-5 align-top">
-                      <Link href={`/courses/${course.id}`} className="block min-w-0">
-                        <div className="font-display text-[2.2rem] font-semibold tracking-[var(--tracking-tighter)] text-ink">
-                          #{course.leaderboardRank}
-                        </div>
-                        <div
-                          className={`mt-2 inline-flex ${course.isEarly ? "pill pill-warning" : "pill pill-pine"} pill-sentence`}
-                        >
-                          {course.isEarly ? "Starting score" : "Crowd score"} {formatCrowdScore(course.normalizedScore)}
-                        </div>
-                        {course.rankSignal ? (
-                          <div className="mt-2">
-                            <RankSignal signal={course.rankSignal} />
-                          </div>
-                        ) : null}
-                        {course.viewerPlayed ? <div className="mt-2 text-sm text-pine">Played by you</div> : null}
-                        {course.friendPlayers?.length ? (
-                          <div className="mt-3 flex items-center gap-2">
-                            <AvatarStack people={course.friendPlayers} size="sm" max={3} />
-                            <span className="text-xs uppercase tracking-[0.12em] text-muted">Friends played</span>
-                          </div>
-                        ) : null}
-                      </Link>
-                    </div>
-                    <div className="px-4 py-5 align-top">
-                      <Link href={`/courses/${course.id}`} className="block">
-                        <h2 className="text-[1.28rem] font-semibold tracking-[var(--tracking-tight)] text-ink">{course.name}</h2>
-                        <p className="meta mt-1">{formatLocation(course)}</p>
-                      </Link>
-                    </div>
-                    <div className="px-4 py-5 align-top">
-                      <div className="text-base font-semibold text-ink">{formatRankPosition(course.editorialAverageRank)}</div>
-                    </div>
-                    <div className="px-4 py-5 align-top">
-                      <RankGapBadge delta={course.editorialGap} />
-                    </div>
-                    {EDITORIAL_LISTS.map((editorial) => (
-                      <div key={editorial.key} className="px-4 py-5 align-top">
-                        <div className="text-base font-semibold text-ink">
-                          {formatEditorialPosition(course.editorialRanks?.[editorial.key])}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <CourseRow key={course.id} course={course} />
                 ))}
               </div>
             </div>
