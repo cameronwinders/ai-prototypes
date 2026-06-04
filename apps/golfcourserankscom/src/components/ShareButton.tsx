@@ -160,14 +160,15 @@ export function ShareButton({
 
       {mounted && open
         ? createPortal(
-            <div className="fixed inset-0 z-[70] flex items-end justify-center p-3 sm:items-center sm:p-5">
+            <div className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-5">
               <button
                 type="button"
                 aria-label="Close share"
                 className="absolute inset-0 bg-[rgba(18,28,25,0.36)]"
                 onClick={() => setOpen(false)}
               />
-              <div className="relative z-[71] max-h-[calc(100vh-1.5rem)] w-full max-w-[34rem] overflow-y-auto rounded-lg border border-line bg-white shadow-[0_24px_60px_rgba(18,28,25,0.18)]">
+              <div className="relative z-[71] max-h-[88vh] w-full overflow-y-auto rounded-t-[var(--m-radius-sheet)] border-0 bg-[var(--linen)] shadow-[var(--m-shadow-sheet)] sm:max-h-[calc(100vh-1.5rem)] sm:max-w-[34rem] sm:rounded-lg sm:border sm:border-line sm:bg-white sm:shadow-[0_24px_60px_rgba(18,28,25,0.18)]">
+                <div className="m-sheet-grabber sm:hidden" />
                 <div className="flex items-center justify-between border-b border-line px-5 py-4">
                   <span className="section-label">SHARE</span>
                   <button type="button" aria-label="Close share" onClick={() => setOpen(false)} className="ghost-button sm">
