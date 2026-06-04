@@ -1,11 +1,8 @@
 import Link from "next/link";
 
-import { AvatarStack } from "@/components/InitialsAvatar";
-import { RankGapBadge } from "@/components/RankGapBadge";
+import { CourseRow, CourseRowHeader } from "@/components/CourseRow";
 import { RankingsMobileRow } from "@/components/RankingsMobileRow";
 import { getLeaderboardCourses } from "@/lib/data";
-import { EDITORIAL_LISTS } from "@/lib/types";
-import { formatCrowdScore, formatLocation, formatRankPosition } from "@/lib/ranking";
 import { getViewerContext } from "@/lib/viewer";
 
 function RankingsPreview({
@@ -42,72 +39,13 @@ function RankingsPreview({
         ))}
       </div>
 
-      <div className="mt-6 hidden overflow-hidden rounded-xl border border-line bg-white/90 lg:block">
-        <table className="w-full table-fixed">
-          <colgroup>
-            <col className="w-[16%]" />
-            <col className="w-[27%]" />
-            <col className="w-[11%]" />
-            <col className="w-[12%]" />
-            <col className="w-[11%]" />
-            <col className="w-[11%]" />
-            <col className="w-[12%]" />
-          </colgroup>
-          <thead>
-            <tr className="border-b border-line bg-[rgba(255,255,255,0.98)] text-left text-xs font-semibold uppercase tracking-[0.18em] text-muted">
-              <th className="px-4 py-4">Crowd</th>
-              <th className="px-4 py-4">Course</th>
-              <th className="px-4 py-4">Editorial avg</th>
-              <th className="px-4 py-4">Crowd vs editorial</th>
-              {EDITORIAL_LISTS.map((editorial) => (
-                <th key={editorial.key} className="px-4 py-4">
-                  {editorial.label}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {courses.map((course) => (
-              <tr key={course.id} className="border-b border-line last:border-b-0">
-                <td className="px-4 py-5 align-top">
-                  <Link href={`/courses/${course.id}`} className="block min-w-0">
-                    <div className="font-display text-[2.2rem] font-semibold tracking-[var(--tracking-tighter)] text-ink">
-                      #{course.leaderboardRank}
-                    </div>
-                    <div className={`mt-2 inline-flex ${course.isEarly ? "pill pill-warning" : "pill pill-pine"} pill-sentence`}>
-                      {course.isEarly ? "Starting score" : "Crowd score"} {formatCrowdScore(course.normalizedScore)}
-                    </div>
-                    {course.friendPlayers?.length ? (
-                      <div className="mt-3 flex items-center gap-2">
-                        <AvatarStack people={course.friendPlayers} size="sm" max={3} />
-                        <span className="text-xs uppercase tracking-[0.12em] text-muted">Friends played</span>
-                      </div>
-                    ) : null}
-                  </Link>
-                </td>
-                <td className="px-4 py-5 align-top">
-                  <Link href={`/courses/${course.id}`} className="block">
-                    <h3 className="text-[1.28rem] font-semibold tracking-[var(--tracking-tight)] text-ink">{course.name}</h3>
-                    <p className="meta mt-1">{formatLocation(course)}</p>
-                  </Link>
-                </td>
-                <td className="px-4 py-5 align-top">
-                  <div className="text-base font-semibold text-ink">{formatRankPosition(course.editorialAverageRank)}</div>
-                </td>
-                <td className="px-4 py-5 align-top">
-                  <RankGapBadge delta={course.editorialGap} />
-                </td>
-                {EDITORIAL_LISTS.map((editorial) => (
-                  <td key={editorial.key} className="px-4 py-5 align-top">
-                    <div className="text-base font-semibold text-ink">
-                      {formatRankPosition(course.editorialRanks?.[editorial.key])}
-                    </div>
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="mt-6 hidden lg:block">
+        <CourseRowHeader />
+        <div className="grid gap-1.5">
+          {courses.map((course) => (
+            <CourseRow key={course.id} course={course} />
+          ))}
+        </div>
       </div>
 
       <div className="mt-6">

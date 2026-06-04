@@ -145,7 +145,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                 <Wordmark className="h-10 w-auto max-w-[18rem] sm:h-9" />
               </Link>
 
-              <nav className="hidden items-center gap-2 lg:flex">
+              <nav className="hidden items-center gap-[18px] lg:flex">
                 {desktopNav.map((item) => {
                   const href = item.href === "/me/courses" ? myCoursesHref : item.href;
                   const active = isDesktopNavActive(item.href);
@@ -153,10 +153,14 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                     <Link
                       key={item.href}
                       href={href}
-                      className={navPillClasses(active)}
-                      style={active ? activePillTextStyle : undefined}
+                      className={`relative py-1.5 text-[0.85rem] transition-colors ${
+                        active ? "font-semibold text-ink" : "font-medium text-muted hover:text-ink"
+                      }`}
                     >
-                      <span style={active ? activePillTextStyle : undefined}>{item.label}</span>
+                      {item.label}
+                      {active ? (
+                        <span className="absolute inset-x-0 -bottom-2 h-0.5 rounded-full bg-pine" aria-hidden="true" />
+                      ) : null}
                     </Link>
                   );
                 })}
