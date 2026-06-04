@@ -204,7 +204,7 @@ export default async function ProfilePage({
         <aside className="shell-panel-soft p-6">
           <p className="eyebrow">SHARE PREVIEW</p>
           <h2 className="h3">Your public URL is ready</h2>
-          <div className="shell-panel-contrast mt-5 p-4">
+          <div className="shell-panel-contrast shell-panel-bordered mt-5 p-4">
             <p className="meta">Profile link</p>
             <p className="mt-2 break-all text-sm font-semibold text-[var(--ink)]">{publicProfileUrl}</p>
           </div>

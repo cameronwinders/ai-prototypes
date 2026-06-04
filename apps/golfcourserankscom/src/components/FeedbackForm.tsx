@@ -92,7 +92,7 @@ export function FeedbackForm({ initialScreenName, initialUrl, initialFeedbackTyp
         ))}
       </div>
 
-      <div className="shell-panel-contrast p-4 text-sm text-[var(--muted)]">
+      <div className="shell-panel-contrast shell-panel-bordered p-4 text-sm text-[var(--muted)]">
         <p>
           Captured screen: <span className="font-semibold text-[var(--ink)]">{screenName}</span>
         </p>

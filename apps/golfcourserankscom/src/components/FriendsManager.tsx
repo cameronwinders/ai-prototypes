@@ -121,7 +121,7 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle, joinedHan
             Your personal invite route is permanent, mobile-friendly, and easy to drop into a group chat. When a golfer opens it, signs up, and finishes onboarding, you become friends automatically.
           </p>
 
-          <div className="shell-panel-contrast mt-5 p-4">
+          <div className="shell-panel-contrast shell-panel-bordered mt-5 p-4">
             <p className="meta">Invite URL</p>
             <p className="mt-2 break-all text-sm font-semibold text-[var(--ink)]">{inviteUrl}</p>
           </div>
@@ -143,7 +143,7 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle, joinedHan
             </Link>
           </div>
 
-          <div className="shell-panel-contrast mt-6 flex justify-center p-5">
+          <div className="shell-panel-contrast shell-panel-bordered mt-6 flex justify-center p-5">
             <img
               src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(inviteUrl)}`}
               alt="QR code for your Golf Course Ranks invite link"

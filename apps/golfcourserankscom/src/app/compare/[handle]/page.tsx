@@ -47,7 +47,7 @@ export default async function ComparePage({
           />
         </div>
         <div className="mt-6 grid gap-3 md:grid-cols-2">
-          <div className="shell-panel-soft p-4">
+          <div className="shell-panel-soft shell-panel-bordered p-4">
             <p className="meta">Quick read</p>
             <p className="mt-3 text-sm leading-7 text-[var(--ink)]">
               {sharedCount === 0
@@ -57,7 +57,7 @@ export default async function ComparePage({
                   : `You and ${friendName} agree on all ${sharedCount} shared ranked courses so far.`}
             </p>
           </div>
-          <div className="shell-panel-contrast p-4">
+          <div className="shell-panel-contrast shell-panel-bordered p-4">
             <p className="meta">What to do next</p>
             <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
               Use the one-sided lists below to spot the courses one of you values that the other still has not ranked. That is usually the fastest path to the next golf text thread.
@@ -119,7 +119,7 @@ export default async function ComparePage({
                 { label: "Only on your ranked list", value: overview.selfOnlyCount },
                 { label: "Only on their ranked list", value: overview.friendOnlyCount }
               ].map((item) => (
-                <div key={item.label} className="shell-panel-contrast p-4">
+                <div key={item.label} className="shell-panel-contrast shell-panel-bordered p-4">
                   <p className="meta">{item.label}</p>
                   <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">{item.value}</p>
                 </div>
