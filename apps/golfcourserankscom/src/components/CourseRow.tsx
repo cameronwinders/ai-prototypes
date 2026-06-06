@@ -9,16 +9,24 @@ import { EDITORIAL_LISTS, type LeaderboardCourse } from "@/lib/types";
 // Desktop rankings row — Web UI Kit spec (8 columns):
 //   Crowd (rank + score) · Friends played · Course (+ inline signal) ·
 //   Editorial avg · vs. editorial · Golf Digest · GOLF.com · Golfweek
-// `action` replaces the trailing publication cell with a custom button
-// (e.g. "Mark played" on Browse Courses, "Saved" on Wishlist).
-const ROW_GRID = "60px 110px minmax(0,1.7fr) 76px 90px 70px 70px 70px";
-
+// `action` replaces the trailing publication cell with a custom control
+// (e.g. "Mark played" on Browse, "Saved" on Wishlist). When an action is
+// present the whole row is NOT a link (so the action's buttons work without
+// nesting interactive elements inside an anchor); instead the course name
+// links through to the detail page.
 const PUBLICATIONS = EDITORIAL_LISTS; // [golf-digest-public, golf-top-100, golfweek-you-can-play]
 
-export function CourseRowHeader({ trailingLabel = "Golfweek" }: { trailingLabel?: string }) {
+function rowGrid(wide: boolean) {
+  // `wide` lets the trailing column flex to hold an action control (Browse / Wishlist).
+  return wide
+    ? "60px 110px minmax(0,1.7fr) 76px 90px 70px 70px minmax(132px,auto)"
+    : "60px 110px minmax(0,1.7fr) 76px 90px 70px 70px 70px";
+}
+
+export function CourseRowHeader({ trailingLabel = "Golfweek", wide = false }: { trailingLabel?: string; wide?: boolean }) {
   const head = "font-mono text-[0.62rem] font-bold uppercase tracking-[0.08em] text-muted";
   return (
-    <div className="grid items-center gap-3.5 px-[18px] pb-2" style={{ gridTemplateColumns: ROW_GRID }}>
+    <div className="grid items-center gap-3.5 px-[18px] pb-2" style={{ gridTemplateColumns: rowGrid(wide) }}>
       <div className={head}>Crowd</div>
       <div className={`${head} text-center`}>Friends played</div>
       <div className={head}>Course</div>
@@ -26,7 +34,7 @@ export function CourseRowHeader({ trailingLabel = "Golfweek" }: { trailingLabel?
       <div className={`${head} text-center`}>vs. editorial</div>
       <div className={`${head} text-center`}>Golf Digest</div>
       <div className={`${head} text-center`}>GOLF.com</div>
-      <div className={`${head} text-center`}>{trailingLabel}</div>
+      <div className={`${head} ${wide ? "text-right" : "text-center"}`}>{trailingLabel}</div>
     </div>
   );
 }
@@ -47,6 +55,8 @@ function FriendsPlayedCell({ course }: { course: LeaderboardCourse }) {
 }
 
 export function CourseRow({ course, action }: { course: LeaderboardCourse; action?: ReactNode }) {
+  const href = `/courses/${course.id}`;
+  const hasAction = Boolean(action);
   const delta = getRankDeltaDisplay(course.editorialGap);
   const cvel = !delta ? "—" : delta.direction === "flat" ? "All Square" : `${delta.value} ${delta.direction === "up" ? "Up" : "Down"}`;
   const cvelColor =
@@ -58,52 +68,62 @@ export function CourseRow({ course, action }: { course: LeaderboardCourse; actio
 
   const cell = "text-center font-mono text-[0.85rem] tabular-nums text-muted";
 
-  return (
-    <Link
-      href={`/courses/${course.id}`}
-      className="block rounded-sm border border-line bg-white px-[18px] py-3.5 transition-colors duration-150 hover:bg-[#fafafa]"
-    >
-      <div className="grid items-center gap-3.5" style={{ gridTemplateColumns: ROW_GRID }}>
-        {/* Crowd — rank + score */}
-        <div>
-          <div className="font-mono text-[1.05rem] font-bold leading-none text-pine">#{course.leaderboardRank}</div>
-          <div
-            className={`mt-1 font-mono text-[0.7rem] tabular-nums tracking-[0.04em] ${course.isEarly ? "text-[var(--warning-ink)]" : "text-muted"}`}
-          >
-            {formatCrowdScore(course.normalizedScore)}
-            {course.isEarly ? "*" : ""}
-          </div>
-        </div>
-
-        {/* Friends played */}
-        <FriendsPlayedCell course={course} />
-
-        {/* Course — name + city + inline signal */}
-        <div className="flex min-w-0 items-center gap-2.5">
-          <div className="min-w-0">
-            <h3 className="truncate text-[1rem] font-semibold leading-[1.2] tracking-[-0.01em] text-ink">{course.name}</h3>
-            <p className="mt-0.5 text-[0.78rem] text-muted">{formatLocation(course)}</p>
-          </div>
-          {course.rankSignal ? <RankSignal signal={course.rankSignal} /> : null}
-        </div>
-
-        {/* Editorial avg */}
-        <div className={cell}>{formatRankPosition(course.editorialAverageRank)}</div>
-
-        {/* vs. editorial */}
-        <div className={`text-center font-mono text-[0.78rem] font-semibold tabular-nums tracking-[0.02em] ${cvelColor}`}>{cvel}</div>
-
-        {/* Golf Digest, GOLF.com */}
-        <div className={cell}>{formatRankPosition(course.editorialRanks?.[PUBLICATIONS[0].key])}</div>
-        <div className={cell}>{formatRankPosition(course.editorialRanks?.[PUBLICATIONS[1].key])}</div>
-
-        {/* Golfweek — or action slot */}
-        {action ? (
-          <div className="flex justify-end">{action}</div>
-        ) : (
-          <div className={cell}>{formatRankPosition(course.editorialRanks?.[PUBLICATIONS[2].key])}</div>
-        )}
+  const courseCell = (
+    <>
+      <div className="min-w-0">
+        <h3 className="truncate text-[1rem] font-semibold leading-[1.2] tracking-[-0.01em] text-ink">{course.name}</h3>
+        <p className="mt-0.5 text-[0.78rem] text-muted">{formatLocation(course)}</p>
       </div>
+      {course.rankSignal ? <RankSignal signal={course.rankSignal} /> : null}
+    </>
+  );
+
+  const body = (
+    <div className="grid items-center gap-3.5" style={{ gridTemplateColumns: rowGrid(hasAction) }}>
+      {/* Crowd — rank + score */}
+      <div>
+        <div className="font-mono text-[1.05rem] font-bold leading-none text-pine">#{course.leaderboardRank}</div>
+        <div className={`mt-1 font-mono text-[0.7rem] tabular-nums tracking-[0.04em] ${course.isEarly ? "text-[var(--warning-ink)]" : "text-muted"}`}>
+          {formatCrowdScore(course.normalizedScore)}
+          {course.isEarly ? "*" : ""}
+        </div>
+      </div>
+
+      {/* Friends played */}
+      <FriendsPlayedCell course={course} />
+
+      {/* Course — name + city + inline signal (name links through when the row isn't a link) */}
+      {hasAction ? (
+        <Link href={href} className="flex min-w-0 items-center gap-2.5">
+          {courseCell}
+        </Link>
+      ) : (
+        <div className="flex min-w-0 items-center gap-2.5">{courseCell}</div>
+      )}
+
+      {/* Editorial avg */}
+      <div className={cell}>{formatRankPosition(course.editorialAverageRank)}</div>
+
+      {/* vs. editorial */}
+      <div className={`text-center font-mono text-[0.78rem] font-semibold tabular-nums tracking-[0.02em] ${cvelColor}`}>{cvel}</div>
+
+      {/* Golf Digest, GOLF.com */}
+      <div className={cell}>{formatRankPosition(course.editorialRanks?.[PUBLICATIONS[0].key])}</div>
+      <div className={cell}>{formatRankPosition(course.editorialRanks?.[PUBLICATIONS[1].key])}</div>
+
+      {/* Golfweek — or action slot */}
+      {hasAction ? <div className="flex justify-end">{action}</div> : <div className={cell}>{formatRankPosition(course.editorialRanks?.[PUBLICATIONS[2].key])}</div>}
+    </div>
+  );
+
+  const shell = "block rounded-sm border border-line bg-white px-[18px] py-3.5";
+
+  if (hasAction) {
+    return <div className={shell}>{body}</div>;
+  }
+  return (
+    <Link href={href} className={`${shell} transition-colors duration-150 hover:bg-[#fafafa]`}>
+      {body}
     </Link>
   );
 }

@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 
 import { setCoursePlayed, setCourseWishlisted } from "@/app/actions";
+import { CourseRow, CourseRowHeader } from "@/components/CourseRow";
 import { PlayedButton, WantToPlayButton } from "@/components/PlayActions";
 import { formatLocation } from "@/lib/ranking";
-import type { CourseRecord, PlayedCourse } from "@/lib/types";
+import type { CourseRecord, LeaderboardCourse, PlayedCourse } from "@/lib/types";
 
 const STATE_NAME_BY_CODE: Record<string, string> = {
   AL: "alabama",
@@ -62,7 +63,7 @@ const STATE_NAME_BY_CODE: Record<string, string> = {
 };
 
 type CoursesBrowserProps = {
-  courses: CourseRecord[];
+  courses: LeaderboardCourse[];
   initialPlayedCourses: PlayedCourse[];
   initialWishlistIds: string[];
   viewerSignedIn: boolean;
@@ -84,7 +85,7 @@ function normalizeCourseKey(course: CourseRecord) {
   return `${normalizedName}|${course.city.toLowerCase()}|${course.state.toLowerCase()}`;
 }
 
-function choosePreferredCourse(existing: CourseRecord, candidate: CourseRecord) {
+function choosePreferredCourse<T extends CourseRecord>(existing: T, candidate: T): T {
   const scoreCourse = (course: CourseRecord) =>
     (course.leaderboard_rank ? 10_000 - course.leaderboard_rank : 0) +
     (course.normalized_score ?? 0) * 10 +
@@ -113,7 +114,7 @@ export function CoursesBrowser({
   const playedIds = useMemo(() => new Set(playedCourses.map((course) => course.id)), [playedCourses]);
 
   const dedupedCourses = useMemo(() => {
-    const byKey = new Map<string, CourseRecord>();
+    const byKey = new Map<string, LeaderboardCourse>();
 
     for (const course of courses) {
       const key = normalizeCourseKey(course);
@@ -200,6 +201,49 @@ export function CoursesBrowser({
     setStatus(nextWishlisted ? "Added to your wish list." : "Removed from your wish list.");
   }
 
+  // Action control for the desktop CourseRow trailing slot — preserves the
+  // play + wishlist functionality the kit's single-action row doesn't carry.
+  function renderRowAction(course: LeaderboardCourse): ReactNode {
+    if (!viewerSignedIn) {
+      return (
+        <Link href={`/courses/${course.id}`} className="ghost-button sm">
+          View
+        </Link>
+      );
+    }
+    if (viewerNeedsOnboarding) {
+      return (
+        <Link href={`/onboarding?next=${encodeURIComponent(`/courses/${course.id}`)}`} className="solid-button sm">
+          Finish profile
+        </Link>
+      );
+    }
+    const isPlayed = playedIds.has(course.id);
+    const isWishlisted = wishlistIds.has(course.id);
+    return (
+      <div className="flex items-center justify-end gap-1.5">
+        {busyCourseId === course.id ? (
+          <span className="ghost-button sm">Saving...</span>
+        ) : isPlayed ? (
+          <PlayedButton />
+        ) : (
+          <button type="button" onClick={() => handleToggle(course.id, true)} className="solid-button sm">
+            Mark played
+          </button>
+        )}
+        {!isPlayed ? (
+          <WantToPlayButton
+            saved={isWishlisted}
+            onClick={() => handleWishlist(course.id, !isWishlisted)}
+            disabled={wishlistBusyCourseId === course.id}
+            labelOn="Saved"
+            labelOff="Want to play"
+          />
+        ) : null}
+      </div>
+    );
+  }
+
   const visibleCourses = filteredCourses.slice(0, visibleCount);
   const hasMore = visibleCount < filteredCourses.length;
 
@@ -230,7 +274,18 @@ export function CoursesBrowser({
         </div>
       ) : (
         <>
-          <div className="grid gap-3">
+          {/* Desktop — Web UI Kit CourseRow (full data: editorial avg, vs-editorial, friends, signal) */}
+          <div className="hidden lg:block">
+            <CourseRowHeader trailingLabel="Manage" wide />
+            <div className="grid gap-1.5">
+              {visibleCourses.map((course) => (
+                <CourseRow key={course.id} course={course} action={renderRowAction(course)} />
+              ))}
+            </div>
+          </div>
+
+          {/* Mobile — rich cards (play + wishlist + onboarding states) */}
+          <div className="grid gap-3 lg:hidden">
             {visibleCourses.map((course) => {
               const isPlayed = playedIds.has(course.id);
               const isWishlisted = wishlistIds.has(course.id);
