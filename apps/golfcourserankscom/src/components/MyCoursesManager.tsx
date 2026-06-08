@@ -508,40 +508,36 @@ export function MyCoursesManager({
                       onDragOver={(event) => event.preventDefault()}
                       onDrop={() => commitRankDrop(course.id)}
                       onDragEnd={() => setDragState(null)}
-                      className={`rounded-[var(--radius-md)] border border-[var(--line)] bg-white/92 p-4 shadow-[var(--shadow-card)] ${
+                      className={`flex flex-wrap items-center gap-3 rounded-sm border border-line bg-white px-[18px] py-3 shadow-[var(--shadow-card)] cursor-grab active:cursor-grabbing ${
                         dragState?.id === course.id ? "opacity-80" : ""
                       }`}
                     >
-                      <div className="flex items-start gap-4">
-                        <div className="pill pill-pine shrink-0">#{course.rankPosition + 1}</div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-                            <div className="min-w-0">
-                              <h3 className="h3 text-[1.45rem]">{course.name}</h3>
-                              <p className="mt-1 text-sm text-[var(--muted)]">{formatLocation(course)}</p>
-                            </div>
-
-                            <div className="flex flex-wrap items-center gap-2">
-                              <button type="button" onClick={() => handleMoveToTop(course.id)} className="ghost-button sm md:hidden">
-                                Top
-                              </button>
-                              <button type="button" onClick={() => handleMove(course.id, -1)} className="ghost-button sm">
-                                Up
-                              </button>
-                              <button type="button" onClick={() => handleMove(course.id, 1)} className="ghost-button sm">
-                                Down
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveFromRanking(course.id)}
-                                disabled={busyCourseId === course.id}
-                                className="ghost-button sm"
-                              >
-                                Move below
-                              </button>
-                            </div>
-                          </div>
-                        </div>
+                      <span className="select-none font-mono text-[1.1rem] leading-none text-muted" aria-hidden="true">
+                        {"⋮⋮"}
+                      </span>
+                      <div className="shrink-0 font-mono text-[1.05rem] font-bold text-pine">#{course.rankPosition + 1}</div>
+                      <div className="min-w-[11rem] flex-1">
+                        <h3 className="truncate text-[1rem] font-semibold tracking-[-0.01em] text-ink">{course.name}</h3>
+                        <p className="mt-0.5 truncate text-[0.78rem] text-muted">{formatLocation(course)}</p>
+                      </div>
+                      <div className="flex flex-wrap items-center justify-end gap-1.5">
+                        <button type="button" onClick={() => handleMoveToTop(course.id)} className="ghost-button sm md:hidden">
+                          Top
+                        </button>
+                        <button type="button" onClick={() => handleMove(course.id, -1)} aria-label="Move up" className="ghost-button sm">
+                          {"↑"}
+                        </button>
+                        <button type="button" onClick={() => handleMove(course.id, 1)} aria-label="Move down" className="ghost-button sm">
+                          {"↓"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveFromRanking(course.id)}
+                          disabled={busyCourseId === course.id}
+                          className="ghost-button sm"
+                        >
+                          Move below
+                        </button>
                       </div>
                     </div>
                   ))}
