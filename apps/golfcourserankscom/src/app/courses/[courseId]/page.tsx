@@ -83,12 +83,19 @@ export default async function CourseDetailPage({
 
   return (
     <div className="space-y-6">
+      <Link
+        href="/rankings"
+        className="inline-flex w-fit items-center gap-1 text-sm text-muted transition-colors hover:text-ink"
+      >
+        <span aria-hidden="true">{"←"}</span> Back to rankings
+      </Link>
       <section className="shell-panel shell-panel-contrast p-6 sm:p-8">
         <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr] xl:items-start">
           <div>
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="min-w-0">
-                <h1 className="h1 text-[3rem] text-ink sm:text-[3.5rem]">{course.name}</h1>
+                <span className="pill pill-pine">Rank #{crowdRank}</span>
+                <h1 className="h1 mt-3 text-[3rem] text-ink sm:text-[3.5rem]">{course.name}</h1>
                 <p className="mt-3 text-base text-muted sm:text-lg">{formatLocation(course)}</p>
               </div>
               <ShareButton
