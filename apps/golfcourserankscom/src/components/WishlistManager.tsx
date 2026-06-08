@@ -205,10 +205,59 @@ export function WishlistManager({ initialCourses, siteUrl, viewerHandle, inviteU
               <span className="meta">{courses.length} courses on your list</span>
             </div>
 
-            <div className="mt-6 grid gap-3">
+            {/* Desktop — kit reorder row (My Courses pattern: handle · rank · name · controls) */}
+            <div className="mt-6 hidden lg:grid lg:gap-1.5">
+              {courses.map((course) => (
+                <div
+                  key={course.id}
+                  className="grid items-center gap-4 rounded-sm border border-line bg-white px-[18px] py-3"
+                  style={{ gridTemplateColumns: "24px 52px minmax(0,1fr) auto" }}
+                >
+                  <span className="select-none font-mono text-[1.1rem] leading-none text-muted" aria-hidden="true">
+                    {"⋮⋮"}
+                  </span>
+                  <div className="font-mono text-[1.05rem] font-bold text-pine">#{course.rankPosition + 1}</div>
+                  <Link href={`/courses/${course.id}`} className="block min-w-0">
+                    <h3 className="truncate text-[1rem] font-semibold tracking-[-0.01em] text-ink">{course.name}</h3>
+                    <p className="mt-0.5 truncate text-[0.78rem] text-muted">
+                      {formatLocation(course)}
+                      {course.leaderboard_rank ? ` · National #${course.leaderboard_rank}` : ""}
+                    </p>
+                  </Link>
+                  <div className="flex items-center justify-end gap-1.5">
+                    <button type="button" onClick={() => void handleMoveToTop(course.id)} className="ghost-button sm">
+                      Top
+                    </button>
+                    <button type="button" onClick={() => void handleMove(course.id, -1)} aria-label="Move up" className="ghost-button sm">
+                      {"↑"}
+                    </button>
+                    <button type="button" onClick={() => void handleMove(course.id, 1)} aria-label="Move down" className="ghost-button sm">
+                      {"↓"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleMarkPlayed(course.id)}
+                      disabled={busyCourseId === course.id}
+                      className="solid-button sm"
+                    >
+                      {busyCourseId === course.id ? "..." : "Mark played"}
+                    </button>
+                    <WantToPlayButton
+                      saved
+                      onClick={() => handleRemove(course.id)}
+                      disabled={busyCourseId === course.id}
+                      labelOn="Remove"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Mobile — stacked card (same controls, thumb-friendly) */}
+            <div className="mt-6 grid gap-3 lg:hidden">
               {courses.map((course) => (
                 <div key={course.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/92 p-4">
-                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="flex flex-col gap-4">
                     <div className="min-w-0">
                       <div className="flex flex-wrap gap-2">
                         <span className="pill pill-pine">#{course.rankPosition + 1}</span>
