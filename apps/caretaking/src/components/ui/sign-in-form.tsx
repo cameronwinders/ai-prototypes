@@ -9,34 +9,32 @@ import { getSiteUrl } from "@/lib/supabase/env";
 export function SignInForm({ signedOut = false }: { signedOut?: boolean }) {
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "/spaces";
-  const queryError = searchParams.get("error");
   const isInviteSignIn = next.startsWith("/accept-invite");
   const [authMode, setAuthMode] = useState<"sign-in" | "sign-up">(isInviteSignIn ? "sign-up" : "sign-in");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(queryError);
+  const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
   const isSignUp = authMode === "sign-up" || isInviteSignIn;
 
   useEffect(() => {
-    if (typeof window === "undefined" || !window.location.hash) {
-      return;
-    }
+    const queryError = searchParams.get("error");
+    const queryDescription = searchParams.get("error_description");
+    const hashParams = typeof window === "undefined" ? null : new URLSearchParams(window.location.hash.replace(/^#/, ""));
+    const hashError = hashParams?.get("error");
+    const hashDescription = hashParams?.get("error_description");
+    const nextError = queryDescription || queryError || hashDescription || hashError;
 
-    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-    const hashError = hashParams.get("error");
-    const hashDescription = hashParams.get("error_description");
-
-    if (!hashError && !hashDescription) {
+    if (!nextError) {
       return;
     }
 
     setSent(false);
     setSubmitting(false);
     setMessage(null);
-    setError(getFriendlyHashError(hashDescription || hashError || ""));
-  }, []);
+    setError(getFriendlyHashError(nextError));
+  }, [searchParams]);
 
   function getFriendlyAuthError(message: string) {
     const normalized = message.toLowerCase();
@@ -59,7 +57,7 @@ export function SignInForm({ signedOut = false }: { signedOut?: boolean }) {
   function getFriendlyHashError(message: string) {
     const normalized = decodeURIComponent(message).toLowerCase();
 
-    if (normalized.includes("expired") || normalized.includes("invalid")) {
+    if (normalized.includes("otp_expired") || normalized.includes("access_denied") || normalized.includes("expired") || normalized.includes("invalid")) {
       return "Your sign-in link has expired. Enter your email to get a new one.";
     }
 

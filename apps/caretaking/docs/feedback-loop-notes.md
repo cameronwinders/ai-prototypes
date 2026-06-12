@@ -54,3 +54,27 @@ What Codex intentionally did not change in this pass:
 
 - Supabase Auth email templates and link-domain branding, because they still live outside the repo.
 - Event detail routes and owner-label invite UX, because they are larger workflow changes than this safe heartbeat pass.
+
+## 2026-05-01 Round 14 triage
+
+Source: `C:\Users\cwind\OneDrive\Documents\Cam Cowork\Caregiving App\Feedback\latest.md`
+
+Highest-priority product pain points from the report:
+
+- Bugs affecting trust:
+  - Expired magic links regressed from a human-readable recovery message back to raw Supabase error text.
+  - Auth emails are still using Supabase-hosted default signup and magic-link copy outside the repo.
+- UX issues affecting clarity and repeated use:
+  - The `TODAY` label reappeared on the sign-in marketing card after being cleaned up in Round 13.
+  - Timeline event cards remain non-clickable.
+  - The invite flow still points users to an unnamed owner.
+
+What Codex fixed from this round:
+
+- Restored human-friendly expired-link recovery copy for both query-string and hash-based auth callback errors.
+- Removed the returned `TODAY` label from the sign-in marketing card so the onboarding copy is stable again.
+
+What Codex intentionally did not change in this pass:
+
+- Supabase Auth email templates and link-domain branding, because they still live outside the repo.
+- Event detail routes and owner-label invite UX, because they are larger workflow changes than this safe heartbeat pass.

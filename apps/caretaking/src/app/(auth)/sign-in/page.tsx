@@ -20,7 +20,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
       <div className="auth-grid">
         <section className="auth-pitch">
           <div className="floating-card">
-            <p className="eyebrow">Today</p>
+            <p className="eyebrow">Shared care</p>
             <h2>Log once. Everyone sees it.</h2>
             <p className="muted">Built for shared caregiving moments that need to be fast, clear, and trustworthy.</p>
           </div>
