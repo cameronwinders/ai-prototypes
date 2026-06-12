@@ -95,7 +95,7 @@ export default async function CourseDetailPage({
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="min-w-0">
                 <span className="pill pill-pine">Rank #{crowdRank}</span>
-                <h1 className="h1 mt-3 text-[3rem] text-ink sm:text-[3.5rem]">{course.name}</h1>
+                <h1 className="h1 mt-3 text-ink">{course.name}</h1>
                 <p className="mt-3 text-base text-muted sm:text-lg">{formatLocation(course)}</p>
               </div>
               <ShareButton

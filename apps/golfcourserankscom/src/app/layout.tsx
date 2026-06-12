@@ -1,19 +1,20 @@
 import "./globals.css";
 
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Public_Sans } from "next/font/google";
+import { Barlow, Source_Serif_4 } from "next/font/google";
 
 import { AppChrome } from "@/components/AppChrome";
 import { getSiteUrl } from "@/lib/supabase/env";
 import { getViewerContext } from "@/lib/viewer";
 
-const displayFont = Cormorant_Garamond({
+const displayFont = Source_Serif_4({
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: "variable",
+  axes: ["opsz"],
   variable: "--font-display-face"
 });
 
-const bodyFont = Public_Sans({
+const bodyFont = Barlow({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-body-face"

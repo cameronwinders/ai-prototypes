@@ -25,7 +25,7 @@ export function RankingsMobileRow({ course }: { course: LeaderboardCourse }) {
       <div className="text-center leading-none">
         <div className="rank">#{course.leaderboardRank}</div>
         <div
-          className="mt-1 font-mono text-[0.6rem] font-bold tracking-[0.04em]"
+          className="mt-1 text-[0.6rem] font-bold tracking-[0.04em] tabular-nums"
           style={{ color: deltaColor }}
           title="Crowd rank vs. editorial average"
         >

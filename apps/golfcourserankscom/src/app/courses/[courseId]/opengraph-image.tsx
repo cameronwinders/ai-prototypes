@@ -57,7 +57,7 @@ export default async function Image({
             <div style={{ fontSize: 30, color: "#5d6a64" }}>
               {course ? formatLocation(course) : "Crowd-ranked public golf"}
             </div>
-            <div style={{ fontSize: 28, color: "#316b53", fontStyle: "italic" }}>
+            <div style={{ fontSize: 28, color: "#316b53", fontWeight: 500 }}>
               {detail?.aggregate
                 ? `#${detail.aggregate.rank} crowd · ${formatCrowdScore(detail.aggregate.normalized_score)} crowd score`
                 : "Editorial start with live golfer signal"}

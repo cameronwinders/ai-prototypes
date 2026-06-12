@@ -60,7 +60,7 @@ export function CoursePreviewPanel({
                 <span className="pill pill-pine">#{hero.leaderboardRank}</span>
                 <span className="pill pill-line">{heroTagLabel}</span>
               </div>
-              <h2 className="mt-3 font-display text-[1.65rem] font-semibold tracking-[var(--tracking-tight)] text-ink">
+              <h2 className="mt-3 text-[1.65rem] font-semibold tracking-[var(--tracking-tight)] text-ink">
                 {hero.name}
               </h2>
               <p className="meta mt-1">
@@ -77,7 +77,7 @@ export function CoursePreviewPanel({
 
             <div className="w-full rounded-md border border-[rgba(49,107,83,0.12)] bg-[rgba(216,231,221,0.76)] px-3 py-2 text-left sm:w-auto sm:text-right">
               <p className="section-label text-[10px]">{scoreEyebrow}</p>
-              <p className="mt-1 text-2xl font-semibold tracking-[var(--tracking-tight)] text-ink">
+              <p className="mt-1 text-2xl font-bold tabular-nums tracking-[var(--tracking-tight)] text-ink">
                 {hero.normalizedScore.toFixed(1)}
               </p>
             </div>

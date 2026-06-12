@@ -186,7 +186,7 @@ export function ShareButton({
                       </div>
                     </div>
                     <div className="flex items-center justify-between gap-3 border-t border-line px-4 py-3">
-                      <span className="min-w-0 truncate font-mono text-[0.68rem] tracking-[0.04em] text-muted">{url}</span>
+                      <span className="min-w-0 truncate text-[0.68rem] tracking-[0.04em] text-muted">{url}</span>
                       <MarkIcon className="h-4 w-4 shrink-0 text-pine" />
                     </div>
                   </div>
@@ -194,7 +194,7 @@ export function ShareButton({
 
                 <div className="px-5 pb-4">
                   <div className="flex flex-col gap-2 rounded-xs border border-line bg-linen-warm px-3 py-2 sm:flex-row sm:items-center">
-                    <span className="min-w-0 flex-1 truncate font-mono text-[0.78rem] text-muted">{url}</span>
+                    <span className="min-w-0 flex-1 truncate text-[0.78rem] text-muted">{url}</span>
                     <button type="button" onClick={handleCopy} className={copied ? "ghost-button sm" : "solid-button sm"}>
                       {copied ? "Copied" : "Copy link"}
                     </button>

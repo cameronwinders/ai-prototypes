@@ -52,7 +52,7 @@ export default async function Image({
           <div style={{ fontSize: 68, fontWeight: 700, lineHeight: 1.02, letterSpacing: -2 }}>
             {inviterName} invited you to compare your golf-course rankings.
           </div>
-          <div style={{ fontSize: 28, color: "#316b53", fontStyle: "italic" }}>
+          <div style={{ fontSize: 28, color: "#316b53", fontWeight: 500 }}>
             Open the invite, auto-connect, and see where your lists overlap and differ.
           </div>
         </div>

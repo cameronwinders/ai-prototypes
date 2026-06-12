@@ -20,7 +20,7 @@ export function Wordmark({
           fontFamily: "var(--font-display)",
           fontSize: "1.45rem",
           fontWeight: 600,
-          letterSpacing: "-0.05em",
+          letterSpacing: "-0.03em",
           lineHeight: 1
         }}
       >

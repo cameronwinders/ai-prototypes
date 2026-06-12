@@ -38,14 +38,14 @@
   --fs-title: 1.25rem;
   --fs-h3: 1.5rem;
   --fs-h2: 2rem;
-  --fs-h1: 3rem;
-  --fs-display: 5.4rem;
+  --fs-h1: 2.7rem; /* retuned for Source Serif (type v2) */
+  --fs-display: 4.6rem;
 
   --tracking-wide: 0.22em;
   --tracking-pill: 0.18em;
-  --tracking-tight: -0.04em;
-  --tracking-tighter: -0.05em;
-  --tracking-tightest: -0.06em;
+  --tracking-tight: -0.02em; /* Barlow wants less than Public Sans did */
+  --tracking-tighter: -0.03em; /* Source Serif self-spaces */
+  --tracking-tightest: -0.035em;
 
   --radius-xs: 4px;
   --radius-sm: 6px;
@@ -79,8 +79,8 @@
   --m-space-eyebrow: 0.625rem;
   --m-space-section: 2.5rem;
 
-  --m-fs-display: 2.6rem;
-  --m-fs-h1: 1.75rem;
+  --m-fs-display: 2.3rem;
+  --m-fs-h1: 1.6rem;
   --m-fs-h2: 1.35rem;
   --m-fs-h3: 1.1rem;
   --m-fs-title: 1rem;
@@ -178,7 +178,7 @@ h1,
   font-size: var(--fs-h1);
   font-weight: 600;
   letter-spacing: var(--tracking-tighter);
-  line-height: 1;
+  line-height: 1.05;
 }
 
 .h1-display {
@@ -186,7 +186,7 @@ h1,
   font-size: var(--fs-display);
   font-weight: 600;
   letter-spacing: var(--tracking-tightest);
-  line-height: 0.95;
+  line-height: 1;
 }
 
 h2,
@@ -208,23 +208,31 @@ h3,
   letter-spacing: var(--tracking-tight);
 }
 
+/* Sub-hed under H1/hero — sans, no italic (type v2). Slightly larger than
+   body, muted; emphasize the key clause with <strong> to pick up pine. */
 .subhed {
-  font-family: var(--font-display);
-  font-size: 1.5rem; /* display-only: italic Cormorant earns its keep at >=1.5rem */
-  font-style: italic;
+  font-family: var(--font-body);
+  font-size: 1.2rem;
+  font-style: normal;
   font-weight: 500;
-  line-height: 1.45;
-  color: var(--pine);
+  line-height: 1.55;
+  color: var(--muted);
 }
 
 .subhed-sm {
-  font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
   font-style: normal;
   font-weight: 500;
   line-height: 1.5;
-  letter-spacing: -0.005em;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+.subhed strong,
+.subhed-sm strong {
   color: var(--pine);
+  font-weight: 600;
 }
 
 .eyebrow {
@@ -269,9 +277,10 @@ pre,
 }
 
 .pill .num {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
 }
 
 .pill .tag {
@@ -511,12 +520,12 @@ pre,
   }
 
   .subhed {
-    font-size: 1.25rem; /* still display-tier on mobile */
-    line-height: 1.4;
+    font-size: 1.05rem;
+    line-height: 1.5;
   }
 
   .subhed-sm {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .eyebrow {
@@ -582,11 +591,11 @@ pre,
 }
 
 .m-screen .subhed {
-  font-size: 1.25rem;
+  font-size: 1.05rem;
 }
 
 .m-screen .subhed-sm {
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .m-screen .eyebrow {
@@ -624,7 +633,7 @@ pre,
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 1.1rem;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.03em;
   line-height: 1;
   color: var(--ink);
   text-decoration: none;
@@ -685,7 +694,7 @@ pre,
 }
 
 .m-course-row .rank {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: 1.05rem;
   color: var(--pine);
@@ -713,7 +722,7 @@ pre,
 }
 
 .m-course-row .crowd {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: 0.95rem;
   line-height: 1;
@@ -814,7 +823,7 @@ pre,
   align-items: center;
   justify-content: center;
   color: var(--muted);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 1.1rem;
   line-height: 1;
   cursor: grab;
@@ -864,10 +873,11 @@ pre,
 }
 
 .m-list-row .meta {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 0.76rem;
   letter-spacing: 0.04em;
   color: var(--muted);
+  font-variant-numeric: tabular-nums;
 }
 
 .m-list-row[aria-pressed="true"] .label,

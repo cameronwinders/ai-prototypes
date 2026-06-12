@@ -42,7 +42,7 @@ export default function Image() {
             <div style={{ fontSize: 68, fontWeight: 700, lineHeight: 1.02, letterSpacing: -2 }}>
               The hub for crowd rankings, golf media rankings, and the golfers you follow.
             </div>
-            <div style={{ fontSize: 28, color: "#316b53", fontStyle: "italic" }}>
+            <div style={{ fontSize: 28, color: "#316b53", fontWeight: 500 }}>
               Compare the crowd board with Golf Digest, GOLF.com, and Golfweek, then invite friends to stack their lists beside both.
             </div>
           </div>

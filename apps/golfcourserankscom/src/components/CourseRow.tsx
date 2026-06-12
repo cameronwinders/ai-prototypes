@@ -24,7 +24,7 @@ function rowGrid(wide: boolean) {
 }
 
 export function CourseRowHeader({ trailingLabel = "Golfweek", wide = false }: { trailingLabel?: string; wide?: boolean }) {
-  const head = "font-mono text-[0.62rem] font-bold uppercase tracking-[0.08em] text-muted";
+  const head = "text-[0.62rem] font-bold uppercase tracking-[0.08em] text-muted";
   return (
     <div className="grid items-center gap-3.5 px-[18px] pb-2" style={{ gridTemplateColumns: rowGrid(wide) }}>
       <div className={head}>Crowd</div>
@@ -42,12 +42,12 @@ export function CourseRowHeader({ trailingLabel = "Golfweek", wide = false }: { 
 function FriendsPlayedCell({ course }: { course: LeaderboardCourse }) {
   const friends = course.friendPlayers ?? [];
   if (friends.length === 0) {
-    return <div className="text-center font-mono text-[0.78rem] font-semibold text-muted">—</div>;
+    return <div className="text-center text-[0.78rem] font-semibold text-muted">—</div>;
   }
   return (
     <div className="flex items-center justify-center gap-2">
       <AvatarStack people={friends} size="sm" max={3} />
-      <span className="font-mono text-[0.78rem] font-bold tabular-nums text-ink">
+      <span className="text-[0.78rem] font-bold tabular-nums text-ink">
         {friends.length > 3 ? `+${friends.length - 3}` : friends.length}
       </span>
     </div>
@@ -66,7 +66,7 @@ export function CourseRow({ course, action }: { course: LeaderboardCourse; actio
         ? "text-pine"
         : "text-[var(--warning-ink)]";
 
-  const cell = "text-center font-mono text-[0.85rem] tabular-nums text-muted";
+  const cell = "text-center text-[0.85rem] font-semibold tabular-nums text-muted";
 
   const courseCell = (
     <>
@@ -82,8 +82,8 @@ export function CourseRow({ course, action }: { course: LeaderboardCourse; actio
     <div className="grid items-center gap-3.5" style={{ gridTemplateColumns: rowGrid(hasAction) }}>
       {/* Crowd — rank + score */}
       <div>
-        <div className="font-mono text-[1.05rem] font-bold leading-none text-pine">#{course.leaderboardRank}</div>
-        <div className={`mt-1 font-mono text-[0.7rem] tabular-nums tracking-[0.04em] ${course.isEarly ? "text-[var(--warning-ink)]" : "text-muted"}`}>
+        <div className="text-[1.05rem] font-bold leading-none tabular-nums text-pine">#{course.leaderboardRank}</div>
+        <div className={`mt-1 text-[0.7rem] font-semibold tabular-nums tracking-[0.02em] ${course.isEarly ? "text-[var(--warning-ink)]" : "text-muted"}`}>
           {formatCrowdScore(course.normalizedScore)}
           {course.isEarly ? "*" : ""}
         </div>
@@ -105,7 +105,7 @@ export function CourseRow({ course, action }: { course: LeaderboardCourse; actio
       <div className={cell}>{formatRankPosition(course.editorialAverageRank)}</div>
 
       {/* vs. editorial */}
-      <div className={`text-center font-mono text-[0.78rem] font-semibold tabular-nums tracking-[0.02em] ${cvelColor}`}>{cvel}</div>
+      <div className={`text-center text-[0.78rem] font-bold tabular-nums tracking-[0.02em] ${cvelColor}`}>{cvel}</div>
 
       {/* Golf Digest, GOLF.com */}
       <div className={cell}>{formatRankPosition(course.editorialRanks?.[PUBLICATIONS[0].key])}</div>

@@ -91,15 +91,15 @@ export default async function ComparePage({
                   <div className="mt-4 grid gap-3 sm:grid-cols-3">
                     <div className="rounded-[var(--radius-md)] bg-[rgba(245,238,228,0.94)] px-4 py-3 text-sm text-[var(--muted)]">
                       Your rank
-                      <p className="mt-1 text-2xl font-semibold tracking-[-0.04em] text-[var(--ink)]">#{course.selfRank}</p>
+                      <p className="mt-1 text-2xl font-bold tabular-nums tracking-[-0.02em] text-[var(--ink)]">#{course.selfRank}</p>
                     </div>
                     <div className="rounded-[var(--radius-md)] bg-[rgba(216,231,221,0.92)] px-4 py-3 text-sm text-[var(--muted)]">
                       Friend rank
-                      <p className="mt-1 text-2xl font-semibold tracking-[-0.04em] text-[var(--ink)]">#{course.friendRank}</p>
+                      <p className="mt-1 text-2xl font-bold tabular-nums tracking-[-0.02em] text-[var(--ink)]">#{course.friendRank}</p>
                     </div>
                     <div className="rounded-[var(--radius-md)] bg-white px-4 py-3 text-sm text-[var(--muted)]">
                       Difference
-                      <p className="mt-1 text-2xl font-semibold tracking-[-0.04em] text-[var(--ink)]">
+                      <p className="mt-1 text-2xl font-bold tabular-nums tracking-[-0.02em] text-[var(--ink)]">
                         {course.delta === 0 ? "Match" : `${Math.abs(course.delta)} slot${Math.abs(course.delta) === 1 ? "" : "s"}`}
                       </p>
                     </div>
@@ -121,7 +121,7 @@ export default async function ComparePage({
               ].map((item) => (
                 <div key={item.label} className="shell-panel-contrast shell-panel-bordered p-4">
                   <p className="meta">{item.label}</p>
-                  <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-[var(--ink)]">{item.value}</p>
+                  <p className="mt-2 text-3xl font-bold tabular-nums tracking-[-0.02em] text-[var(--ink)]">{item.value}</p>
                 </div>
               ))}
             </div>

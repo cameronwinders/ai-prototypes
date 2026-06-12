@@ -67,7 +67,7 @@ export default async function Image({
             </div>
             <div style={{ fontSize: 56, fontWeight: 700, lineHeight: 1.02, maxWidth: 720 }}>{title}</div>
             <div style={{ fontSize: 28, color: "#5d6a64" }}>{subtitle}</div>
-            <div style={{ fontSize: 24, color: "#316b53", fontStyle: "italic", maxWidth: 760 }}>
+            <div style={{ fontSize: 24, color: "#316b53", fontWeight: 500, maxWidth: 760 }}>
               {showWishlist
                 ? "See the public courses this golfer wants to play next, then add them as a friend to compare lists."
                 : "See how this golfer's Top 10 compares to the crowd board and add them as a friend to compare lists."}

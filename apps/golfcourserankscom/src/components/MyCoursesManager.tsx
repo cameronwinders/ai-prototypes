@@ -384,7 +384,7 @@ export function MyCoursesManager({
             ].map((item) => (
               <div key={item.label} className="shell-panel-contrast p-4">
                 <p className="meta">{item.label}</p>
-                <p className="mt-3 text-[2rem] font-semibold tracking-[var(--tracking-tight)] text-[var(--ink)]">
+                <p className="mt-3 text-[2rem] font-bold tabular-nums tracking-[var(--tracking-tight)] text-[var(--ink)]">
                   {item.value}
                 </p>
               </div>
@@ -512,10 +512,10 @@ export function MyCoursesManager({
                         dragState?.id === course.id ? "opacity-80" : ""
                       }`}
                     >
-                      <span className="select-none font-mono text-[1.1rem] leading-none text-muted" aria-hidden="true">
+                      <span className="select-none text-[1.1rem] leading-none text-muted" aria-hidden="true">
                         {"⋮⋮"}
                       </span>
-                      <div className="shrink-0 font-mono text-[1.05rem] font-bold text-pine">#{course.rankPosition + 1}</div>
+                      <div className="shrink-0 text-[1.05rem] font-bold tabular-nums text-pine">#{course.rankPosition + 1}</div>
                       <div className="min-w-[11rem] flex-1">
                         <h3 className="truncate text-[1rem] font-semibold tracking-[-0.01em] text-ink">{course.name}</h3>
                         <p className="mt-0.5 truncate text-[0.78rem] text-muted">{formatLocation(course)}</p>

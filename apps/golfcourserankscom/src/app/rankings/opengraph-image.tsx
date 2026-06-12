@@ -65,7 +65,7 @@ export default async function Image() {
           >
             See where the crowd disagrees with golf media.
           </div>
-          <div style={{ display: "flex", fontSize: 28, color: "#316b53", fontStyle: "italic" }}>
+          <div style={{ display: "flex", fontSize: 28, color: "#316b53", fontWeight: 500 }}>
             Crowd rank versus Golf Digest, GOLF.com, and Golfweek on one board.
           </div>
         </div>

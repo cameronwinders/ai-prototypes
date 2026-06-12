@@ -261,7 +261,7 @@ export default async function PublicProfilePage({
             ].map((item) => (
               <div key={item.label} className="shell-panel-contrast p-5">
                 <p className="meta">{item.label}</p>
-                <p className="mt-3 text-3xl font-semibold tracking-[var(--tracking-tight)] text-[var(--ink)]">
+                <p className="mt-3 text-3xl font-bold tabular-nums tracking-[var(--tracking-tight)] text-[var(--ink)]">
                   {item.value}
                 </p>
               </div>

@@ -213,10 +213,10 @@ export function WishlistManager({ initialCourses, siteUrl, viewerHandle, inviteU
                   className="grid items-center gap-4 rounded-sm border border-line bg-white px-[18px] py-3"
                   style={{ gridTemplateColumns: "24px 52px minmax(0,1fr) auto" }}
                 >
-                  <span className="select-none font-mono text-[1.1rem] leading-none text-muted" aria-hidden="true">
+                  <span className="select-none text-[1.1rem] leading-none text-muted" aria-hidden="true">
                     {"⋮⋮"}
                   </span>
-                  <div className="font-mono text-[1.05rem] font-bold text-pine">#{course.rankPosition + 1}</div>
+                  <div className="text-[1.05rem] font-bold tabular-nums text-pine">#{course.rankPosition + 1}</div>
                   <Link href={`/courses/${course.id}`} className="block min-w-0">
                     <h3 className="truncate text-[1rem] font-semibold tracking-[-0.01em] text-ink">{course.name}</h3>
                     <p className="mt-0.5 truncate text-[0.78rem] text-muted">

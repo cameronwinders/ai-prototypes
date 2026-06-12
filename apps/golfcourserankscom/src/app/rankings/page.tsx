@@ -78,7 +78,7 @@ export default async function RankingsPage({
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="eyebrow">National rankings</p>
-            <h1 className="h1 text-[2.4rem] text-ink">Overall Rankings</h1>
+            <h1 className="h1 text-ink">Overall Rankings</h1>
             <p className="subhed-sm mt-2 max-w-3xl">
               Use "Sort by" to see crowd rankings, golf media rankings, or where they differ most.
             </p>

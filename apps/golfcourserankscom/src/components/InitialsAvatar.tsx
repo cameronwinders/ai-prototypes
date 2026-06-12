@@ -56,7 +56,7 @@ export function InitialsAvatar({
   return (
     <span
       title={label}
-      className={`inline-flex shrink-0 items-center justify-center rounded-full border-[rgba(28,41,36,0.88)] bg-[var(--linen)] font-display font-bold tracking-[-0.02em] text-ink align-middle ${SIZE_CLASSES[size]} ${className}`.trim()}
+      className={`inline-flex shrink-0 items-center justify-center rounded-full border-[rgba(28,41,36,0.88)] bg-[var(--linen)] font-bold tracking-[-0.02em] text-ink align-middle ${SIZE_CLASSES[size]} ${className}`.trim()}
     >
       {initials}
     </span>
@@ -103,7 +103,7 @@ export function AvatarStack({ people, max = 4, size = "sm", className = "" }: Av
       ))}
       {extra > 0 ? (
         <span
-          className={`${visible.length > 0 ? STACK_OFFSET[size] : ""} inline-flex min-w-[1.9rem] items-center justify-center rounded-full border-2 border-[rgba(28,41,36,0.88)] bg-[var(--linen)] px-2 py-1 font-mono text-[10px] font-bold tracking-[0.04em] text-ink shadow-[0_0_0_2px_var(--linen)]`.trim()}
+          className={`${visible.length > 0 ? STACK_OFFSET[size] : ""} inline-flex min-w-[1.9rem] items-center justify-center rounded-full border-2 border-[rgba(28,41,36,0.88)] bg-[var(--linen)] px-2 py-1 text-[10px] font-bold tracking-[0.04em] tabular-nums text-ink shadow-[0_0_0_2px_var(--linen)]`.trim()}
         >
           +{extra}
         </span>
