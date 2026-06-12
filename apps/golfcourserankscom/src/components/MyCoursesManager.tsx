@@ -491,7 +491,7 @@ export function MyCoursesManager({
                 <div
                   onDragOver={(event) => event.preventDefault()}
                   onDrop={() => commitRankDrop(null)}
-                  className="mt-4 rounded-[var(--radius-lg)] border border-dashed border-[var(--line)] bg-white/70 px-5 py-8 text-sm leading-7 text-[var(--muted)]"
+                  className="mt-4 rounded-[var(--radius-lg)] border border-dashed border-[var(--line)] bg-white px-5 py-8 text-sm leading-7 text-[var(--muted)]"
                 >
                   {playedCourses.length === 0
                     ? "Once you add a course you have played, use Add to ranking below to start your list."
@@ -508,8 +508,8 @@ export function MyCoursesManager({
                       onDragOver={(event) => event.preventDefault()}
                       onDrop={() => commitRankDrop(course.id)}
                       onDragEnd={() => setDragState(null)}
-                      className={`flex flex-wrap items-center gap-3 rounded-sm border border-line bg-white px-[18px] py-3 shadow-[var(--shadow-card)] cursor-grab active:cursor-grabbing ${
-                        dragState?.id === course.id ? "opacity-80" : ""
+                      className={`flex flex-wrap items-center gap-3 rounded-sm border border-line bg-white px-[18px] py-3 cursor-grab active:cursor-grabbing ${
+                        dragState?.id === course.id ? "opacity-80 shadow-[var(--shadow-active)]" : ""
                       }`}
                     >
                       <span className="select-none text-[1.1rem] leading-none text-muted" aria-hidden="true">
@@ -545,7 +545,7 @@ export function MyCoursesManager({
                   <div
                     onDragOver={(event) => event.preventDefault()}
                     onDrop={() => commitRankDrop(null)}
-                    className="rounded-[var(--radius-md)] border border-dashed border-[rgba(24,37,43,0.1)] bg-white/66 px-4 py-4 text-sm text-[var(--muted)]"
+                    className="rounded-[var(--radius-md)] border border-dashed border-[rgba(24,37,43,0.1)] bg-white px-4 py-4 text-sm text-[var(--muted)]"
                   >
                     Use Top, Up, and Down to keep this order honest.
                   </div>
@@ -563,7 +563,7 @@ export function MyCoursesManager({
               </p>
 
               {unranked.length === 0 ? (
-                <div className="mt-4 rounded-[var(--radius-lg)] border border-dashed border-[var(--line)] bg-white/70 px-5 py-8 text-sm leading-7 text-[var(--muted)]">
+                <div className="mt-4 rounded-[var(--radius-lg)] border border-dashed border-[var(--line)] bg-white px-5 py-8 text-sm leading-7 text-[var(--muted)]">
                   Every played course is already ranked. Add another played course below when you want to expand the stack.
                 </div>
               ) : (
@@ -575,8 +575,8 @@ export function MyCoursesManager({
                       draggable
                       onDragStart={() => setDragState({ id: course.id, source: "unranked" })}
                       onDragEnd={() => setDragState(null)}
-                      className={`rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4 ${
-                        dragState?.id === course.id ? "opacity-80" : ""
+                      className={`rounded-[var(--radius-md)] border border-[var(--line)] bg-white p-4 ${
+                        dragState?.id === course.id ? "opacity-80 shadow-[var(--shadow-active)]" : ""
                       }`}
                     >
                       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -641,7 +641,7 @@ export function MyCoursesManager({
               const isWishlisted = wishlistIds.has(course.id);
 
               return (
-                <div key={course.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4">
+                <div key={course.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white p-4">
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">

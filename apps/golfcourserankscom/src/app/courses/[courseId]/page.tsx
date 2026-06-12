@@ -109,18 +109,26 @@ export default async function CourseDetailPage({
               />
             </div>
 
-            <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm font-semibold text-ink">
-              <span>#{crowdRank}</span>
-              <span aria-hidden="true" className="text-muted">
-                |
-              </span>
-              <span title="Crowd score = how golfers actually rank it.">
-                {isEditorialOnly ? "Starting score" : "Crowd score"} {crowdScore}
-              </span>
-              <span aria-hidden="true" className="text-muted">
-                |
-              </span>
-              <span>{pluralize(golfersCount, "golfer")}</span>
+            {/* Hero stat (surface v3) — the crowd score is the page's hero number */}
+            <div className="hero-stat mt-6" style={{ gap: "28px" }}>
+              <div>
+                <div className="lab" title="Crowd score = how golfers actually rank it.">
+                  {isEditorialOnly ? "Starting score" : "Crowd score"}
+                </div>
+                <div className="big" style={{ fontSize: "4.6rem" }}>
+                  {crowdScore}
+                  {isEditorialOnly ? "*" : ""}
+                </div>
+              </div>
+              <div>
+                <div className="lab">Crowd rank</div>
+                <div className="big ink" style={{ fontSize: "4.6rem" }}>
+                  #{crowdRank}
+                </div>
+              </div>
+              <p className="meta" style={{ maxWidth: "300px" }}>
+                <strong>{pluralize(golfersCount, "golfer")}</strong>
+              </p>
             </div>
 
             <p className="meta mt-3">Editorial: {editorialLine}</p>
@@ -165,12 +173,12 @@ export default async function CourseDetailPage({
             <div className="mt-4 grid gap-3">
               {aiSummary.loves.length > 0 ? (
                 aiSummary.loves.slice(0, 3).map((item) => (
-                  <div key={item} className="rounded-md border border-line bg-white/88 px-4 py-4 text-sm leading-6 text-ink">
+                  <div key={item} className="rounded-md border border-line bg-white px-4 py-4 text-sm leading-6 text-ink">
                     {item}
                   </div>
                 ))
               ) : (
-                <div className="rounded-md border border-line bg-white/88 px-4 py-4 text-sm leading-6 text-muted">
+                <div className="rounded-md border border-line bg-white px-4 py-4 text-sm leading-6 text-muted">
                   Notes will sharpen as more golfers rank and write about this course.
                 </div>
               )}
@@ -186,7 +194,7 @@ export default async function CourseDetailPage({
                 { label: "Slope", value: course.slope ?? "\u2014" },
                 { label: "USGA rating", value: course.rating ?? "\u2014" }
               ].map((item) => (
-                <div key={item.label} className="rounded-md border border-line bg-white/88 px-4 py-4">
+                <div key={item.label} className="rounded-md border border-line bg-white px-4 py-4">
                   <p className="meta">{item.label}</p>
                   <p className="mt-2 text-lg font-semibold text-ink">{item.value}</p>
                 </div>

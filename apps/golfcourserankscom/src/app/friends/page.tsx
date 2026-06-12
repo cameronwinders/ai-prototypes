@@ -52,7 +52,7 @@ export default async function FriendsPage({
               {comparisonPreview.map((row) => (
                 <div
                   key={row.course}
-                  className="grid gap-3 rounded-[var(--radius-md)] border border-[var(--line)] bg-white/88 px-4 py-4 sm:grid-cols-[1.5fr_repeat(2,minmax(0,1fr))]"
+                  className="grid gap-3 rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-4 sm:grid-cols-[1.5fr_repeat(2,minmax(0,1fr))]"
                 >
                   <div>
                     <p className="h3 text-[1.15rem]">{row.course}</p>
@@ -77,7 +77,7 @@ export default async function FriendsPage({
                 "Keep friend comparisons limited to accepted connections and overlapping played lists.",
                 "Share an invite link or public profile before the next golf trip gets booked."
               ].map((item) => (
-                <div key={item} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/88 px-4 py-4 text-sm leading-7 text-[var(--muted)]">
+                <div key={item} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-4 text-sm leading-7 text-[var(--muted)]">
                   {item}
                 </div>
               ))}

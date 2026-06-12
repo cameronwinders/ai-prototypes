@@ -162,7 +162,7 @@ export default async function ProfilePage({
             </div>
 
             <div className="grid gap-3">
-              <label className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/88 px-4 py-4 text-sm">
+              <label className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-4 text-sm">
                 <span className="flex items-start gap-3">
                   <input
                     type="checkbox"
@@ -179,7 +179,7 @@ export default async function ProfilePage({
                 </span>
               </label>
 
-              <label className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/88 px-4 py-4 text-sm">
+              <label className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-4 text-sm">
                 <span className="flex items-start gap-3">
                   <input
                     type="checkbox"

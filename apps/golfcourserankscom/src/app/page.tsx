@@ -41,7 +41,7 @@ function RankingsPreview({
 
       <div className="mt-6 hidden lg:block">
         <CourseRowHeader />
-        <div className="grid gap-1.5">
+        <div className="grid gap-0">
           {courses.map((course) => (
             <CourseRow key={course.id} course={course} />
           ))}
@@ -103,39 +103,40 @@ export default async function HomePage() {
         cta="Open full board"
       />
 
-      <section className="shell-panel shell-panel-contrast p-6 sm:p-7">
+      {/* Ink band — the page's one hard light/dark break (surface v3) */}
+      <section className="ink-band">
         <div className="max-w-3xl">
-          <h2 className="h2 text-[1.85rem] text-ink">Follow friends and compare lists</h2>
+          <h2 className="h2">Follow friends and compare lists</h2>
           <p className="subhed-sm mt-3">
             Invite the golfers you know, follow their rankings, and compare where your favorites line up or split from theirs.
           </p>
         </div>
 
-        <div className="mt-6 grid gap-3 lg:grid-cols-3">
-          <div className="rounded-md border border-line bg-white/92 p-5">
+        <div className="mt-8 grid gap-6 lg:grid-cols-3 lg:gap-8">
+          <div>
             <p className="eyebrow">INVITE</p>
-            <h3 className="h3 text-[1.3rem]">Send your link</h3>
-            <p className="mt-3 text-sm leading-7 text-muted">
+            <h3 className="h3 text-[1.3rem] text-linen">Send your link</h3>
+            <p className="mt-3 text-sm leading-7">
               Share one invite link so friends can join the board and connect to your list.
             </p>
           </div>
-          <div className="rounded-md border border-line bg-white/92 p-5">
+          <div>
             <p className="eyebrow">FOLLOW</p>
-            <h3 className="h3 text-[1.3rem]">See who played what</h3>
-            <p className="mt-3 text-sm leading-7 text-muted">
+            <h3 className="h3 text-[1.3rem] text-linen">See who played what</h3>
+            <p className="mt-3 text-sm leading-7">
               Follow friends to spot shared rounds, compare favorites, and see who has played each course.
             </p>
           </div>
-          <div className="rounded-md border border-line bg-white/92 p-5">
+          <div>
             <p className="eyebrow">COMPARE</p>
-            <h3 className="h3 text-[1.3rem]">Put lists side by side</h3>
-            <p className="mt-3 text-sm leading-7 text-muted">
+            <h3 className="h3 text-[1.3rem] text-linen">Put lists side by side</h3>
+            <p className="mt-3 text-sm leading-7">
               Use the compare view to stack your list next to a friend, the crowd, and the golf media.
             </p>
           </div>
         </div>
 
-        <div className="mt-6 flex flex-wrap gap-3">
+        <div className="mt-8 flex flex-wrap gap-3">
           <Link href={viewer.user ? "/friends" : "/sign-in?next=/friends"} className="solid-button min-h-11">
             Open friends
           </Link>

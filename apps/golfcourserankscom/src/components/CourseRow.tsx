@@ -23,10 +23,14 @@ function rowGrid(wide: boolean) {
     : "60px 110px minmax(0,1.7fr) 76px 90px 70px 70px 70px";
 }
 
+// Board-table column headers (surface v3) — caps Barlow over a 2px ink rule.
 export function CourseRowHeader({ trailingLabel = "Golfweek", wide = false }: { trailingLabel?: string; wide?: boolean }) {
-  const head = "text-[0.62rem] font-bold uppercase tracking-[0.08em] text-muted";
+  const head = "text-[0.64rem] font-bold uppercase tracking-[0.08em] text-muted";
   return (
-    <div className="grid items-center gap-3.5 px-[18px] pb-2" style={{ gridTemplateColumns: rowGrid(wide) }}>
+    <div
+      className="grid items-end gap-3.5 border-b-2 border-b-ink px-[18px] pb-[9px]"
+      style={{ gridTemplateColumns: rowGrid(wide) }}
+    >
       <div className={head}>Crowd</div>
       <div className={`${head} text-center`}>Friends played</div>
       <div className={head}>Course</div>
@@ -80,10 +84,12 @@ export function CourseRow({ course, action }: { course: LeaderboardCourse; actio
 
   const body = (
     <div className="grid items-center gap-3.5" style={{ gridTemplateColumns: rowGrid(hasAction) }}>
-      {/* Crowd — rank + score */}
+      {/* Crowd — rank + score (board-table: 1.45rem/700 ink rank, muted score beneath) */}
       <div>
-        <div className="text-[1.05rem] font-bold leading-none tabular-nums text-pine">#{course.leaderboardRank}</div>
-        <div className={`mt-1 text-[0.7rem] font-semibold tabular-nums tracking-[0.02em] ${course.isEarly ? "text-[var(--warning-ink)]" : "text-muted"}`}>
+        <div className="text-[1.45rem] font-bold leading-none tracking-[-0.01em] tabular-nums text-ink">
+          {course.leaderboardRank}
+        </div>
+        <div className={`mt-[3px] text-[0.78rem] font-semibold tabular-nums ${course.isEarly ? "text-[var(--warning-ink)]" : "text-muted"}`}>
           {formatCrowdScore(course.normalizedScore)}
           {course.isEarly ? "*" : ""}
         </div>
@@ -104,8 +110,8 @@ export function CourseRow({ course, action }: { course: LeaderboardCourse; actio
       {/* Editorial avg */}
       <div className={cell}>{formatRankPosition(course.editorialAverageRank)}</div>
 
-      {/* vs. editorial */}
-      <div className={`text-center text-[0.78rem] font-bold tabular-nums tracking-[0.02em] ${cvelColor}`}>{cvel}</div>
+      {/* vs. editorial — caps delta */}
+      <div className={`text-center text-[0.8rem] font-bold uppercase tabular-nums tracking-[0.02em] ${cvelColor}`}>{cvel}</div>
 
       {/* Golf Digest, GOLF.com */}
       <div className={cell}>{formatRankPosition(course.editorialRanks?.[PUBLICATIONS[0].key])}</div>
@@ -116,13 +122,15 @@ export function CourseRow({ course, action }: { course: LeaderboardCourse; actio
     </div>
   );
 
-  const shell = "block rounded-sm border border-line bg-white px-[18px] py-3.5";
+  // Board table row (surface v3): no per-row card border/radius/background —
+  // hairline separator only, hover tints linen-warm.
+  const shell = "block border-b border-line px-[18px] py-[13px]";
 
   if (hasAction) {
-    return <div className={shell}>{body}</div>;
+    return <div className={`${shell} transition-colors duration-150 hover:bg-linen-warm`}>{body}</div>;
   }
   return (
-    <Link href={href} className={`${shell} transition-colors duration-150 hover:bg-[#fafafa]`}>
+    <Link href={href} className={`${shell} transition-colors duration-150 hover:bg-linen-warm`}>
       {body}
     </Link>
   );

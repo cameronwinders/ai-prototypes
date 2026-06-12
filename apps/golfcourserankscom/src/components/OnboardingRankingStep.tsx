@@ -79,7 +79,7 @@ export function OnboardingRankingStep({
 
       <div className="grid gap-3">
         {courses.map((course) => (
-          <div key={course.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/92 p-4">
+          <div key={course.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white p-4">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div className="min-w-0">
                 <div className="flex flex-wrap gap-2">
@@ -105,7 +105,7 @@ export function OnboardingRankingStep({
         ))}
       </div>
 
-      <div className="sticky bottom-3 z-20 rounded-[var(--radius-lg)] border border-[var(--line)] bg-[rgba(255,253,249,0.96)] p-4 shadow-[var(--shadow-panel)] backdrop-blur sm:bottom-4">
+      <div className="sticky bottom-3 z-20 rounded-[var(--radius-lg)] border border-[var(--line)] bg-linen p-4 sm:bottom-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-semibold text-[var(--ink)]">Keep your favorite at the top</p>

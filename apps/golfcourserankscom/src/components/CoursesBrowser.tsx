@@ -266,7 +266,7 @@ export function CoursesBrowser({
       {status ? <p className="meta">{status}</p> : null}
 
       {filteredCourses.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-line bg-white/82 px-5 py-8 text-sm leading-6 text-muted">
+        <div className="rounded-lg border border-dashed border-line bg-white px-5 py-8 text-sm leading-6 text-muted">
           <p>No courses matched that search.</p>
           <Link href="/feedback?screen=Courses&from=%2Fcourses&topic=course-addition" className="ghost-button mt-4 min-h-11">
             Request a course addition
@@ -277,7 +277,7 @@ export function CoursesBrowser({
           {/* Desktop — Web UI Kit CourseRow (full data: editorial avg, vs-editorial, friends, signal) */}
           <div className="hidden lg:block">
             <CourseRowHeader trailingLabel="Manage" wide />
-            <div className="grid gap-1.5">
+            <div className="grid gap-0">
               {visibleCourses.map((course) => (
                 <CourseRow key={course.id} course={course} action={renderRowAction(course)} />
               ))}
@@ -294,7 +294,7 @@ export function CoursesBrowser({
                 <div
                   key={course.id}
                   data-testid={`course-card-${course.id}`}
-                  className="rounded-lg border border-line bg-white/92 p-4 transition-[background-color,transform] duration-150 hover:-translate-y-px hover:bg-white"
+                  className="rounded-lg border border-line bg-white p-4 transition-colors duration-150 hover:bg-linen-warm"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">

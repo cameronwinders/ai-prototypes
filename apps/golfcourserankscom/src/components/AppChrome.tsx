@@ -83,8 +83,8 @@ function toScreenName(pathname: string) {
 
 function navPillClasses(active: boolean) {
   return active
-    ? "inline-flex min-h-10 items-center justify-center rounded-xs bg-ink px-4 py-2 text-sm font-semibold shadow-active"
-    : "inline-flex min-h-10 items-center justify-center rounded-xs px-4 py-2 text-sm font-semibold text-muted transition hover:bg-white/78 hover:text-ink";
+    ? "inline-flex min-h-10 items-center justify-center rounded-xs bg-ink px-4 py-2 text-[0.74rem] font-semibold uppercase tracking-[0.07em]"
+    : "inline-flex min-h-10 items-center justify-center rounded-xs px-4 py-2 text-[0.74rem] font-semibold uppercase tracking-[0.07em] text-muted transition hover:bg-linen-warm hover:text-ink";
 }
 
 export function AppChrome({ viewer, children }: AppChromeProps) {
@@ -138,14 +138,14 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
   return (
     <div className="min-h-screen bg-[var(--bg-page-gradient)] text-ink">
       <div className="mx-auto flex min-h-screen w-full max-w-[1280px] flex-col px-0 pb-10 pt-0 sm:px-6 sm:pb-16 sm:pt-4 lg:px-8">
-        <header className="sticky top-0 z-40 border-b border-[rgba(28,41,36,0.1)] bg-[rgba(251,248,242,0.92)] backdrop-blur-xl sm:rounded-xl sm:border sm:border-line sm:bg-[linear-gradient(180deg,_rgba(255,253,249,0.96),_rgba(255,250,243,0.84))] sm:shadow-header">
+        <header className="sticky top-0 z-40 border-b border-line bg-linen">
           <div className="flex min-h-[72px] items-center justify-between gap-4 px-5 py-3 sm:min-h-[76px] sm:px-5">
             <div className="flex min-w-0 items-center gap-5">
               <Link href="/" className="shrink-0 text-ink" aria-label="Golf Course Ranks home">
                 <Wordmark className="h-10 w-auto max-w-[18rem] sm:h-9" />
               </Link>
 
-              <nav className="hidden items-center gap-[18px] lg:flex">
+              <nav className="hidden items-center gap-[26px] lg:flex">
                 {desktopNav.map((item) => {
                   const href = item.href === "/me/courses" ? myCoursesHref : item.href;
                   const active = isDesktopNavActive(item.href);
@@ -153,13 +153,13 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                     <Link
                       key={item.href}
                       href={href}
-                      className={`relative py-1.5 text-[0.85rem] transition-colors ${
-                        active ? "font-semibold text-ink" : "font-medium text-muted hover:text-ink"
+                      className={`relative whitespace-nowrap py-1.5 text-[0.74rem] font-semibold uppercase tracking-[0.07em] transition-colors ${
+                        active ? "text-ink" : "text-muted hover:text-ink"
                       }`}
                     >
                       {item.label}
                       {active ? (
-                        <span className="absolute inset-x-0 -bottom-2 h-0.5 rounded-full bg-pine" aria-hidden="true" />
+                        <span className="absolute inset-x-0 -bottom-2 h-0.5 bg-pine" aria-hidden="true" />
                       ) : null}
                     </Link>
                   );
@@ -198,7 +198,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
             <div className="flex items-center gap-2 lg:hidden">
               <Link
                 href={viewer.signedIn ? profileHref : `/sign-in?next=${encodeURIComponent(currentUrl)}`}
-                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-line bg-white/92 text-ink shadow-chip"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-[var(--m-radius-sm)] border border-transparent text-ink transition-colors hover:border-line hover:bg-[rgba(28,41,36,0.04)]"
                 aria-label={viewer.signedIn ? "Open profile" : "Sign in"}
               >
                 <ProfileIcon className="h-5 w-5" />
@@ -209,7 +209,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                 aria-controls="mobile-site-menu"
                 aria-label={menuOpen ? "Close menu" : "Open menu"}
                 onClick={() => setMenuOpen((open) => !open)}
-                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-line bg-white/92 text-ink shadow-chip"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-[var(--m-radius-sm)] border border-transparent text-ink transition-colors hover:border-line hover:bg-[rgba(28,41,36,0.04)]"
               >
                 <span className="sr-only">{menuOpen ? "Close menu" : "Open menu"}</span>
                 <span className="relative flex h-5 w-5 flex-col justify-center gap-1.5">
@@ -277,7 +277,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
             role="dialog"
             aria-modal="true"
             aria-label="Site navigation"
-            className={`absolute inset-y-0 right-0 flex w-full flex-col bg-[linear-gradient(180deg,_rgba(251,248,242,0.995)_0%,_rgba(244,239,229,0.985)_100%)] px-6 pb-8 pt-5 shadow-[0_30px_60px_rgba(18,28,25,0.18)] transition-transform duration-300 ${
+            className={`absolute inset-y-0 right-0 flex w-full flex-col bg-linen px-6 pb-8 pt-5 shadow-[var(--shadow-floating)] transition-transform duration-300 ${
               menuOpen ? "translate-x-0" : "translate-x-full"
             }`}
           >
@@ -288,15 +288,15 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
               <button
                 type="button"
                 onClick={() => setMenuOpen(false)}
-                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-line bg-white text-ink shadow-chip"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-[var(--m-radius-sm)] border border-transparent text-ink transition-colors hover:border-line hover:bg-[rgba(28,41,36,0.04)]"
                 aria-label="Close menu"
               >
                 <span className="text-2xl leading-none">{"\u00D7"}</span>
               </button>
             </div>
 
-            <nav className="mt-6 grid gap-3">
-              {mobileMenuItems.map((item) => {
+            <nav className="mt-4 flex flex-col">
+              {mobileMenuItems.map((item, index) => {
                 const href =
                   item.href === "/me/courses"
                     ? myCoursesHref
@@ -315,27 +315,22 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
                     key={item.label}
                     href={href}
                     onClick={() => setMenuOpen(false)}
-                    className={`flex min-h-[3.25rem] items-center justify-between rounded-md border px-4 py-3 text-base font-semibold transition ${
-                      active
-                        ? "border-[rgba(24,37,43,0.08)] bg-ink shadow-active"
-                        : "border-line bg-white/84 text-ink"
-                    }`}
-                    style={active ? activePillTextStyle : undefined}
+                    className={`flex min-h-[3.25rem] items-center gap-2.5 px-1 py-3.5 text-[1.02rem] transition-colors ${
+                      index === mobileMenuItems.length - 1 ? "" : "border-b border-line"
+                    } ${active ? "font-semibold text-ink" : "font-medium text-muted"}`}
                   >
-                    <span style={active ? activePillTextStyle : undefined}>{item.label}</span>
                     <span
-                      className={`section-label text-[11px] ${active ? "" : "text-muted"}`}
-                      style={active ? activePillTextStyle : undefined}
-                    >
-                      {active ? "Current" : "Open"}
-                    </span>
+                      className={`h-1.5 w-1.5 shrink-0 rounded-full ${active ? "bg-pine" : "bg-transparent"}`}
+                      aria-hidden="true"
+                    />
+                    <span>{item.label}</span>
                   </Link>
                 );
               })}
             </nav>
 
             <div className="mt-auto border-t border-[rgba(28,41,36,0.08)] pt-5">
-              <div className="rounded-lg border border-line bg-white/76 px-4 py-4">
+              <div className="rounded-[var(--m-radius-md)] border border-line bg-white px-4 py-4">
                 <p className="text-sm font-semibold text-ink">{viewer.signedIn ? viewer.handle ?? "Signed-in golfer" : "Not signed in"}</p>
                 <p className="meta mt-1">
                   {viewer.signedIn ? "Open your account, invite friends, or sign out." : "Sign in to save courses and compare lists."}
@@ -366,7 +361,7 @@ export function AppChrome({ viewer, children }: AppChromeProps) {
 
         <Link
           href={feedbackHref}
-          className="solid-button fixed bottom-4 right-4 z-40 gap-2 shadow-[0_20px_55px_rgba(22,38,34,0.28)] lg:bottom-6 lg:right-8"
+          className="solid-button fixed bottom-4 right-4 z-40 gap-2 shadow-[var(--shadow-floating)] lg:bottom-6 lg:right-8"
           style={activePillTextStyle}
         >
           <span className="text-base leading-none" style={activePillTextStyle}>

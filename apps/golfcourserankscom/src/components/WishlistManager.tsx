@@ -256,7 +256,7 @@ export function WishlistManager({ initialCourses, siteUrl, viewerHandle, inviteU
             {/* Mobile — stacked card (same controls, thumb-friendly) */}
             <div className="mt-6 grid gap-3 lg:hidden">
               {courses.map((course) => (
-                <div key={course.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/92 p-4">
+                <div key={course.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white p-4">
                   <div className="flex flex-col gap-4">
                     <div className="min-w-0">
                       <div className="flex flex-wrap gap-2">

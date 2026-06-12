@@ -30,7 +30,7 @@ export default async function AdminFeedbackPage() {
             </div>
           ) : (
             feedback.map((item) => (
-              <div key={item.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/92 p-5">
+              <div key={item.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white p-5">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="pill pill-pine">
                     {FEEDBACK_LABELS[item.feedback_type] ?? item.feedback_type}

@@ -167,7 +167,7 @@ export function ShareButton({
                 className="absolute inset-0 bg-[rgba(18,28,25,0.36)]"
                 onClick={() => setOpen(false)}
               />
-              <div className="relative z-[71] max-h-[88vh] w-full overflow-y-auto rounded-t-[var(--m-radius-sheet)] border-0 bg-[var(--linen)] shadow-[var(--m-shadow-sheet)] sm:max-h-[calc(100vh-1.5rem)] sm:max-w-[34rem] sm:rounded-lg sm:border sm:border-line sm:bg-white sm:shadow-[0_24px_60px_rgba(18,28,25,0.18)]">
+              <div className="relative z-[71] max-h-[88vh] w-full overflow-y-auto rounded-t-[var(--m-radius-sheet)] border-0 bg-[var(--linen)] shadow-[var(--m-shadow-sheet)] sm:max-h-[calc(100vh-1.5rem)] sm:max-w-[34rem] sm:rounded-lg sm:border-0 sm:bg-white sm:shadow-[var(--shadow-floating)]">
                 <div className="m-sheet-grabber sm:hidden" />
                 <div className="flex items-center justify-between border-b border-line px-5 py-4">
                   <span className="section-label">SHARE</span>

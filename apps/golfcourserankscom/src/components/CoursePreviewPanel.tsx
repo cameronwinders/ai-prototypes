@@ -40,20 +40,17 @@ export function CoursePreviewPanel({
   }
 
   return (
-    <div className="relative min-h-[20rem] overflow-hidden rounded-xl border border-line bg-[linear-gradient(180deg,_rgba(230,241,234,0.98)_0%,_rgba(247,244,238,0.96)_56%,_rgba(231,221,194,0.86)_100%)] p-5 sm:p-6">
-      <div className="absolute inset-x-0 top-0 h-[42%] bg-[radial-gradient(circle_at_18%_20%,_rgba(255,255,255,0.82),_transparent_30%),linear-gradient(180deg,_rgba(213,232,221,0.92)_0%,_rgba(237,244,239,0.36)_100%)]" />
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-[linear-gradient(180deg,_rgba(231,221,194,0.14)_0%,_rgba(223,210,179,0.58)_100%)]" />
-
-      <div className="relative z-10 flex h-full flex-col justify-between gap-4">
+    <div className="shell-panel shell-panel-soft relative min-h-[20rem] p-5 sm:p-6">
+      <div className="relative flex h-full flex-col justify-between gap-4">
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="eyebrow">{eyebrow}</p>
             <p className="meta mt-1">{caption}</p>
           </div>
-          <span className="pill pill-line border-white/70 bg-white/72 text-pine shadow-chip">{badgeLabel}</span>
+          <span className="pill pill-line text-pine">{badgeLabel}</span>
         </div>
 
-        <div className="rounded-lg border border-white/70 bg-white/78 p-4 shadow-[0_24px_60px_rgba(24,39,31,0.12)] backdrop-blur-sm">
+        <div className="rounded-lg border border-line bg-white p-4">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
@@ -75,7 +72,7 @@ export function CoursePreviewPanel({
               </div>
             </div>
 
-            <div className="w-full rounded-md border border-[rgba(49,107,83,0.12)] bg-[rgba(216,231,221,0.76)] px-3 py-2 text-left sm:w-auto sm:text-right">
+            <div className="w-full rounded-md border border-[rgba(49,107,83,0.12)] bg-pine-soft px-3 py-2 text-left sm:w-auto sm:text-right">
               <p className="section-label text-[10px]">{scoreEyebrow}</p>
               <p className="mt-1 text-2xl font-bold tabular-nums tracking-[var(--tracking-tight)] text-ink">
                 {hero.normalizedScore.toFixed(1)}
@@ -88,7 +85,7 @@ export function CoursePreviewPanel({
               {rest.slice(0, 2).map((course) => (
                 <div
                   key={course.id}
-                  className="rounded-md border border-[rgba(28,41,36,0.08)] bg-white/82 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]"
+                  className="rounded-md border border-line bg-linen-warm px-4 py-3"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <span className="pill pill-line bg-linen">#{course.leaderboardRank}</span>

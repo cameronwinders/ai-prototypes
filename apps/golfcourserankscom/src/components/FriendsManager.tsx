@@ -173,7 +173,7 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle, joinedHan
 
           <div className="mt-5 grid gap-3">
             {searchResults.map((profile) => (
-              <div key={profile.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4">
+              <div key={profile.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white p-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <InitialsAvatar displayName={profile.display_name} handle={profile.handle} />
@@ -242,7 +242,7 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle, joinedHan
               </div>
             ) : (
               data.accepted.map((friend) => (
-                <div key={friend.friendshipId} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4">
+                <div key={friend.friendshipId} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white p-4">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <InitialsAvatar displayName={friend.profile.display_name} handle={friend.profile.handle} />
@@ -277,7 +277,7 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle, joinedHan
               </div>
             ) : (
               data.incoming.map((request) => (
-                <div key={request.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4">
+                <div key={request.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white p-4">
                   <div className="flex items-center gap-3">
                     <InitialsAvatar displayName={request.profile.display_name} handle={request.profile.handle} />
                     <div>
@@ -308,7 +308,7 @@ export function FriendsManager({ initialData, inviteUrl, viewerHandle, joinedHan
               </div>
             ) : (
               data.outgoing.map((request) => (
-                <div key={request.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4">
+                <div key={request.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white p-4">
                   <div className="flex items-center gap-3">
                     <InitialsAvatar displayName={request.profile.display_name} handle={request.profile.handle} />
                     <div>

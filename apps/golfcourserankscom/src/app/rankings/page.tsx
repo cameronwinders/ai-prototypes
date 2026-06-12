@@ -112,7 +112,7 @@ export default async function RankingsPage({
 
             <div className="hidden lg:block">
               <CourseRowHeader />
-              <div className="grid gap-1.5">
+              <div className="grid gap-0">
                 {courses.map((course) => (
                   <CourseRow key={course.id} course={course} />
                 ))}

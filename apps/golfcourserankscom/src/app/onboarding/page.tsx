@@ -79,7 +79,7 @@ export default async function OnboardingPage({
             This part is optional. If you skip it, we will keep using the current name based on your email address.
           </p>
           {inviterName ? (
-          <div className="mt-6 rounded-[var(--radius-md)] border border-[rgba(49,107,83,0.16)] bg-[rgba(216,231,221,0.72)] px-4 py-3 text-sm leading-7 text-[var(--pine)]">
+          <div className="mt-6 rounded-[var(--radius-md)] border border-[rgba(49,107,83,0.16)] bg-pine-soft px-4 py-3 text-sm leading-7 text-[var(--pine)]">
               You are almost done. Add your name if you want, then we will send you back to compare with <span className="font-semibold text-[var(--ink)]">{inviterName}</span>.
           </div>
           ) : null}
@@ -179,7 +179,7 @@ export default async function OnboardingPage({
             {HANDICAP_OPTIONS.map((option) => (
               <label
                 key={option}
-                className="block cursor-pointer rounded-[var(--radius-lg)] border border-[rgba(24,37,43,0.08)] bg-white/90 p-4 transition hover:-translate-y-px hover:bg-white has-[:checked]:border-transparent has-[:checked]:bg-[var(--pine-soft)] has-[:checked]:shadow-[inset_3px_0_0_var(--pine),0_4px_14px_rgba(49,107,83,0.08)]"
+                className="block cursor-pointer rounded-[var(--radius-lg)] border border-line bg-white p-4 transition-colors hover:bg-linen-warm has-[:checked]:border-transparent has-[:checked]:bg-[var(--pine-soft)] has-[:checked]:shadow-[inset_3px_0_0_var(--pine)]"
               >
                 <div className="flex items-start gap-4">
                   <input

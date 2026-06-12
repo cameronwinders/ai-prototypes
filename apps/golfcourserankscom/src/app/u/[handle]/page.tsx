@@ -143,7 +143,7 @@ export default async function PublicProfilePage({
             <Link
               key={course.id}
               href={`/courses/${course.id}`}
-              className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4 transition hover:-translate-y-px hover:bg-white"
+              className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white p-4 transition-colors hover:bg-linen-warm"
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-start gap-4">
@@ -180,7 +180,7 @@ export default async function PublicProfilePage({
             <Link
               key={course.id}
               href={`/courses/${course.id}`}
-              className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 p-4 transition hover:-translate-y-px hover:bg-white"
+              className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white p-4 transition-colors hover:bg-linen-warm"
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-start gap-4">

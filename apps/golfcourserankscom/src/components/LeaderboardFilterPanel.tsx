@@ -59,7 +59,7 @@ export function LeaderboardFilterPanel({ sort, query }: LeaderboardFilterPanelPr
   }
 
   return (
-    <div className="sticky top-[4.7rem] z-30 rounded-lg border border-line bg-[rgba(255,252,246,0.96)] px-4 py-3 shadow-panel backdrop-blur xl:top-[6.1rem]">
+    <div className="sticky top-[4.7rem] z-30 rounded-lg border border-line bg-linen px-4 py-3 xl:top-[6.1rem]">
       <form className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <label htmlFor="leaderboard-sort" className="text-sm font-semibold text-ink">

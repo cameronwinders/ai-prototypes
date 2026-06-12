@@ -78,7 +78,7 @@ export default async function ComparePage({
           ) : (
             <div className="mt-6 grid gap-3">
               {overview.overlap.map((course) => (
-                <div key={course.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/92 p-4">
+                <div key={course.id} className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white p-4">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <h3 className="h3 text-[1.35rem]">{course.name}</h3>
@@ -89,11 +89,11 @@ export default async function ComparePage({
                     </Link>
                   </div>
                   <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                    <div className="rounded-[var(--radius-md)] bg-[rgba(245,238,228,0.94)] px-4 py-3 text-sm text-[var(--muted)]">
+                    <div className="rounded-[var(--radius-md)] bg-linen-warm px-4 py-3 text-sm text-[var(--muted)]">
                       Your rank
                       <p className="mt-1 text-2xl font-bold tabular-nums tracking-[-0.02em] text-[var(--ink)]">#{course.selfRank}</p>
                     </div>
-                    <div className="rounded-[var(--radius-md)] bg-[rgba(216,231,221,0.92)] px-4 py-3 text-sm text-[var(--muted)]">
+                    <div className="rounded-[var(--radius-md)] bg-pine-soft px-4 py-3 text-sm text-[var(--muted)]">
                       Friend rank
                       <p className="mt-1 text-2xl font-bold tabular-nums tracking-[-0.02em] text-[var(--ink)]">#{course.friendRank}</p>
                     </div>
@@ -140,7 +140,7 @@ export default async function ComparePage({
                   <Link
                     key={course.id}
                     href={`/courses/${course.id}`}
-                    className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 px-4 py-4 transition hover:-translate-y-px hover:bg-white"
+                    className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-4 transition-colors hover:bg-linen-warm"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div>
@@ -168,7 +168,7 @@ export default async function ComparePage({
                   <Link
                     key={course.id}
                     href={`/courses/${course.id}`}
-                    className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/90 px-4 py-4 transition hover:-translate-y-px hover:bg-white"
+                    className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-4 transition-colors hover:bg-linen-warm"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div>

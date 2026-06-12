@@ -100,7 +100,7 @@ export function RankingsMobileControls({ sort, query, resultCount }: RankingsMob
             className="min-w-0 flex-1 border-none bg-transparent py-2.5 text-base text-ink outline-none [appearance:none] [&::-webkit-search-cancel-button]:hidden"
           />
           {draftQuery ? (
-            <button type="button" onClick={clearQuery} aria-label="Clear search" className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-muted">
+            <button type="button" onClick={clearQuery} aria-label="Clear search" className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-[var(--m-radius-sm)] text-muted">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">
                 <path d="M4 4 L12 12 M12 4 L4 12" />
               </svg>

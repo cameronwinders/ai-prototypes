@@ -104,7 +104,7 @@ export function OnboardingCoursePicker({
             Rank the courses based on which were your overall favorite to play.
           </p>
           {inviterName ? (
-            <div className="mt-4 rounded-[var(--radius-md)] border border-[rgba(49,107,83,0.16)] bg-[rgba(216,231,221,0.72)] px-4 py-3 text-sm leading-7 text-[var(--pine)]">
+            <div className="mt-4 rounded-[var(--radius-md)] border border-[rgba(49,107,83,0.16)] bg-pine-soft px-4 py-3 text-sm leading-7 text-[var(--pine)]">
               Picking with <span className="font-semibold text-[var(--ink)]">{inviterName}</span> in mind. Courses they already played are marked below.
             </div>
           ) : null}
@@ -168,7 +168,7 @@ export function OnboardingCoursePicker({
               className={`min-h-[10rem] rounded-[var(--radius-lg)] border p-4 text-left transition ${
                 selected
                   ? "is-selected"
-                  : "border-[var(--line)] bg-white/90 hover:-translate-y-px hover:bg-white"
+                  : "border-[var(--line)] bg-white transition-colors hover:bg-linen-warm"
               }`}
             >
               <div className="flex items-start justify-between gap-3">
@@ -201,7 +201,7 @@ export function OnboardingCoursePicker({
         </div>
       ) : null}
 
-      <div className="sticky bottom-3 z-20 rounded-[var(--radius-lg)] border border-[var(--line)] bg-[rgba(255,253,249,0.96)] p-4 shadow-[var(--shadow-panel)] backdrop-blur sm:bottom-4">
+      <div className="sticky bottom-3 z-20 rounded-[var(--radius-lg)] border border-[var(--line)] bg-linen p-4 sm:bottom-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-semibold text-[var(--ink)]">

@@ -47,18 +47,23 @@
   --tracking-tighter: -0.03em; /* Source Serif self-spaces */
   --tracking-tightest: -0.035em;
 
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 12px;
-  --radius-xl: 14px;
-  --radius-pill: 6px;
+  /* SURFACE v3 — squared: 0 on interactive hardware, 2px on structural surfaces */
+  --radius-xs: 0;
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 2px;
+  --radius-xl: 2px;
+  --radius-pill: 0;
 
-  --shadow-chip: 0 8px 24px rgba(24, 37, 43, 0.08);
-  --shadow-header: 0 12px 28px rgba(20, 31, 28, 0.06);
-  --shadow-panel: 0 22px 65px rgba(18, 28, 25, 0.08);
-  --shadow-active: 0 10px 25px rgba(24, 37, 43, 0.12);
-  --inset-edge: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  /* SURFACE v3 — flat by default. Chip/header/panel/inset are transparent
+     no-ops; only two real elevations remain: --shadow-active (dragged) and
+     --shadow-floating (true overlays — modals, share sheet, feedback button). */
+  --shadow-chip: 0 0 0 rgba(0, 0, 0, 0);
+  --shadow-header: 0 0 0 rgba(0, 0, 0, 0);
+  --shadow-panel: 0 0 0 rgba(0, 0, 0, 0);
+  --shadow-active: 0 8px 24px rgba(18, 28, 25, 0.16);
+  --shadow-floating: 0 24px 64px rgba(18, 28, 25, 0.18);
+  --inset-edge: 0 0 0 rgba(0, 0, 0, 0);
 
   --motion-fast: 140ms ease;
   --motion-mid: 300ms ease;
@@ -88,19 +93,21 @@
   --m-fs-meta: 0.78rem;
   --m-fs-eyebrow: 0.68rem;
 
-  --m-radius-sm: 8px;
-  --m-radius-md: 12px;
-  --m-radius-lg: 16px;
-  --m-radius-sheet: 20px;
+  /* Mobile radii — squared with the system, a notch softer than desktop;
+     sheets keep a rounded top. */
+  --m-radius-sm: 4px;
+  --m-radius-md: 6px;
+  --m-radius-lg: 8px;
+  --m-radius-sheet: 16px;
 
-  --m-shadow-card: 0 2px 8px rgba(18, 28, 25, 0.05);
+  /* Mobile shadows — cards flat; only the sheet (a true overlay) floats */
+  --m-shadow-card: 0 0 0 rgba(0, 0, 0, 0);
   --m-shadow-sheet: 0 -8px 32px rgba(18, 28, 25, 0.12);
   --m-shadow-sticky: 0 1px 0 var(--line);
 
-  --bg-page-gradient:
-    radial-gradient(circle at top left, rgba(202, 218, 201, 0.45), transparent 32%),
-    radial-gradient(circle at top right, rgba(233, 216, 182, 0.32), transparent 28%),
-    linear-gradient(180deg, #f6f3ec 0%, #efe8db 52%, #f7f4ee 100%);
+  /* SURFACE v3: flat linen, full stop — the radial-bloom gradient is retired.
+     Token name kept for back-compat. */
+  --bg-page-gradient: var(--linen);
 }
 
 @theme inline {
@@ -131,6 +138,7 @@
   --shadow-header: var(--shadow-header);
   --shadow-panel: var(--shadow-panel);
   --shadow-active: var(--shadow-active);
+  --shadow-floating: var(--shadow-floating);
 }
 
 *,
@@ -318,100 +326,107 @@ pre,
   text-transform: none;
 }
 
+/* SURFACE v3 — flat: white fill, hairline border, near-square corners, no
+   shadow, no blur. The pine→sand signature survives as a crisper 2px top
+   rule. For true overlays (modals, share sheet) add .shell-panel-floating —
+   the only panels that still cast a shadow. */
 .shell-panel {
   position: relative;
   overflow: hidden;
-  /* borderless by default — shadow + inset top edge + ::before glow carry the lift */
   border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, rgba(255, 253, 249, 0.98), rgba(255, 250, 243, 0.88));
-  box-shadow: var(--shadow-panel), var(--inset-edge);
-  backdrop-filter: blur(18px);
+  background: #fff;
+  border: 1px solid var(--line);
 }
 
 .shell-panel-bordered {
-  border: 1px solid var(--line); /* opt-in hairline for panels in busy/nested context */
+  /* alias retained — the hairline is now default */
 }
 
 .shell-panel::before {
   content: "";
   position: absolute;
   inset: 0 0 auto;
-  height: 1px;
+  height: 2px;
   background: linear-gradient(
     90deg,
-    rgba(49, 107, 83, 0.18),
-    rgba(231, 214, 176, 0.42),
-    rgba(49, 107, 83, 0.1)
+    rgba(49, 107, 83, 0.5),
+    rgba(231, 214, 176, 0.8),
+    rgba(49, 107, 83, 0.25)
   );
 }
 
 .shell-panel-soft {
-  background: linear-gradient(180deg, rgba(244, 249, 245, 0.96), rgba(251, 248, 242, 0.9));
+  background: var(--linen-warm);
 }
 
 .shell-panel-contrast {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(249, 245, 237, 0.92));
-  box-shadow: 0 20px 48px rgba(18, 28, 25, 0.1), var(--inset-edge);
+  background: #fff;
+  border-color: rgba(28, 41, 36, 0.18);
+}
+
+.shell-panel-floating {
+  border: none;
+  box-shadow: var(--shadow-floating);
 }
 
 /* Selected state — never a border ring. Pine-soft fill + 3px inset pine left rule. */
 .is-selected {
   background: var(--pine-soft);
-  box-shadow: inset 3px 0 0 var(--pine), 0 4px 14px rgba(49, 107, 83, 0.08);
+  box-shadow: inset 3px 0 0 var(--pine);
   border-color: transparent;
 }
 
 .shell-panel.is-selected {
-  box-shadow: inset 3px 0 0 var(--pine), var(--shadow-panel), var(--inset-edge);
+  box-shadow: inset 3px 0 0 var(--pine);
 }
 
+/* SURFACE v3 — squared caps hardware. Uppercase Barlow 600 with open
+   tracking, square corners, no shadows, no lift-on-hover; hover works in
+   color only. */
 .solid-button,
 .ghost-button {
   display: inline-flex;
-  min-height: 2.4rem;
+  min-height: 2.6rem;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   white-space: nowrap;
-  border-radius: var(--radius-xs);
+  border-radius: 0;
   border: 1px solid transparent;
-  padding: 0.62rem 1.1rem;
+  padding: 0.72rem 1.4rem;
   font-family: var(--font-body);
-  font-size: 0.92rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: -0.005em;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
   line-height: 1;
   cursor: pointer;
   transition:
-    transform var(--motion-fast),
     background-color var(--motion-fast),
     border-color var(--motion-fast),
-    box-shadow var(--motion-fast);
+    color var(--motion-fast);
 }
 
 .solid-button {
   border-color: var(--ink);
   background: var(--ink);
   color: #fff;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 1px 2px rgba(18, 28, 25, 0.18);
 }
 
 .solid-button:hover {
-  transform: translateY(-1px);
   border-color: var(--ink-soft);
   background: var(--ink-soft);
 }
 
 .ghost-button {
-  border-color: rgba(28, 41, 36, 0.16);
-  background: #fff;
+  border-color: rgba(28, 41, 36, 0.4);
+  background: transparent;
   color: var(--ink);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 1px 2px rgba(18, 28, 25, 0.04);
 }
 
 .ghost-button:hover {
-  transform: translateY(-1px);
-  border-color: rgba(28, 41, 36, 0.32);
+  border-color: var(--ink);
+  background: rgba(28, 41, 36, 0.04);
 }
 
 .solid-button:disabled,
@@ -434,16 +449,16 @@ pre,
 
 .solid-button.sm,
 .ghost-button.sm {
-  min-height: 2rem;
-  padding: 0.42rem 0.78rem;
-  font-size: 0.82rem;
+  min-height: 2.1rem;
+  padding: 0.5rem 0.95rem;
+  font-size: 0.7rem;
 }
 
 .solid-button.lg,
 .ghost-button.lg {
-  min-height: 2.85rem;
-  padding: 0.78rem 1.4rem;
-  font-size: 1rem;
+  min-height: 3rem;
+  padding: 0.9rem 1.8rem;
+  font-size: 0.84rem;
 }
 
 /* Mobile full-width button — 44px+ hit target */
@@ -452,7 +467,7 @@ pre,
   width: 100%;
   min-height: var(--m-touch);
   padding: 0.85rem 1.2rem;
-  font-size: 1rem;
+  font-size: 0.8rem;
 }
 
 .brand-heading {
@@ -535,14 +550,14 @@ pre,
   .shell-panel,
   .shell-panel-soft,
   .shell-panel-contrast {
-    border-radius: var(--m-radius-md);
+    border-radius: var(--m-radius-lg);
   }
 
   .solid-button,
   .ghost-button {
     min-height: var(--m-touch);
     padding: 0.72rem 1rem;
-    font-size: 0.95rem;
+    font-size: 0.78rem;
   }
 
   .pill {
@@ -620,9 +635,7 @@ pre,
   gap: 10px;
   min-height: 52px;
   padding: 12px var(--m-gutter);
-  background: rgba(251, 248, 242, 0.92);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: var(--linen);
   border-bottom: 1px solid var(--line);
 }
 
@@ -672,9 +685,7 @@ pre,
   display: flex;
   gap: 8px;
   padding: 10px var(--m-gutter) calc(10px + var(--m-safe-bottom));
-  background: rgba(251, 248, 242, 0.96);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: var(--linen);
   border-top: 1px solid var(--line);
 }
 
@@ -915,4 +926,214 @@ pre,
 .m-list-row.is-selected {
   background: var(--pine-soft);
   box-shadow: inset 3px 0 0 var(--pine);
+}
+
+/* ====================================================================
+   SURFACE v3 RECIPES — board table, hero stat, ink band
+   ==================================================================== */
+
+/* Board table — the leaderboard construction. Rankings are a TABLE, not a
+   stack of cards: caps column headers over a 2px ink rule, hairline
+   separators between rows, no per-row borders or radius. Ranks set big.
+   Hover tints the row linen-warm. Desktop-first; on mobile the board falls
+   back to .m-course-row stacks. */
+.board-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.board-table thead th {
+  font-family: var(--font-body);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+  padding: 0 14px 9px 0;
+  border-bottom: 2px solid var(--ink);
+}
+
+.board-table td {
+  padding: 13px 14px 13px 0;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+
+.board-table tbody tr:hover td {
+  background: var(--linen-warm);
+}
+
+.board-table .c {
+  text-align: center;
+}
+
+.board-table .rank {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.45rem;
+  color: var(--ink);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.board-table .rank.pine {
+  color: var(--pine);
+}
+
+.board-table .crowd {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  margin-top: 3px;
+}
+
+.board-table .course {
+  font-size: 0.98rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.board-table .loc {
+  font-size: 0.76rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.board-table .num {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.board-table .delta {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.board-table .delta.up {
+  color: var(--pine);
+}
+
+.board-table .delta.down {
+  color: var(--warning-ink);
+}
+
+.board-table .delta.flat {
+  color: var(--muted);
+}
+
+/* Hero stat — one number as the hero. The key figure (crowd score, rank)
+   set huge between two hairlines; supporting figures sit beside it. */
+.hero-stat {
+  display: flex;
+  align-items: flex-end;
+  gap: 34px;
+  padding: 26px 0;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.hero-stat .lab {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.hero-stat .big {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 6rem;
+  line-height: 0.86;
+  color: var(--pine);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+}
+
+.hero-stat .big.ink {
+  color: var(--ink);
+}
+
+.hero-stat .meta {
+  font-size: 0.92rem;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 360px;
+  padding-bottom: 6px;
+}
+
+.hero-stat .meta strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* Ink band — the hard light/dark section break. One per page, max: the
+   home explainer, a methodology break, or the footer. Serif headline in
+   linen, sand eyebrow, pine-soft emphasis. */
+.ink-band {
+  background: var(--ink);
+  color: var(--linen);
+  padding: 48px 32px 52px;
+}
+
+.ink-band .eyebrow {
+  color: var(--sand);
+}
+
+.ink-band h1,
+.ink-band h2,
+.ink-band .h1,
+.ink-band .h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: var(--tracking-tighter);
+  color: var(--linen);
+}
+
+.ink-band p {
+  color: rgba(251, 248, 242, 0.66);
+}
+
+.ink-band p strong,
+.ink-band .subhed strong {
+  color: var(--pine-soft);
+  font-weight: 600;
+}
+
+.ink-band .subhed {
+  color: rgba(251, 248, 242, 0.66);
+}
+
+.ink-band .ghost-button {
+  color: var(--linen);
+  border-color: rgba(251, 248, 242, 0.4);
+}
+
+.ink-band .ghost-button:hover {
+  border-color: var(--linen);
+  background: rgba(251, 248, 242, 0.06);
+}
+
+.ink-band .solid-button {
+  background: var(--linen);
+  color: var(--ink);
+  border-color: var(--linen);
+}
+
+.ink-band .solid-button:hover {
+  background: #fff;
+  border-color: #fff;
 }

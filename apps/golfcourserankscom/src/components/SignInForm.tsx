@@ -52,17 +52,17 @@ export function SignInForm({ inviterName = null }: { inviterName?: string | null
         </div>
       ) : null}
       {message ? (
-        <div className="rounded-[var(--radius-md)] border border-[rgba(49,107,83,0.18)] bg-[rgba(216,231,221,0.82)] px-4 py-3 text-sm leading-7 text-[var(--pine)]">
+        <div className="rounded-[var(--radius-md)] border border-[rgba(49,107,83,0.18)] bg-pine-soft px-4 py-3 text-sm leading-7 text-[var(--pine)]">
           {message}
         </div>
       ) : null}
       {inviterName ? (
-        <div className="rounded-[var(--radius-md)] border border-[rgba(49,107,83,0.16)] bg-[rgba(216,231,221,0.72)] px-4 py-3 text-sm leading-7 text-[var(--pine)]">
+        <div className="rounded-[var(--radius-md)] border border-[rgba(49,107,83,0.16)] bg-pine-soft px-4 py-3 text-sm leading-7 text-[var(--pine)]">
           Continue to compare with <span className="font-semibold text-[var(--ink)]">{inviterName}</span> after you open the email link.
         </div>
       ) : null}
 
-      <div className="min-w-0 rounded-[var(--radius-md)] border border-[var(--line)] bg-white/85 p-1">
+      <div className="min-w-0 rounded-[var(--radius-md)] border border-[var(--line)] bg-white p-1">
         <div className="grid grid-cols-2 gap-1">
           <button
             type="button"

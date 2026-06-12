@@ -67,7 +67,7 @@ export function InviteLanding({
 
   if (isSelf) {
     return (
-      <div className="mt-6 rounded-[var(--radius-md)] border border-[var(--line)] bg-white/88 px-4 py-4 text-sm leading-7 text-[var(--muted)]">
+      <div className="mt-6 rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-4 text-sm leading-7 text-[var(--muted)]">
         This is your invite link. Share it with golf friends so they can connect to your profile in one tap.
       </div>
     );
@@ -76,7 +76,7 @@ export function InviteLanding({
   if (connected) {
     return (
       <div className="mt-6 space-y-3">
-        <div className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white/88 px-4 py-4 text-sm leading-7 text-[var(--muted)]">
+        <div className="rounded-[var(--radius-md)] border border-[var(--line)] bg-white px-4 py-4 text-sm leading-7 text-[var(--muted)]">
           You are already connected with {inviterName}. Jump straight to the overlap and compare where your rankings differ.
         </div>
         <div className="flex flex-wrap gap-3">
