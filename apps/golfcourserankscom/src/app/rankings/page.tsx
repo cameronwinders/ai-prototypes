@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { CourseRow, CourseRowHeader } from "@/components/CourseRow";
+import { CourseRow, CourseRowHeader, type CourseRowSortKey } from "@/components/CourseRow";
 import { LeaderboardFilterPanel } from "@/components/LeaderboardFilterPanel";
 import { RankingsMobileControls } from "@/components/RankingsMobileControls";
 import { RankingsMobileRow } from "@/components/RankingsMobileRow";
@@ -19,6 +19,33 @@ const SORT_OPTIONS = [
   { value: "golfweek-you-can-play", label: "Golf Week" },
   { value: "most-played", label: "Most played" }
 ] as const;
+
+// Sortable column keys — every SORT_OPTIONS value except "most-played" maps
+// to a visible board column header (most-played is dropdown-only).
+const SORTABLE_COLUMN_KEYS = [
+  "rank",
+  "editorial-average",
+  "crowd-vs-editorial",
+  "golf-digest-public",
+  "golf-top-100",
+  "golfweek-you-can-play"
+] as const satisfies readonly CourseRowSortKey[];
+
+const FILTER_PASSTHROUGH_PARAMS = ["q", "band", "state", "played", "tag"] as const;
+
+function buildSortHref(
+  targetSort: CourseRowSortKey,
+  params: Record<string, string | string[] | undefined>
+) {
+  const next = new URLSearchParams();
+  for (const key of FILTER_PASSTHROUGH_PARAMS) {
+    const raw = params[key];
+    const value = Array.isArray(raw) ? raw[0] : raw;
+    if (value) next.set(key, value);
+  }
+  next.set("sort", targetSort);
+  return `/rankings?${next.toString()}`;
+}
 
 export const metadata: Metadata = {
   title: "Overall Rankings | Golf Course Ranks",
@@ -111,7 +138,14 @@ export default async function RankingsPage({
             </div>
 
             <div className="hidden lg:block">
-              <CourseRowHeader />
+              <CourseRowHeader
+                sort={{
+                  current: (SORTABLE_COLUMN_KEYS as readonly string[]).includes(sort)
+                    ? (sort as CourseRowSortKey)
+                    : "rank",
+                  hrefFor: (key) => buildSortHref(key, params)
+                }}
+              />
               <div className="grid gap-0">
                 {courses.map((course) => (
                   <CourseRow key={course.id} course={course} />

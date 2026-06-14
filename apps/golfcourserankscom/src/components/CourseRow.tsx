@@ -23,22 +23,88 @@ function rowGrid(wide: boolean) {
     : "60px 110px minmax(0,1.7fr) 76px 90px 70px 70px 70px";
 }
 
+// Sort keys that match SORT_OPTIONS on /rankings (one per sortable column).
+export type CourseRowSortKey =
+  | "rank"
+  | "editorial-average"
+  | "crowd-vs-editorial"
+  | "golf-digest-public"
+  | "golf-top-100"
+  | "golfweek-you-can-play";
+
+type CourseRowSortProp = {
+  current: CourseRowSortKey;
+  hrefFor: (key: CourseRowSortKey) => string;
+};
+
+const HEAD_CELL_BASE = "text-[0.64rem] font-bold uppercase tracking-[0.08em]";
+
+function HeadCell({
+  label,
+  align = "left",
+  sortKey,
+  sort
+}: {
+  label: string;
+  align?: "left" | "center" | "right";
+  sortKey?: CourseRowSortKey;
+  sort?: CourseRowSortProp;
+}) {
+  const alignClass = align === "center" ? "text-center" : align === "right" ? "text-right" : "";
+  if (!sort || !sortKey) {
+    return <div className={`${HEAD_CELL_BASE} ${alignClass} text-muted`}>{label}</div>;
+  }
+  const active = sort.current === sortKey;
+  return (
+    <div className={`${HEAD_CELL_BASE} ${alignClass}`}>
+      <Link
+        href={sort.hrefFor(sortKey)}
+        className={`inline-flex items-center gap-1 transition-colors ${active ? "text-ink" : "text-muted hover:text-ink"}`}
+        aria-label={`Sort by ${label}`}
+        aria-current={active ? "true" : undefined}
+      >
+        <span>{label}</span>
+        {active ? (
+          <span aria-hidden="true" className="text-pine">
+            {"▾"}
+          </span>
+        ) : null}
+      </Link>
+    </div>
+  );
+}
+
 // Board-table column headers (surface v3) — caps Barlow over a 2px ink rule.
-export function CourseRowHeader({ trailingLabel = "Golfweek", wide = false }: { trailingLabel?: string; wide?: boolean }) {
-  const head = "text-[0.64rem] font-bold uppercase tracking-[0.08em] text-muted";
+// Pass `sort` to make Crowd/Editorial avg/vs editorial/Golf Digest/GOLF.com/Golfweek
+// clickable sort controls (used on /rankings); omit for static headers (home previews, browse).
+export function CourseRowHeader({
+  trailingLabel = "Golfweek",
+  wide = false,
+  sort
+}: {
+  trailingLabel?: string;
+  wide?: boolean;
+  sort?: CourseRowSortProp;
+}) {
+  const trailingSortKey: CourseRowSortKey | undefined = wide ? undefined : "golfweek-you-can-play";
   return (
     <div
       className="grid items-end gap-3.5 border-b-2 border-b-ink px-[18px] pb-[9px]"
       style={{ gridTemplateColumns: rowGrid(wide) }}
     >
-      <div className={head}>Crowd</div>
-      <div className={`${head} text-center`}>Friends played</div>
-      <div className={head}>Course</div>
-      <div className={`${head} text-center`}>Editorial avg</div>
-      <div className={`${head} text-center`}>vs. editorial</div>
-      <div className={`${head} text-center`}>Golf Digest</div>
-      <div className={`${head} text-center`}>GOLF.com</div>
-      <div className={`${head} ${wide ? "text-right" : "text-center"}`}>{trailingLabel}</div>
+      <HeadCell label="Crowd" sortKey="rank" sort={sort} />
+      <HeadCell label="Friends played" align="center" />
+      <HeadCell label="Course" />
+      <HeadCell label="Editorial avg" align="center" sortKey="editorial-average" sort={sort} />
+      <HeadCell label="vs. editorial" align="center" sortKey="crowd-vs-editorial" sort={sort} />
+      <HeadCell label="Golf Digest" align="center" sortKey="golf-digest-public" sort={sort} />
+      <HeadCell label="GOLF.com" align="center" sortKey="golf-top-100" sort={sort} />
+      <HeadCell
+        label={trailingLabel}
+        align={wide ? "right" : "center"}
+        sortKey={trailingSortKey}
+        sort={sort}
+      />
     </div>
   );
 }
